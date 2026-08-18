@@ -4,7 +4,6 @@ partial class MainForm
 {
     private System.ComponentModel.IContainer? components = null;
     private Button testConnectionButton = null!;
-    private Label informationLabel = null!;
 
     protected override void Dispose(bool disposing)
     {
@@ -17,42 +16,42 @@ partial class MainForm
     private void InitializeComponent()
     {
         testConnectionButton = new Button();
-        informationLabel = new Label();
+        UcitajVozilo = new Button();
         SuspendLayout();
-
-        //
-        // informationLabel
-        //
-        informationLabel.AutoSize = true;
-        informationLabel.Location = new Point(24, 24);
-        informationLabel.Name = "informationLabel";
-        informationLabel.Size = new Size(394, 15);
-        informationLabel.TabIndex = 0;
-        informationLabel.Text = "Univerzalni Fluent NHibernate skelet – ovde dodajte svoj UI.";
-
-        //
+        // 
         // testConnectionButton
-        //
-        testConnectionButton.Location = new Point(24, 58);
+        // 
+        testConnectionButton.Location = new Point(184, 63);
+        testConnectionButton.Margin = new Padding(3, 4, 3, 4);
         testConnectionButton.Name = "testConnectionButton";
-        testConnectionButton.Size = new Size(190, 35);
+        testConnectionButton.Size = new Size(217, 47);
         testConnectionButton.TabIndex = 1;
         testConnectionButton.Text = "Testiraj vezu sa bazom";
         testConnectionButton.UseVisualStyleBackColor = true;
         testConnectionButton.Click += TestConnectionButton_Click;
-
-        //
+        // 
+        // UcitajVozilo
+        // 
+        UcitajVozilo.Location = new Point(184, 136);
+        UcitajVozilo.Name = "UcitajVozilo";
+        UcitajVozilo.Size = new Size(217, 46);
+        UcitajVozilo.TabIndex = 2;
+        UcitajVozilo.Text = "Ucitaj Vozilo sa ID-ijem 1";
+        UcitajVozilo.UseVisualStyleBackColor = true;
+        UcitajVozilo.Click += UcitajVozilo_Click;
+        // 
         // MainForm
-        //
-        AutoScaleDimensions = new SizeF(7F, 15F);
+        // 
+        AutoScaleDimensions = new SizeF(8F, 20F);
         AutoScaleMode = AutoScaleMode.Font;
-        ClientSize = new Size(560, 150);
+        ClientSize = new Size(640, 449);
+        Controls.Add(UcitajVozilo);
         Controls.Add(testConnectionButton);
-        Controls.Add(informationLabel);
+        Margin = new Padding(3, 4, 3, 4);
         Name = "MainForm";
         StartPosition = FormStartPosition.CenterScreen;
         Text = "Fluent NHibernate Template";
         ResumeLayout(false);
-        PerformLayout();
     }
+    private Button UcitajVozilo;
 }

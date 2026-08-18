@@ -1,3 +1,6 @@
+using FluentNHibernate.Utils;
+using FluentNHibernateTemplate.Entiteti;
+
 namespace FluentNHibernateTemplate;
 
 /// <summary>
@@ -40,6 +43,42 @@ public partial class MainForm : Form
         {
             session?.Close();
             session?.Dispose();
+        }
+    }
+
+    private async void UcitajVozilo_Click(object sender, EventArgs e)
+    {
+        ISession? session = null;
+
+        try
+        {
+            session = DataLayer.GetSession();
+
+            if (session == null)
+                return;
+
+            Vozilo? vozilo =
+                await session.GetAsync<Vozilo>(1);
+
+            if (vozilo == null)
+            {
+                MessageBox.Show("Vozilo sa ID 1 ne postoji.");
+                return;
+            }
+
+            MessageBox.Show(
+                $"Vozilo: {vozilo.Marka} {vozilo.Model}\n" +
+                $"Registracija: {vozilo.RegistarskaOznaka}\n" +
+                $"VIN: {vozilo.Vin}"
+            );
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(ex.FormatExceptionMessage());
+        }
+        finally
+        {
+            session?.Close();
         }
     }
 }
