@@ -26,7 +26,14 @@ public static class DataLayer
         try
         {
             DotNetEnv.Env.Load();
-            string connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
+
+            string? connectionString =
+                Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
+
+            MessageBox.Show(
+                connectionString ?? "CONNECTION STRING JE NULL",
+                "Connection string"
+            );
 
             var cfg = OracleManagedDataClientConfiguration.Oracle10
                 .ShowSql()
@@ -34,12 +41,17 @@ public static class DataLayer
 
             return Fluently.Configure()
                 .Database(cfg)
-                .Mappings(m => m.FluentMappings.AddFromAssemblyOf<VoziloMapiranja>())
+                .Mappings(m => m.FluentMappings
+                    .AddFromAssemblyOf<VoziloMapiranja>())
                 .BuildSessionFactory();
         }
         catch (Exception ex)
         {
-            System.Windows.Forms.MessageBox.Show(ex.Message);
+            MessageBox.Show(
+                ex.ToString(),
+                "Greška"
+            );
+
             return null;
         }
     }
