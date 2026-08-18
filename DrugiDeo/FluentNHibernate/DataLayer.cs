@@ -1,17 +1,10 @@
-namespace FluentNHibernateTemplate;
+using FluentNHibernateTemplate.Mapiranja;
 
-/// <summary>
-/// Central place for creating NHibernate sessions.
-/// Keep database configuration here; forms should not create their own SessionFactory.
-/// </summary>
+namespace FluentNHibernateTemplate;
 public static class DataLayer
 {
     private static ISessionFactory? factory;
     private static readonly object lockObj = new();
-
-    /// <summary>
-    /// Gets a new NHibernate session. The SessionFactory is created only once.
-    /// </summary>
     public static ISession? GetSession()
     {
         if (factory == null)
@@ -32,31 +25,21 @@ public static class DataLayer
     {
         try
         {
-            var settings = ConfigurationManager.ConnectionStrings["OracleCS"];
-
-            if (settings == null || string.IsNullOrWhiteSpace(settings.ConnectionString))
-                throw new InvalidOperationException(
-                    "Connection string 'OracleCS' nije pronađen u App.config fajlu.");
+            DotNetEnv.Env.Load();
+            string connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
 
             var cfg = OracleManagedDataClientConfiguration.Oracle10
                 .ShowSql()
-                .ConnectionString(c => c.Is(settings.ConnectionString));
+                .ConnectionString(connectionString);
 
             return Fluently.Configure()
                 .Database(cfg)
-                // MappingAssemblyMarker is intentionally empty. All project-specific
-                // mappings will be discovered from this assembly automatically.
-                .Mappings(m => m.FluentMappings.AddFromAssemblyOf<MappingAssemblyMarker>())
+                .Mappings(m => m.FluentMappings.AddFromAssemblyOf<VoziloMapiranja>())
                 .BuildSessionFactory();
         }
         catch (Exception ex)
         {
-            MessageBox.Show(
-                ex.FormatExceptionMessage(),
-                "Greška pri povezivanju sa bazom",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Error);
-
+            System.Windows.Forms.MessageBox.Show(ex.Message);
             return null;
         }
     }

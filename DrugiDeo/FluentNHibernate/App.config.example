@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<configuration>
-  <connectionStrings>
-    <add name="OracleCS"
-         connectionString="Data Source=YOUR_ORACLE_HOST:1521/YOUR_SERVICE;User Id=YOUR_USER;Password=YOUR_PASSWORD" />
-  </connectionStrings>
-</configuration>
