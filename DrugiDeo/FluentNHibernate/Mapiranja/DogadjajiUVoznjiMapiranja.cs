@@ -15,8 +15,8 @@ namespace FluentNHibernateTemplate.Mapiranja
 
             Id(x => x.Id, "ID").GeneratedBy.Identity();
 
-            Map(x => x.Tip, "TIP_DOGADJAJA");
-            Map(x => x.Vreme, "VREME_DOGADJAJA");
+            Map(x => x.Tip, "TIP_DOGADJAJA").Not.Nullable();
+            Map(x => x.Vreme, "VREME_DOGADJAJA").Not.Nullable();
             Map(x => x.Lokacija, "LOKACIJA");
             Map(x => x.Opis, "OPIS");
 
