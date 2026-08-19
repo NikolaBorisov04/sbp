@@ -49,7 +49,7 @@ public static class DataLayer
         {
             MessageBox.Show(
                 ex.ToString(),
-                "Greška"
+                "Greska"
             );
 
             return null;

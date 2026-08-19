@@ -1,0 +1,613 @@
+CREATE TABLE TipPogona (
+    id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    naziv VARCHAR(50) NOT NULL UNIQUE -- 'Elektricno', 'Hibridno', 'Klasicno'
+);
+
+CREATE TABLE TipKoriscenja (
+    id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    naziv VARCHAR(50) NOT NULL UNIQUE -- 'Putnicko', 'Dostavno', 'Specijalno'
+);
+
+CREATE TABLE Vozilo (
+    id NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    registarska_oznaka VARCHAR2(20) NOT NULL UNIQUE,
+    vin VARCHAR2(17) NOT NULL UNIQUE,
+    marka VARCHAR2(50) NOT NULL,
+    model VARCHAR2(50) NOT NULL,
+    godina_proizvodnje NUMBER(4) NOT NULL,
+    datum_nabavke DATE NOT NULL,
+    status VARCHAR2(50) NOT NULL,
+    broj_sedista NUMBER NOT NULL,
+    stanje_enterijera VARCHAR2(1000),
+    stanje_eksterijera VARCHAR2(1000),
+    ogranicenja_koriscenja VARCHAR2(2000),
+    
+    tip_koriscenja_id NUMBER NOT NULL,
+    tip_pogona_id NUMBER NOT NULL,
+
+    CONSTRAINT fk_vozilo_tip_koriscenja FOREIGN KEY (tip_koriscenja_id) REFERENCES TipKoriscenja(id),
+    CONSTRAINT fk_vozilo_tip_pogon FOREIGN KEY (tip_pogona_id) REFERENCES TipPogona(id)
+);
+
+CREATE TABLE ElektricnoVozilo (
+    vozilo_id NUMBER PRIMARY KEY,
+    kapacitet_baterije NUMBER(8, 2) NOT NULL,
+    trenutni_nivo_napunjenosti NUMBER(5, 2) NOT NULL,
+    autonomija NUMBER NOT NULL,
+    tip_punjenja VARCHAR2(50) NOT NULL,
+    broj_ciklusa_punjenja NUMBER NOT NULL,
+
+    CONSTRAINT fk_el_vozilo FOREIGN KEY (vozilo_id) REFERENCES Vozilo(id) ON DELETE CASCADE
+);
+
+CREATE TABLE HibridnoVozilo (
+    vozilo_id NUMBER PRIMARY KEY,
+    kapacitet_baterije NUMBER(8, 2) NOT NULL,
+    tip_hibridnog_pogona VARCHAR2(50) NOT NULL,
+
+    CONSTRAINT fk_hib_vozilo FOREIGN KEY (vozilo_id) REFERENCES Vozilo(id) ON DELETE CASCADE
+);
+
+CREATE TABLE KlasicnoVozilo (
+    vozilo_id NUMBER PRIMARY KEY,
+    tip_goriva VARCHAR2(50) NOT NULL,
+    zapremina_rezervoara NUMBER(8, 2) NOT NULL,
+    prosecna_potrosnja NUMBER(5, 2) NOT NULL,
+
+    CONSTRAINT fk_klas_vozilo FOREIGN KEY (vozilo_id) REFERENCES Vozilo(id) ON DELETE CASCADE
+);
+
+CREATE TABLE Oprema (
+    id NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    naziv VARCHAR2(100) NOT NULL UNIQUE,
+    opis VARCHAR2(1000)
+);
+
+CREATE TABLE VoziloOprema (
+    vozilo_id NUMBER NOT NULL,
+    oprema_id NUMBER NOT NULL,
+    is_dodatna NUMBER(1) DEFAULT 0 NOT NULL CHECK (is_dodatna IN (0, 1)), -- 0 = Fabricka, 1 = Dodatna
+
+    CONSTRAINT pk_vozilo_oprema PRIMARY KEY (vozilo_id, oprema_id),
+    CONSTRAINT fk_vo_vozilo FOREIGN KEY (vozilo_id) REFERENCES Vozilo(id) ON DELETE CASCADE,
+    CONSTRAINT fk_vo_oprema FOREIGN KEY (oprema_id) REFERENCES Oprema(id)
+);
+
+
+
+CREATE TABLE TipKorisnika (
+    id NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    naziv VARCHAR2(50) NOT NULL UNIQUE -- 'Fizicko lice', 'Pravno lice'
+);
+
+CREATE TABLE Uloga (
+    id NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    naziv VARCHAR2(50) NOT NULL UNIQUE
+);
+
+CREATE TABLE Korisnik (
+    id NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    adresa VARCHAR2(200) NOT NULL,
+    email_adresa VARCHAR2(100) NOT NULL UNIQUE,
+    datum_registracije DATE NOT NULL,
+    status_naloga VARCHAR2(50) NOT NULL,
+    nacin_verifikacije VARCHAR2(100) NOT NULL,
+    
+    tip_korisnika_id NUMBER NOT NULL,
+
+    CONSTRAINT fk_korisnik_tip FOREIGN KEY (tip_korisnika_id) REFERENCES TipKorisnika(id)
+);
+
+CREATE TABLE TelefonKorisnika (
+    id NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    korisnik_id NUMBER NOT NULL,
+    broj_telefona VARCHAR2(30) NOT NULL,
+
+    CONSTRAINT fk_tel_korisnik FOREIGN KEY (korisnik_id) REFERENCES Korisnik(id) ON DELETE CASCADE
+);
+
+CREATE TABLE FizickoLice (
+    korisnik_id NUMBER PRIMARY KEY,
+    jmbg VARCHAR2(13) NOT NULL UNIQUE,
+    ime VARCHAR2(50) NOT NULL,
+    prezime VARCHAR2(50) NOT NULL,
+    broj_vozacke_dozvole VARCHAR2(30) NOT NULL UNIQUE,
+    kategorije_dozvole VARCHAR2(50) NOT NULL,
+    datum_izdavanja_dozvole DATE NOT NULL,
+    datum_isteka_dozvole DATE NOT NULL,
+
+    CONSTRAINT fk_fizicko_lice FOREIGN KEY (korisnik_id) REFERENCES Korisnik(id) ON DELETE CASCADE
+);
+
+CREATE TABLE PravnoLice (
+    korisnik_id NUMBER PRIMARY KEY,
+    naziv VARCHAR2(100) NOT NULL,
+    pib VARCHAR2(9) NOT NULL UNIQUE,
+    maticni_broj VARCHAR2(8) NOT NULL UNIQUE,
+    sediste VARCHAR2(200) NOT NULL,
+    kontakt_osoba VARCHAR2(100) NOT NULL,
+    ugovoreni_uslovi_koriscenja VARCHAR2(2000),
+
+    CONSTRAINT fk_pravno_lice FOREIGN KEY (korisnik_id) REFERENCES Korisnik(id) ON DELETE CASCADE
+);
+
+CREATE TABLE KorisnikUloga (
+    korisnik_id NUMBER NOT NULL,
+    uloga_id NUMBER NOT NULL,
+
+    CONSTRAINT pk_korisnik_uloga PRIMARY KEY (korisnik_id, uloga_id),
+    CONSTRAINT fk_ku_korisnik FOREIGN KEY (korisnik_id) REFERENCES Korisnik(id) ON DELETE CASCADE,
+    CONSTRAINT fk_ku_uloga FOREIGN KEY (uloga_id) REFERENCES Uloga(id) ON DELETE CASCADE
+);
+
+CREATE TABLE VerifikacijaKorisnika (
+    id NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    korisnik_id NUMBER NOT NULL,
+    datum_verifikacije DATE NOT NULL,
+    verifikator VARCHAR2(100) NOT NULL,
+    rezultat VARCHAR2(100) NOT NULL,
+    ogranicenja VARCHAR2(1000),
+
+    CONSTRAINT fk_verifikacija_korisnik FOREIGN KEY (korisnik_id) REFERENCES Korisnik(id) ON DELETE CASCADE
+);
+
+CREATE TABLE NacinPlacanja (
+    id NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    korisnik_id NUMBER NOT NULL,
+    tip_placanja VARCHAR2(50) NOT NULL,
+    status VARCHAR2(50) NOT NULL,
+    datum_dodavanja DATE NOT NULL,
+    ogranicenja VARCHAR2(1000),
+
+    CONSTRAINT fk_np_korisnik FOREIGN KEY (korisnik_id) REFERENCES Korisnik(id) ON DELETE CASCADE
+);
+
+
+
+
+
+CREATE TABLE Rezervacija (
+    id NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    korisnik_id NUMBER NOT NULL,
+    vozilo_id NUMBER NOT NULL,
+    vozac_id NUMBER, -- FK na FizickoLice (popunjava se ako je korisnik pravno lice)
+    planirano_vreme_pocetka DATE NOT NULL,
+    planirano_vreme_zavrsetka DATE NOT NULL,
+    lokacija_preuzimanja VARCHAR2(200) NOT NULL,
+    planirana_lokacija_vracanja VARCHAR2(200) NOT NULL,
+    tip_rezervacije VARCHAR2(50) NOT NULL,
+    status VARCHAR2(50) NOT NULL,
+
+    CONSTRAINT fk_rez_korisnik FOREIGN KEY (korisnik_id) REFERENCES Korisnik(id),
+    CONSTRAINT fk_rez_vozilo FOREIGN KEY (vozilo_id) REFERENCES Vozilo(id),
+    CONSTRAINT fk_rez_vozac FOREIGN KEY (vozac_id) REFERENCES FizickoLice(korisnik_id)
+);
+
+CREATE TABLE SluzbenaVoznjaDetalji (
+    rezervacija_id NUMBER PRIMARY KEY,
+    razlog_voznje VARCHAR2(1000) NOT NULL,
+    ovlasceno_lice VARCHAR2(100) NOT NULL, -- Ovlasceno lice koje je odobrilo rezervaciju
+
+    CONSTRAINT fk_sluzbena_rezervacija FOREIGN KEY (rezervacija_id) REFERENCES Rezervacija(id) ON DELETE CASCADE
+);
+
+CREATE TABLE Voznja (
+    id NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    rezervacija_id NUMBER NOT NULL UNIQUE,
+    stvarno_vreme_pocetka DATE NOT NULL,
+    stvarno_vreme_zavrsetka DATE NOT NULL,
+    predjena_kilometraza NUMBER(10, 2) NOT NULL,
+    trajanje_minuti NUMBER NOT NULL,
+    pocetni_nivo_goriva_baterije NUMBER(5, 2) NOT NULL,
+    zavrsni_nivo_goriva_baterije NUMBER(5, 2) NOT NULL,
+    pocetna_lokacija VARCHAR2(200) NOT NULL,
+    zavrsna_lokacija VARCHAR2(200) NOT NULL,
+    obracunata_cena NUMBER(10, 2) NOT NULL,
+    dodatne_naknade NUMBER(10, 2) DEFAULT 0 NOT NULL,
+
+    CONSTRAINT fk_voznja_rezervacija FOREIGN KEY (rezervacija_id) REFERENCES Rezervacija(id)
+);
+
+CREATE TABLE DogadjajVoznje (
+    id NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    voznja_id NUMBER NOT NULL,
+    tip_dogadjaja VARCHAR2(100) NOT NULL, -- npr. 'Proso kroz crveno', 'Driftovao u kruzni', 'Sudar'
+    vreme_dogadjaja DATE NOT NULL,
+    lokacija VARCHAR2(200),
+    opis VARCHAR2(1000),
+
+    CONSTRAINT fk_dogadjaj_voznja FOREIGN KEY (voznja_id) REFERENCES Voznja(id) ON DELETE CASCADE
+);
+
+
+
+
+CREATE TABLE TipServisa (
+    id NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    naziv VARCHAR2(50) NOT NULL UNIQUE -- 'Redovni', 'Vanredni', 'Preventivni', 'Garantni'
+);
+
+CREATE TABLE PrijavioKvar (
+    id NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    naziv VARCHAR2(50) NOT NULL UNIQUE -- 'Korisnik', 'Operater'
+);
+
+CREATE TABLE TipOdgovornosti (
+    id NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    naziv VARCHAR2(50) NOT NULL UNIQUE -- 'Korisnik', 'Trece lice'
+);
+
+CREATE TABLE PunjenjeTocenje (
+    id NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    vozilo_id NUMBER NOT NULL,
+    datum_vreme DATE NOT NULL,
+    lokacija VARCHAR2(200) NOT NULL,
+    kolicina NUMBER(10, 2) NOT NULL,
+    cena NUMBER(10, 2) NOT NULL,
+    nacin_evidentiranja VARCHAR2(100) NOT NULL,
+    evidentirao VARCHAR2(100) NOT NULL, -- Osoba ili sistem koji je događaj zabeležio
+
+    CONSTRAINT fk_pt_vozilo FOREIGN KEY (vozilo_id) REFERENCES Vozilo(id) ON DELETE CASCADE
+);
+
+CREATE TABLE Servis (
+    id NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    vozilo_id NUMBER NOT NULL,
+    tip_servisa_id NUMBER NOT NULL,
+    servisni_centar VARCHAR2(200) NOT NULL,
+    datum_prijema DATE NOT NULL,
+    datum_zavrsetka DATE,
+    opis_radova VARCHAR2(2000),
+    zamenjeni_delovi VARCHAR2(1000),
+    troskovi NUMBER(10, 2) NOT NULL,
+    status VARCHAR2(50) NOT NULL,
+
+    CONSTRAINT fk_servis_vozilo FOREIGN KEY (vozilo_id) REFERENCES Vozilo(id) ON DELETE CASCADE,
+    CONSTRAINT fk_servis_tip FOREIGN KEY (tip_servisa_id) REFERENCES TipServisa(id)
+);
+
+CREATE TABLE Kvar (
+    id NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    vozilo_id NUMBER NOT NULL,
+    prijavio_id NUMBER NOT NULL,
+    datum_prijave DATE NOT NULL,
+    opis_problema VARCHAR2(2000) NOT NULL,
+    procena_ozbiljnosti VARCHAR2(50) NOT NULL,
+    status VARCHAR2(50) NOT NULL,
+    datum_otklanjanja DATE,
+
+    CONSTRAINT fk_kvar_vozilo FOREIGN KEY (vozilo_id) REFERENCES Vozilo(id) ON DELETE CASCADE,
+    CONSTRAINT fk_kvar_prijavio FOREIGN KEY (prijavio_id) REFERENCES PrijavioKvar(id)
+);
+
+CREATE TABLE NezgodaSteta (
+    id NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    vozilo_id NUMBER NOT NULL,
+    odgovornost_id NUMBER NOT NULL,
+    procena_stete NUMBER(10, 2) NOT NULL,
+
+    CONSTRAINT fk_ns_vozilo FOREIGN KEY (vozilo_id) REFERENCES Vozilo(id) ON DELETE CASCADE,
+    CONSTRAINT fk_ns_odgovornost FOREIGN KEY (odgovornost_id) REFERENCES TipOdgovornosti(id)
+);
+
+CREATE TABLE NezgodaOsiguravajucaKuca (
+    id NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    nezgoda_steta_id NUMBER NOT NULL,
+    osiguravajuca_kuca VARCHAR2(100) NOT NULL,
+
+    CONSTRAINT fk_nok_nezgoda FOREIGN KEY (nezgoda_steta_id) REFERENCES NezgodaSteta(id) ON DELETE CASCADE
+);
+
+CREATE TABLE NezgodaZapisnik (
+    id NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    nezgoda_steta_id NUMBER NOT NULL,
+    zapisnik_url VARCHAR2(500) NOT NULL,
+
+    CONSTRAINT fk_nz_nezgoda FOREIGN KEY (nezgoda_steta_id) REFERENCES NezgodaSteta(id) ON DELETE CASCADE
+);
+
+CREATE TABLE NezgodaFotografija (
+    id NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    nezgoda_steta_id NUMBER NOT NULL,
+    fotografija_url VARCHAR2(500) NOT NULL,
+
+    CONSTRAINT fk_nf_nezgoda FOREIGN KEY (nezgoda_steta_id) REFERENCES NezgodaSteta(id) ON DELETE CASCADE
+);
+
+
+
+
+--INSERTOVI
+
+
+
+
+INSERT INTO TipPogona (naziv) VALUES ('Elektricno');
+INSERT INTO TipPogona (naziv) VALUES ('Hibridno');
+INSERT INTO TipPogona (naziv) VALUES ('Klasicno');
+
+INSERT INTO TipKoriscenja (naziv) VALUES ('Putnicko');
+INSERT INTO TipKoriscenja (naziv) VALUES ('Dostavno');
+INSERT INTO TipKoriscenja (naziv) VALUES ('Specijalno');
+
+INSERT INTO TipKorisnika (naziv) VALUES ('Fizicko lice');
+INSERT INTO TipKorisnika (naziv) VALUES ('Pravno lice');
+
+INSERT INTO Uloga (naziv) VALUES ('Privatni korisnik');
+INSERT INTO Uloga (naziv) VALUES ('Zaposleni');
+INSERT INTO Uloga (naziv) VALUES ('Administrator');
+
+INSERT INTO TipServisa (naziv) VALUES ('Redovni');
+INSERT INTO TipServisa (naziv) VALUES ('Vanredni');
+INSERT INTO TipServisa (naziv) VALUES ('Preventivni');
+INSERT INTO TipServisa (naziv) VALUES ('Garantni');
+
+INSERT INTO PrijavioKvar (naziv) VALUES ('Korisnik');
+INSERT INTO PrijavioKvar (naziv) VALUES ('Operater');
+
+INSERT INTO TipOdgovornosti (naziv) VALUES ('Korisnik');
+INSERT INTO TipOdgovornosti (naziv) VALUES ('Trece lice');
+
+INSERT INTO Oprema (naziv, opis) VALUES ('GPS Navigacija', 'Sistem za satelitsko praćenje i navigaciju');
+INSERT INTO Oprema (naziv, opis) VALUES ('Dečije sedište', 'Bezbednosno sedište za decu do 36kg');
+INSERT INTO Oprema (naziv, opis) VALUES ('Krovni nosač', 'Nosač za prtljag ili skije na krovu');
+INSERT INTO Oprema (naziv, opis) VALUES ('Kablovi za punjenje', 'Brzi kabl Type 2 za AC punjenje');
+INSERT INTO Oprema (naziv, opis) VALUES ('Lanci za sneg', 'Zimska oprema za sneg i led');
+
+
+
+INSERT INTO Vozilo (registarska_oznaka, vin, marka, model, godina_proizvodnje, datum_nabavke, status, broj_sedista, stanje_enterijera, stanje_eksterijera, ogranicenja_koriscenja, tip_koriscenja_id, tip_pogona_id)
+VALUES ('BG-101-EV', 'VIN17CHARS0000011', 'Tesla', 'Model 3', 2022, DATE '2022-03-15', 'Slobodno', 5, 'Odlično', 'Nema oštećenja', 'Bez ograničenja', 1, 1);
+INSERT INTO Vozilo (registarska_oznaka, vin, marka, model, godina_proizvodnje, datum_nabavke, status, broj_sedista, stanje_enterijera, stanje_eksterijera, ogranicenja_koriscenja, tip_koriscenja_id, tip_pogona_id)
+VALUES ('BG-102-EV', 'VIN17CHARS0000012', 'BMW', 'i4', 2023, DATE '2023-01-10', 'Slobodno', 5, 'Novo', 'Bez ogrebotina', 'Nema ograničenja', 1, 1);
+INSERT INTO Vozilo (registarska_oznaka, vin, marka, model, godina_proizvodnje, datum_nabavke, status, broj_sedista, stanje_enterijera, stanje_eksterijera, ogranicenja_koriscenja, tip_koriscenja_id, tip_pogona_id)
+VALUES ('BG-103-EV', 'VIN17CHARS0000013', 'Hyundai', 'Ioniq 5', 2022, DATE '2022-06-20', 'Iznajmljeno', 5, 'Čisto', 'Mala ogrebotina na zadnjem braniku', 'Nema', 1, 1);
+INSERT INTO Vozilo (registarska_oznaka, vin, marka, model, godina_proizvodnje, datum_nabavke, status, broj_sedista, stanje_enterijera, stanje_eksterijera, ogranicenja_koriscenja, tip_koriscenja_id, tip_pogona_id)
+VALUES ('BG-104-EV', 'VIN17CHARS0000014', 'Nissan', 'Leaf', 2021, DATE '2021-09-01', 'Slobodno', 5, 'Uredno', 'Manje ogrebotine', 'Samo gradska vožnja', 1, 1);
+INSERT INTO Vozilo (registarska_oznaka, vin, marka, model, godina_proizvodnje, datum_nabavke, status, broj_sedista, stanje_enterijera, stanje_eksterijera, ogranicenja_koriscenja, tip_koriscenja_id, tip_pogona_id)
+VALUES ('NS-105-EV', 'VIN17CHARS0000015', 'Renault', 'Kangoo ZE', 2022, DATE '2022-11-11', 'Na servisu', 2, 'Dobro', 'Očuvano', 'Maksimalni teret 500kg', 2, 1);
+
+INSERT INTO Vozilo (registarska_oznaka, vin, marka, model, godina_proizvodnje, datum_nabavke, status, broj_sedista, stanje_enterijera, stanje_eksterijera, ogranicenja_koriscenja, tip_koriscenja_id, tip_pogona_id)
+VALUES ('BG-201-HB', 'VIN17CHARS0000021', 'Toyota', 'Prius', 2020, DATE '2020-05-12', 'Slobodno', 5, 'Dobro', 'Svetla ogrebotina', 'Nema', 1, 2);
+INSERT INTO Vozilo (registarska_oznaka, vin, marka, model, godina_proizvodnje, datum_nabavke, status, broj_sedista, stanje_enterijera, stanje_eksterijera, ogranicenja_koriscenja, tip_koriscenja_id, tip_pogona_id)
+VALUES ('BG-202-HB', 'VIN17CHARS0000022', 'Toyota', 'Corolla Hybrid', 2021, DATE '2021-04-18', 'Slobodno', 5, 'Odlično', 'Bez oštećenja', 'Nema', 1, 2);
+INSERT INTO Vozilo (registarska_oznaka, vin, marka, model, godina_proizvodnje, datum_nabavke, status, broj_sedista, stanje_enterijera, stanje_eksterijera, ogranicenja_koriscenja, tip_koriscenja_id, tip_pogona_id)
+VALUES ('NI-203-HB', 'VIN17CHARS0000023', 'Honda', 'CR-V Hybrid', 2022, DATE '2022-02-01', 'Iznajmljeno', 5, 'Čisto', 'Čisto', 'Nema', 1, 2);
+INSERT INTO Vozilo (registarska_oznaka, vin, marka, model, godina_proizvodnje, datum_nabavke, status, broj_sedista, stanje_enterijera, stanje_eksterijera, ogranicenja_koriscenja, tip_koriscenja_id, tip_pogona_id)
+VALUES ('BG-204-HB', 'VIN17CHARS0000024', 'Ford', 'Mondeo Hybrid', 2019, DATE '2019-08-15', 'Slobodno', 5, 'Uredno', 'Tragovi korišćenja', 'Nema', 1, 2);
+INSERT INTO Vozilo (registarska_oznaka, vin, marka, model, godina_proizvodnje, datum_nabavke, status, broj_sedista, stanje_enterijera, stanje_eksterijera, ogranicenja_koriscenja, tip_koriscenja_id, tip_pogona_id)
+VALUES ('KG-205-HB', 'VIN17CHARS0000025', 'Hyundai', 'Tucson Hybrid', 2023, DATE '2023-03-30', 'Slobodno', 5, 'Novo', 'Novo', 'Nema', 1, 2);
+
+INSERT INTO Vozilo (registarska_oznaka, vin, marka, model, godina_proizvodnje, datum_nabavke, status, broj_sedista, stanje_enterijera, stanje_eksterijera, ogranicenja_koriscenja, tip_koriscenja_id, tip_pogona_id)
+VALUES ('BG-301-KL', 'VIN17CHARS0000031', 'Volkswagen', 'Golf 8', 2021, DATE '2021-02-10', 'Slobodno', 5, 'Uredno', 'Uredno', 'Nema', 1, 3);
+INSERT INTO Vozilo (registarska_oznaka, vin, marka, model, godina_proizvodnje, datum_nabavke, status, broj_sedista, stanje_enterijera, stanje_eksterijera, ogranicenja_koriscenja, tip_koriscenja_id, tip_pogona_id)
+VALUES ('BG-302-KL', 'VIN17CHARS0000032', 'Skoda', 'Octavia', 2020, DATE '2020-07-22', 'Slobodno', 5, 'Dobro', 'Dobro', 'Nema', 1, 3);
+INSERT INTO Vozilo (registarska_oznaka, vin, marka, model, godina_proizvodnje, datum_nabavke, status, broj_sedista, stanje_enterijera, stanje_eksterijera, ogranicenja_koriscenja, tip_koriscenja_id, tip_pogona_id)
+VALUES ('NS-303-KL', 'VIN17CHARS0000033', 'Fiat', 'Ducato', 2020, DATE '2020-01-15', 'Slobodno', 3, 'Radno stanje', 'Sitna udubljenja', 'Max nosivost 1200kg', 2, 3);
+INSERT INTO Vozilo (registarska_oznaka, vin, marka, model, godina_proizvodnje, datum_nabavke, status, broj_sedista, stanje_enterijera, stanje_eksterijera, ogranicenja_koriscenja, tip_koriscenja_id, tip_pogona_id)
+VALUES ('BG-304-KL', 'VIN17CHARS0000034', 'Mercedes', 'Sprinter', 2019, DATE '2019-11-05', 'Iznajmljeno', 3, 'Dobro', 'Dobro', 'Max nosivost 1500kg', 2, 3);
+INSERT INTO Vozilo (registarska_oznaka, vin, marka, model, godina_proizvodnje, datum_nabavke, status, broj_sedista, stanje_enterijera, stanje_eksterijera, ogranicenja_koriscenja, tip_koriscenja_id, tip_pogona_id)
+VALUES ('NI-305-KL', 'VIN17CHARS0000035', 'MAN', 'TGE Specijal', 2022, DATE '2022-08-14', 'Na servisu', 2, 'Dobro', 'Dobro', 'Specijalna vozačka dozvola', 3, 3);
+
+INSERT INTO ElektricnoVozilo (vozilo_id, kapacitet_baterije, trenutni_nivo_napunjenosti, autonomija, tip_punjenja, broj_ciklusa_punjenja)
+VALUES (1, 75.00, 85.50, 450, 'CCS Combo 2', 120);
+INSERT INTO ElektricnoVozilo (vozilo_id, kapacitet_baterije, trenutni_nivo_napunjenosti, autonomija, tip_punjenja, broj_ciklusa_punjenja)
+VALUES (2, 80.00, 90.00, 500, 'CCS Combo 2', 85);
+INSERT INTO ElektricnoVozilo (vozilo_id, kapacitet_baterije, trenutni_nivo_napunjenosti, autonomija, tip_punjenja, broj_ciklusa_punjenja)
+VALUES (3, 77.40, 45.00, 480, 'CCS Combo 2', 150);
+INSERT INTO ElektricnoVozilo (vozilo_id, kapacitet_baterije, trenutni_nivo_napunjenosti, autonomija, tip_punjenja, broj_ciklusa_punjenja)
+VALUES (4, 40.00, 100.00, 270, 'Type 2', 310);
+INSERT INTO ElektricnoVozilo (vozilo_id, kapacitet_baterije, trenutni_nivo_napunjenosti, autonomija, tip_punjenja, broj_ciklusa_punjenja)
+VALUES (5, 52.00, 60.00, 300, 'Type 2', 190);
+
+INSERT INTO HibridnoVozilo (vozilo_id, kapacitet_baterije, tip_hibridnog_pogona)
+VALUES (6, 1.30, 'Full Hybrid (HEV)');
+INSERT INTO HibridnoVozilo (vozilo_id, kapacitet_baterije, tip_hibridnog_pogona)
+VALUES (7, 1.30, 'Full Hybrid (HEV)');
+INSERT INTO HibridnoVozilo (vozilo_id, kapacitet_baterije, tip_hibridnog_pogona)
+VALUES (8, 1.40, 'Full Hybrid (HEV)');
+INSERT INTO HibridnoVozilo (vozilo_id, kapacitet_baterije, tip_hibridnog_pogona)
+VALUES (9, 1.40, 'Mild Hybrid (MHEV)');
+INSERT INTO HibridnoVozilo (vozilo_id, kapacitet_baterije, tip_hibridnog_pogona)
+VALUES (10, 13.80, 'Plug-in Hybrid (PHEV)');
+
+INSERT INTO KlasicnoVozilo (vozilo_id, tip_goriva, zapremina_rezervoara, prosecna_potrosnja)
+VALUES (11, 'Benzin', 50.00, 5.20);
+INSERT INTO KlasicnoVozilo (vozilo_id, tip_goriva, zapremina_rezervoara, prosecna_potrosnja)
+VALUES (12, 'Dizel', 45.00, 4.80);
+INSERT INTO KlasicnoVozilo (vozilo_id, tip_goriva, zapremina_rezervoara, prosecna_potrosnja)
+VALUES (13, 'Dizel', 80.00, 8.50);
+INSERT INTO KlasicnoVozilo (vozilo_id, tip_goriva, zapremina_rezervoara, prosecna_potrosnja)
+VALUES (14, 'Benzin', 90.00, 9.20);
+INSERT INTO KlasicnoVozilo (vozilo_id, tip_goriva, zapremina_rezervoara, prosecna_potrosnja)
+VALUES (15, 'Dizel', 85.00, 9.80);
+
+INSERT INTO VoziloOprema (vozilo_id, oprema_id, is_dodatna) VALUES (1, 1, 0);
+INSERT INTO VoziloOprema (vozilo_id, oprema_id, is_dodatna) VALUES (1, 4, 0);
+INSERT INTO VoziloOprema (vozilo_id, oprema_id, is_dodatna) VALUES (2, 2, 1);
+INSERT INTO VoziloOprema (vozilo_id, oprema_id, is_dodatna) VALUES (6, 1, 0);
+INSERT INTO VoziloOprema (vozilo_id, oprema_id, is_dodatna) VALUES (11, 5, 1);
+
+
+INSERT INTO Korisnik (adresa, email_adresa, datum_registracije, status_naloga, nacin_verifikacije, tip_korisnika_id)
+VALUES ('Knez Mihailova 10, Beograd', 'petar.petrovic@email.com', DATE '2023-01-15', 'Aktivan', 'Lična karta i vozačka', 1);
+INSERT INTO Korisnik (adresa, email_adresa, datum_registracije, status_naloga, nacin_verifikacije, tip_korisnika_id)
+VALUES ('Bulevar Oslobođenja 45, Novi Sad', 'marko.markovic@email.com', DATE '2023-02-20', 'Aktivan', 'Lična karta i vozačka', 1);
+INSERT INTO Korisnik (adresa, email_adresa, datum_registracije, status_naloga, nacin_verifikacije, tip_korisnika_id)
+VALUES ('Vožda Karađorđa 12, Niš', 'jelena.jankovic@email.com', DATE '2023-03-10', 'Aktivan', 'Lična karta i vozačka', 1);
+INSERT INTO Korisnik (adresa, email_adresa, datum_registracije, status_naloga, nacin_verifikacije, tip_korisnika_id)
+VALUES ('Kragujevačkog oktobra 5, Kragujevac', 'nikola.nikolic@email.com', DATE '2023-04-05', 'Aktivan', 'Lična karta i vozačka', 1);
+INSERT INTO Korisnik (adresa, email_adresa, datum_registracije, status_naloga, nacin_verifikacije, tip_korisnika_id)
+VALUES ('Kralja Petra I 88, Subotica', 'ana.anic@email.com', DATE '2023-05-12', 'Suspendovan', 'Lična karta', 1);
+
+INSERT INTO Korisnik (adresa, email_adresa, datum_registracije, status_naloga, nacin_verifikacije, tip_korisnika_id)
+VALUES ('Bulevar Mihajla Pupina 115, Beograd', 'office@techcorp.rs', DATE '2022-10-01', 'Aktivan', 'APR Izvod i ugovor', 2);
+INSERT INTO Korisnik (adresa, email_adresa, datum_registracije, status_naloga, nacin_verifikacije, tip_korisnika_id)
+VALUES ('Bulevar Nemanjića 22, Niš', 'info@logistika.rs', DATE '2022-11-15', 'Aktivan', 'APR Izvod i ugovor', 2);
+INSERT INTO Korisnik (adresa, email_adresa, datum_registracije, status_naloga, nacin_verifikacije, tip_korisnika_id)
+VALUES ('Futoški put 10, Novi Sad', 'kontakt@buildgroup.rs', DATE '2023-01-08', 'Aktivan', 'APR Izvod i ugovor', 2);
+INSERT INTO Korisnik (adresa, email_adresa, datum_registracije, status_naloga, nacin_verifikacije, tip_korisnika_id)
+VALUES ('Nemanjina 4, Beograd', 'usluge@transline.rs', DATE '2023-02-14', 'Aktivan', 'APR Izvod i ugovor', 2);
+INSERT INTO Korisnik (adresa, email_adresa, datum_registracije, status_naloga, nacin_verifikacije, tip_korisnika_id)
+VALUES ('Kralja Aleksandra 15, Kragujevac', 'podrska@autoexpress.rs', DATE '2023-06-01', 'Neaktivan', 'APR Izvod', 2);
+
+INSERT INTO TelefonKorisnika (korisnik_id, broj_telefona) VALUES (1, '+381641112223');
+INSERT INTO TelefonKorisnika (korisnik_id, broj_telefona) VALUES (1, '+381113334445');
+INSERT INTO TelefonKorisnika (korisnik_id, broj_telefona) VALUES (2, '+381652223334');
+INSERT INTO TelefonKorisnika (korisnik_id, broj_telefona) VALUES (6, '+381119998887');
+INSERT INTO TelefonKorisnika (korisnik_id, broj_telefona) VALUES (7, '+381185556667');
+
+INSERT INTO FizickoLice (korisnik_id, jmbg, ime, prezime, broj_vozacke_dozvole, kategorije_dozvole, datum_izdavanja_dozvole, datum_isteka_dozvole)
+VALUES (1, '0101990710011', 'Petar', 'Petrović', '001122334', 'B', DATE '2015-05-10', DATE '2025-05-10');
+INSERT INTO FizickoLice (korisnik_id, jmbg, ime, prezime, broj_vozacke_dozvole, kategorije_dozvole, datum_izdavanja_dozvole, datum_isteka_dozvole)
+VALUES (2, '1202992710022', 'Marko', 'Marković', '002233445', 'B, BE', DATE '2016-08-15', DATE '2026-08-15');
+INSERT INTO FizickoLice (korisnik_id, jmbg, ime, prezime, broj_vozacke_dozvole, kategorije_dozvole, datum_izdavanja_dozvole, datum_isteka_dozvole)
+VALUES (3, '2303995715033', 'Jelena', 'Janković', '003344556', 'B', DATE '2018-02-20', DATE '2028-02-20');
+INSERT INTO FizickoLice (korisnik_id, jmbg, ime, prezime, broj_vozacke_dozvole, kategorije_dozvole, datum_izdavanja_dozvole, datum_isteka_dozvole)
+VALUES (4, '1404991710044', 'Nikola', 'Nikolić', '004455667', 'B, C, CE', DATE '2012-11-01', DATE '2032-11-01');
+INSERT INTO FizickoLice (korisnik_id, jmbg, ime, prezime, broj_vozacke_dozvole, kategorije_dozvole, datum_izdavanja_dozvole, datum_isteka_dozvole)
+VALUES (5, '0505993715055', 'Ana', 'Anić', '005566778', 'B', DATE '2019-07-07', DATE '2029-07-07');
+
+INSERT INTO PravnoLice (korisnik_id, naziv, pib, maticni_broj, sediste, kontakt_osoba, ugovoreni_uslovi_koriscenja)
+VALUES (6, 'TechCorp d.o.o.', '102345678', '08765432', 'Beograd, Novi Beograd', 'Milan Milanović', 'Odloženo plaćanje 30 dana, popust 10%');
+INSERT INTO PravnoLice (korisnik_id, naziv, pib, maticni_broj, sediste, kontakt_osoba, ugovoreni_uslovi_koriscenja)
+VALUES (7, 'Logistika Express d.o.o.', '103456789', '08765433', 'Niš, Medijana', 'Slobodan Stojanović', 'Neograničena kilometraža za dostavna vozila');
+INSERT INTO PravnoLice (korisnik_id, naziv, pib, maticni_broj, sediste, kontakt_osoba, ugovoreni_uslovi_koriscenja)
+VALUES (8, 'Build Group d.o.o.', '104567890', '08765434', 'Novi Sad', 'Igor Ilić', 'Godišnji ugovor o najmu');
+INSERT INTO PravnoLice (korisnik_id, naziv, pib, maticni_broj, sediste, kontakt_osoba, ugovoreni_uslovi_koriscenja)
+VALUES (9, 'TransLine d.o.o.', '105678901', '08765435', 'Beograd, Savski Venac', 'Dragan Dragović', 'Službeni nalog za više vozača');
+INSERT INTO PravnoLice (korisnik_id, naziv, pib, maticni_broj, sediste, kontakt_osoba, ugovoreni_uslovi_koriscenja)
+VALUES (10, 'AutoExpress d.o.o.', '106789012', '08765436', 'Kragujevac', 'Vlada Vladić', 'Standardni poslovni uslovi');
+
+INSERT INTO KorisnikUloga (korisnik_id, uloga_id) VALUES (1, 1);
+INSERT INTO KorisnikUloga (korisnik_id, uloga_id) VALUES (1, 2);
+INSERT INTO KorisnikUloga (korisnik_id, uloga_id) VALUES (2, 1);
+INSERT INTO KorisnikUloga (korisnik_id, uloga_id) VALUES (6, 2);
+INSERT INTO KorisnikUloga (korisnik_id, uloga_id) VALUES (7, 2);
+
+INSERT INTO VerifikacijaKorisnika (korisnik_id, datum_verifikacije, verifikator, rezultat, ogranicenja)
+VALUES (1, DATE '2023-01-16', 'Sistem (Automatski)', 'Odobreno', 'Bez ograničenja');
+INSERT INTO VerifikacijaKorisnika (korisnik_id, datum_verifikacije, verifikator, rezultat, ogranicenja)
+VALUES (2, DATE '2023-02-21', 'Operater M.M.', 'Odobreno', 'Bez ograničenja');
+INSERT INTO VerifikacijaKorisnika (korisnik_id, datum_verifikacije, verifikator, rezultat, ogranicenja)
+VALUES (3, DATE '2023-03-11', 'Operater A.B.', 'Odobreno', 'Zabrana iznajmljivanja specijalnih vozila');
+INSERT INTO VerifikacijaKorisnika (korisnik_id, datum_verifikacije, verifikator, rezultat, ogranicenja)
+VALUES (4, DATE '2023-04-06', 'Sistem (Automatski)', 'Odobreno', 'Bez ograničenja');
+INSERT INTO VerifikacijaKorisnika (korisnik_id, datum_verifikacije, verifikator, rezultat, ogranicenja)
+VALUES (5, DATE '2023-05-13', 'Operater M.M.', 'Odbijeno', 'Istekla vozačka dozvola');
+
+INSERT INTO NacinPlacanja (korisnik_id, tip_placanja, status, datum_dodavanja, ogranicenja)
+VALUES (1, 'Kreditna kartica', 'Aktivno', DATE '2023-01-15', 'Limit 1000 EUR');
+INSERT INTO NacinPlacanja (korisnik_id, tip_placanja, status, datum_dodavanja, ogranicenja)
+VALUES (2, 'Debitna kartica', 'Aktivno', DATE '2023-02-20', 'Nema');
+INSERT INTO NacinPlacanja (korisnik_id, tip_placanja, status, datum_dodavanja, ogranicenja)
+VALUES (3, 'Kreditna kartica', 'Aktivno', DATE '2023-03-10', 'Nema');
+INSERT INTO NacinPlacanja (korisnik_id, tip_placanja, status, datum_dodavanja, ogranicenja)
+VALUES (6, 'Faktura (Virman)', 'Aktivno', DATE '2022-10-01', 'Plaćanje u roku od 30 dana');
+INSERT INTO NacinPlacanja (korisnik_id, tip_placanja, status, datum_dodavanja, ogranicenja)
+VALUES (7, 'Faktura (Virman)', 'Aktivno', DATE '2022-11-15', 'Plaćanje u roku od 15 dana');
+
+
+
+INSERT INTO Rezervacija (korisnik_id, vozilo_id, vozac_id, planirano_vreme_pocetka, planirano_vreme_zavrsetka, lokacija_preuzimanja, planirana_lokacija_vracanja, tip_rezervacije, status)
+VALUES (1, 1, NULL, TO_DATE('2024-05-01 08:00', 'YYYY-MM-DD HH24:MI'), TO_DATE('2024-05-01 18:00', 'YYYY-MM-DD HH24:MI'), 'Beograd Centar', 'Beograd Centar', 'Privatna', 'Završena');
+INSERT INTO Rezervacija (korisnik_id, vozilo_id, vozac_id, planirano_vreme_pocetka, planirano_vreme_zavrsetka, lokacija_preuzimanja, planirana_lokacija_vracanja, tip_rezervacije, status)
+VALUES (2, 6, NULL, TO_DATE('2024-05-02 09:00', 'YYYY-MM-DD HH24:MI'), TO_DATE('2024-05-02 17:00', 'YYYY-MM-DD HH24:MI'), 'Novi Sad Centar', 'Novi Sad Centar', 'Privatna', 'Završena');
+INSERT INTO Rezervacija (korisnik_id, vozilo_id, vozac_id, planirano_vreme_pocetka, planirano_vreme_zavrsetka, lokacija_preuzimanja, planirana_lokacija_vracanja, tip_rezervacije, status)
+VALUES (6, 2, 1, TO_DATE('2024-05-03 10:00', 'YYYY-MM-DD HH24:MI'), TO_DATE('2024-05-03 16:00', 'YYYY-MM-DD HH24:MI'), 'Novi Beograd - TechCorp', 'Novi Beograd - TechCorp', 'Službena', 'Završena');
+INSERT INTO Rezervacija (korisnik_id, vozilo_id, vozac_id, planirano_vreme_pocetka, planirano_vreme_zavrsetka, lokacija_preuzimanja, planirana_lokacija_vracanja, tip_rezervacije, status)
+VALUES (7, 13, 4, TO_DATE('2024-05-04 07:00', 'YYYY-MM-DD HH24:MI'), TO_DATE('2024-05-04 19:00', 'YYYY-MM-DD HH24:MI'), 'Niš Centar', 'Beograd Centar', 'Službena', 'Završena');
+INSERT INTO Rezervacija (korisnik_id, vozilo_id, vozac_id, planirano_vreme_pocetka, planirano_vreme_zavrsetka, lokacija_preuzimanja, planirana_lokacija_vracanja, tip_rezervacije, status)
+VALUES (3, 11, NULL, TO_DATE('2024-05-05 12:00', 'YYYY-MM-DD HH24:MI'), TO_DATE('2024-05-05 20:00', 'YYYY-MM-DD HH24:MI'), 'Niš Centar', 'Niš Centar', 'Službena', 'Završena');
+
+INSERT INTO SluzbenaVoznjaDetalji (rezervacija_id, razlog_voznje, ovlasceno_lice)
+VALUES (1, 'Službeni put na konferenciju', 'Direktor Marko Marković');
+INSERT INTO SluzbenaVoznjaDetalji (rezervacija_id, razlog_voznje, ovlasceno_lice)
+VALUES (2, 'Poseta klijentu u Novom Sadu', 'Menadžer Ana Anić');
+INSERT INTO SluzbenaVoznjaDetalji (rezervacija_id, razlog_voznje, ovlasceno_lice)
+VALUES (3, 'Obilazak filijale na Novom Beogradu', 'Direktor Milan Milanović');
+INSERT INTO SluzbenaVoznjaDetalji (rezervacija_id, razlog_voznje, ovlasceno_lice)
+VALUES (4, 'Isporuka robe za partnera', 'Rukovodilac Slobodan Stojanović');
+INSERT INTO SluzbenaVoznjaDetalji (rezervacija_id, razlog_voznje, ovlasceno_lice)
+VALUES (5, 'Službeni sastanak u Nišu', 'Direktor Igor Ilić');
+
+INSERT INTO Voznja (rezervacija_id, stvarno_vreme_pocetka, stvarno_vreme_zavrsetka, predjena_kilometraza, trajanje_minuti, pocetni_nivo_goriva_baterije, zavrsni_nivo_goriva_baterije, pocetna_lokacija, zavrsna_lokacija, obracunata_cena, dodatne_naknade)
+VALUES (1, TO_DATE('2024-05-01 08:05', 'YYYY-MM-DD HH24:MI'), TO_DATE('2024-05-01 17:55', 'YYYY-MM-DD HH24:MI'), 150.50, 590, 95.00, 30.00, 'Beograd Centar', 'Beograd Centar', 4500.00, 0.00);
+INSERT INTO Voznja (rezervacija_id, stvarno_vreme_pocetka, stvarno_vreme_zavrsetka, predjena_kilometraza, trajanje_minuti, pocetni_nivo_goriva_baterije, zavrsni_nivo_goriva_baterije, pocetna_lokacija, zavrsna_lokacija, obracunata_cena, dodatne_naknade)
+VALUES (2, TO_DATE('2024-05-02 09:10', 'YYYY-MM-DD HH24:MI'), TO_DATE('2024-05-02 16:50', 'YYYY-MM-DD HH24:MI'), 80.00, 460, 100.00, 60.00, 'Novi Sad Centar', 'Novi Sad Centar', 3200.00, 500.00);
+INSERT INTO Voznja (rezervacija_id, stvarno_vreme_pocetka, stvarno_vreme_zavrsetka, predjena_kilometraza, trajanje_minuti, pocetni_nivo_goriva_baterije, zavrsni_nivo_goriva_baterije, pocetna_lokacija, zavrsna_lokacija, obracunata_cena, dodatne_naknade)
+VALUES (3, TO_DATE('2024-05-03 10:00', 'YYYY-MM-DD HH24:MI'), TO_DATE('2024-05-03 15:45', 'YYYY-MM-DD HH24:MI'), 45.20, 345, 90.00, 75.00, 'Novi Beograd', 'Novi Beograd', 2800.00, 0.00);
+INSERT INTO Voznja (rezervacija_id, stvarno_vreme_pocetka, stvarno_vreme_zavrsetka, predjena_kilometraza, trajanje_minuti, pocetni_nivo_goriva_baterije, zavrsni_nivo_goriva_baterije, pocetna_lokacija, zavrsna_lokacija, obracunata_cena, dodatne_naknade)
+VALUES (4, TO_DATE('2024-05-04 07:15', 'YYYY-MM-DD HH24:MI'), TO_DATE('2024-05-04 18:45', 'YYYY-MM-DD HH24:MI'), 240.00, 690, 100.00, 20.00, 'Niš Centar', 'Beograd Centar', 8500.00, 1200.00);
+INSERT INTO Voznja (rezervacija_id, stvarno_vreme_pocetka, stvarno_vreme_zavrsetka, predjena_kilometraza, trajanje_minuti, pocetni_nivo_goriva_baterije, zavrsni_nivo_goriva_baterije, pocetna_lokacija, zavrsna_lokacija, obracunata_cena, dodatne_naknade)
+VALUES (5, TO_DATE('2024-05-05 12:05', 'YYYY-MM-DD HH24:MI'), TO_DATE('2024-05-05 19:50', 'YYYY-MM-DD HH24:MI'), 110.00, 465, 85.00, 40.00, 'Niš Centar', 'Niš Centar', 3900.00, 0.00);
+
+INSERT INTO DogadjajVoznje (voznja_id, tip_dogadjaja, vreme_dogadjaja, lokacija, opis)
+VALUES (1, 'Prekoračenje brzine', TO_DATE('2024-05-01 10:30', 'YYYY-MM-DD HH24:MI'), 'Autoput A1 km 45', 'Vožnja 145 km/h na deonici gde je ograničenje 130 km/h');
+INSERT INTO DogadjajVoznje (voznja_id, tip_dogadjaja, vreme_dogadjaja, lokacija, opis)
+VALUES (1, 'Naglo kočenje', TO_DATE('2024-05-01 14:15', 'YYYY-MM-DD HH24:MI'), 'Naplatna rampa Bubanj Potok', 'Naglo usporavanje sa 80 na 0 km/h');
+INSERT INTO DogadjajVoznje (voznja_id, tip_dogadjaja, vreme_dogadjaja, lokacija, opis)
+VALUES (2, 'Duže zadržavanje', TO_DATE('2024-05-02 12:00', 'YYYY-MM-DD HH24:MI'), 'Parking Shopping Centar', 'Vozilo parkirano duže od 3 sata van planirane rute');
+INSERT INTO DogadjajVoznje (voznja_id, tip_dogadjaja, vreme_dogadjaja, lokacija, opis)
+VALUES (4, 'Neovlašćeni izlazak iz zone', TO_DATE('2024-05-04 11:20', 'YYYY-MM-DD HH24:MI'), 'Granični prelaz Batrovci', 'Pokušaj izlaska iz zemlje bez dozvole');
+INSERT INTO DogadjajVoznje (voznja_id, tip_dogadjaja, vreme_dogadjaja, lokacija, opis)
+VALUES (4, 'Sudar', TO_DATE('2024-05-04 16:40', 'YYYY-MM-DD HH24:MI'), 'Bulevar Arsenija Čarnojevića', 'Manji kontakt sa drugim vozilom na parkingu');
+
+
+
+INSERT INTO PunjenjeTocenje (vozilo_id, datum_vreme, lokacija, kolicina, cena, nacin_evidentiranja, evidentirao)
+VALUES (1, TO_DATE('2024-05-01 18:30', 'YYYY-MM-DD HH24:MI'), 'Brzi punjač EKO Pumpe, Beograd', 45.50, 1820.00, 'Automatski (Telemetrija)', 'Sistem Telemetrija');
+INSERT INTO PunjenjeTocenje (vozilo_id, datum_vreme, lokacija, kolicina, cena, nacin_evidentiranja, evidentirao)
+VALUES (3, TO_DATE('2024-05-02 14:00', 'YYYY-MM-DD HH24:MI'), 'ChargePoint Novi Sad', 38.00, 1520.00, 'Korisnik aplikacija', 'Korisnik');
+INSERT INTO PunjenjeTocenje (vozilo_id, datum_vreme, lokacija, kolicina, cena, nacin_evidentiranja, evidentirao)
+VALUES (11, TO_DATE('2024-05-03 08:30', 'YYYY-MM-DD HH24:MI'), 'NIS Petrol Beograd', 42.00, 8400.00, 'Karta za gorivo', 'Vozač Petar Petrović');
+INSERT INTO PunjenjeTocenje (vozilo_id, datum_vreme, lokacija, kolicina, cena, nacin_evidentiranja, evidentirao)
+VALUES (13, TO_DATE('2024-05-04 06:45', 'YYYY-MM-DD HH24:MI'), 'OMV Niš', 65.00, 13000.00, 'Kartica kompanije', 'Vozač Nikola Nikolić');
+INSERT INTO PunjenjeTocenje (vozilo_id, datum_vreme, lokacija, kolicina, cena, nacin_evidentiranja, evidentirao)
+VALUES (6, TO_DATE('2024-05-05 10:15', 'YYYY-MM-DD HH24:MI'), 'Gazprom Novi Sad', 35.00, 7000.00, 'Fiskalni račun', 'Operater M.M.');
+
+INSERT INTO Servis (vozilo_id, tip_servisa_id, servisni_centar, datum_prijema, datum_zavrsetka, opis_radova, zamenjeni_delovi, troskovi, status)
+VALUES (5, 1, 'Auto Centar Renault Beograd', DATE '2024-04-10', DATE '2024-04-11', 'Redovan servis na 30.000km, zamena filtera i kočionog ulja', 'Filter kabine, kočiona tečnost', 18000.00, 'Završen');
+INSERT INTO Servis (vozilo_id, tip_servisa_id, servisni_centar, datum_prijema, datum_zavrsetka, opis_radova, zamenjeni_delovi, troskovi, status)
+VALUES (11, 1, 'Porsche Sever Beograd', DATE '2024-04-15', DATE '2024-04-15', 'Zamena ulja i filtera ulja', 'Ulje 5W30, filter ulja', 15000.00, 'Završen');
+INSERT INTO Servis (vozilo_id, tip_servisa_id, servisni_centar, datum_prijema, datum_zavrsetka, opis_radova, zamenjeni_delovi, troskovi, status)
+VALUES (15, 2, 'MAN Servis Niš', DATE '2024-05-02', DATE '2024-05-05', 'Popravka hidrauličnog sistema', 'Hidraulična pumpa, creva', 65000.00, 'Završen');
+INSERT INTO Servis (vozilo_id, tip_servisa_id, servisni_centar, datum_prijema, datum_zavrsetka, opis_radova, zamenjeni_delovi, troskovi, status)
+VALUES (2, 4, 'BMW Radulović Beograd', DATE '2024-05-08', DATE '2024-05-09', 'Ažuriranje softvera i provera baterije pod garancijom', 'Nema', 0.00, 'Završen');
+INSERT INTO Servis (vozilo_id, tip_servisa_id, servisni_centar, datum_prijema, datum_zavrsetka, opis_radova, zamenjeni_delovi, troskovi, status)
+VALUES (4, 3, 'EV Servis Centar Novi Sad', DATE '2024-05-10', NULL, 'Preventivni pregled visokonaponskog sistema', NULL, 12000.00, 'U toku');
+
+INSERT INTO Kvar (vozilo_id, prijavio_id, datum_prijave, opis_problema, procena_ozbiljnosti, status, datum_otklanjanja)
+VALUES (4, 1, DATE '2024-04-01', 'Greška na displeju: Check EV System', 'Srednja', 'Otklonjen', DATE '2024-04-03');
+INSERT INTO Kvar (vozilo_id, prijavio_id, datum_prijave, opis_problema, procena_ozbiljnosti, status, datum_otklanjanja)
+VALUES (15, 2, DATE '2024-05-01', 'Curenje ulja ispod motora', 'Visoka', 'Otklonjen', DATE '2024-05-05');
+INSERT INTO Kvar (vozilo_id, prijavio_id, datum_prijave, opis_problema, procena_ozbiljnosti, status, datum_otklanjanja)
+VALUES (3, 1, DATE '2024-05-03', 'Slabije hlađenje klima uređaja', 'Niska', 'Na čekanju', NULL);
+INSERT INTO Kvar (vozilo_id, prijavio_id, datum_prijave, opis_problema, procena_ozbiljnosti, status, datum_otklanjanja)
+VALUES (13, 2, DATE '2024-05-06', 'Buka prilikom kočenja', 'Srednja', 'U obradi', NULL);
+INSERT INTO Kvar (vozilo_id, prijavio_id, datum_prijave, opis_problema, procena_ozbiljnosti, status, datum_otklanjanja)
+VALUES (8, 1, DATE '2024-05-07', 'Mala pukotina na vetrobranskom staklu', 'Niska', 'Otklonjen', DATE '2024-05-08');
+
+INSERT INTO NezgodaSteta (vozilo_id, odgovornost_id, procena_stete) VALUES (4, 2, 85000.00);
+INSERT INTO NezgodaSteta (vozilo_id, odgovornost_id, procena_stete) VALUES (11, 1, 45000.00);
+INSERT INTO NezgodaSteta (vozilo_id, odgovornost_id, procena_stete) VALUES (13, 1, 120000.00);
+INSERT INTO NezgodaSteta (vozilo_id, odgovornost_id, procena_stete) VALUES (2, 2, 35000.00);
+INSERT INTO NezgodaSteta (vozilo_id, odgovornost_id, procena_stete) VALUES (7, 1, 60000.00);
+
+INSERT INTO NezgodaOsiguravajucaKuca (nezgoda_steta_id, osiguravajuca_kuca) VALUES (1, 'Dunav Osiguranje a.d.o.');
+INSERT INTO NezgodaOsiguravajucaKuca (nezgoda_steta_id, osiguravajuca_kuca) VALUES (2, 'Generali Osiguranje Srbija');
+INSERT INTO NezgodaOsiguravajucaKuca (nezgoda_steta_id, osiguravajuca_kuca) VALUES (3, 'Wiener Städtische Osiguranje');
+INSERT INTO NezgodaOsiguravajucaKuca (nezgoda_steta_id, osiguravajuca_kuca) VALUES (4, 'Triglav Osiguranje');
+INSERT INTO NezgodaOsiguravajucaKuca (nezgoda_steta_id, osiguravajuca_kuca) VALUES (5, 'DDOR Novi Sad');
+
+INSERT INTO NezgodaZapisnik (nezgoda_steta_id, zapisnik_url) VALUES (1, 'https://storage.rental.rs/zapisnici/zapisnik_2024_001.pdf');
+INSERT INTO NezgodaZapisnik (nezgoda_steta_id, zapisnik_url) VALUES (2, 'https://storage.rental.rs/zapisnici/zapisnik_2024_002.pdf');
+INSERT INTO NezgodaZapisnik (nezgoda_steta_id, zapisnik_url) VALUES (3, 'https://storage.rental.rs/zapisnici/zapisnik_2024_003.pdf');
+INSERT INTO NezgodaZapisnik (nezgoda_steta_id, zapisnik_url) VALUES (4, 'https://storage.rental.rs/zapisnici/zapisnik_2024_004.pdf');
+INSERT INTO NezgodaZapisnik (nezgoda_steta_id, zapisnik_url) VALUES (5, 'https://storage.rental.rs/zapisnici/zapisnik_2024_005.pdf');
+
+INSERT INTO NezgodaFotografija (nezgoda_steta_id, fotografija_url) VALUES (1, 'https://storage.rental.rs/foto/steta_001_prednja_strana.jpg');
+INSERT INTO NezgodaFotografija (nezgoda_steta_id, fotografija_url) VALUES (2, 'https://storage.rental.rs/foto/steta_002_zadnji_branik.jpg');
+INSERT INTO NezgodaFotografija (nezgoda_steta_id, fotografija_url) VALUES (3, 'https://storage.rental.rs/foto/steta_003_bocna_vrata.jpg');
+INSERT INTO NezgodaFotografija (nezgoda_steta_id, fotografija_url) VALUES (4, 'https://storage.rental.rs/foto/steta_004_retrovizor.jpg');
+INSERT INTO NezgodaFotografija (nezgoda_steta_id, fotografija_url) VALUES (5, 'https://storage.rental.rs/foto/steta_005_hauba.jpg');
