@@ -30,10 +30,10 @@ public static class DataLayer
             string? connectionString =
                 Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
 
-            MessageBox.Show(
+            /*MessageBox.Show(
                 connectionString ?? "CONNECTION STRING JE NULL",
                 "Connection string"
-            );
+            );*/
 
             var cfg = OracleManagedDataClientConfiguration.Oracle10
                 .ShowSql()

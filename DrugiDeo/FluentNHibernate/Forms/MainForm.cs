@@ -1,5 +1,6 @@
 using FluentNHibernate.Utils;
 using FluentNHibernateTemplate.Entiteti;
+using FluentNHibernateTemplate.Forms;
 
 namespace FluentNHibernateTemplate;
 
@@ -80,5 +81,14 @@ public partial class MainForm : Form
         {
             session?.Close();
         }
+    }
+
+    private void button1_Click(object sender, EventArgs e)
+    {
+        VoznjeForm f = new VoznjeForm();
+        this.Hide();
+        f.ShowDialog();
+        this.Show();
+        
     }
 }

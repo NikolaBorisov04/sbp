@@ -53,11 +53,10 @@ namespace FluentNHibernateTemplate
         public string KrajnjaLokacija;
         public decimal Cena;
         public decimal Naknade;
-        public RezervacijaPregled Rezervacija;
 
         public VoznjaPregled() { }
 
-        public VoznjaPregled(int id, DateTime vremePocetka, DateTime vremeZavrsetka, decimal predjenaKilometraza, int trajanjeMinuti, decimal pocetniNivo, decimal krajnjiNivo, string pocetnaLokacija, string krajnjaLokacija, decimal cena, decimal naknade, RezervacijaPregled rezervacija)
+        public VoznjaPregled(int id, DateTime vremePocetka, DateTime vremeZavrsetka, decimal predjenaKilometraza, int trajanjeMinuti, decimal pocetniNivo, decimal krajnjiNivo, string pocetnaLokacija, string krajnjaLokacija, decimal cena, decimal naknade)
         {
             Id = id;
             VremePocetka = vremePocetka;
@@ -70,7 +69,6 @@ namespace FluentNHibernateTemplate
             KrajnjaLokacija = krajnjaLokacija;
             Cena = cena;
             Naknade = naknade;
-            Rezervacija = rezervacija;
         }
     }
 

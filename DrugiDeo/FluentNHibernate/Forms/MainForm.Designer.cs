@@ -17,11 +17,12 @@ partial class MainForm
     {
         testConnectionButton = new Button();
         UcitajVozilo = new Button();
+        button1 = new Button();
         SuspendLayout();
         // 
         // testConnectionButton
         // 
-        testConnectionButton.Location = new Point(184, 63);
+        testConnectionButton.Location = new Point(12, 13);
         testConnectionButton.Margin = new Padding(3, 4, 3, 4);
         testConnectionButton.Name = "testConnectionButton";
         testConnectionButton.Size = new Size(217, 47);
@@ -32,7 +33,7 @@ partial class MainForm
         // 
         // UcitajVozilo
         // 
-        UcitajVozilo.Location = new Point(184, 136);
+        UcitajVozilo.Location = new Point(12, 90);
         UcitajVozilo.Name = "UcitajVozilo";
         UcitajVozilo.Size = new Size(217, 46);
         UcitajVozilo.TabIndex = 2;
@@ -40,11 +41,22 @@ partial class MainForm
         UcitajVozilo.UseVisualStyleBackColor = true;
         UcitajVozilo.Click += UcitajVozilo_Click;
         // 
+        // button1
+        // 
+        button1.Location = new Point(260, 90);
+        button1.Name = "button1";
+        button1.Size = new Size(217, 46);
+        button1.TabIndex = 3;
+        button1.Text = "Prikazi voznje";
+        button1.UseVisualStyleBackColor = true;
+        button1.Click += button1_Click;
+        // 
         // MainForm
         // 
         AutoScaleDimensions = new SizeF(8F, 20F);
         AutoScaleMode = AutoScaleMode.Font;
         ClientSize = new Size(640, 449);
+        Controls.Add(button1);
         Controls.Add(UcitajVozilo);
         Controls.Add(testConnectionButton);
         Margin = new Padding(3, 4, 3, 4);
@@ -54,4 +66,5 @@ partial class MainForm
         ResumeLayout(false);
     }
     private Button UcitajVozilo;
+    private Button button1;
 }
