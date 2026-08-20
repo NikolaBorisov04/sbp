@@ -2,7 +2,7 @@
 
 public class TipOdgovornosti
 {
-    public virtual int Id { get; protected set; }
+    public virtual int Id { get; set; }
 
-    public virtual required string Naziv { get; set; }
+    public virtual string Naziv { get; set; } = null!;
 }

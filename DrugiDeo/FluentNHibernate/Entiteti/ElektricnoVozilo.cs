@@ -8,7 +8,7 @@ public class ElektricnoVozilo : Vozilo
 
     public virtual int Autonomija { get; set; }
 
-    public virtual required string TipPunjenja { get; set; }
+    public virtual string TipPunjenja { get; set; } = null!;
 
     public virtual int BrojCiklusaPunjenja { get; set; }
 }

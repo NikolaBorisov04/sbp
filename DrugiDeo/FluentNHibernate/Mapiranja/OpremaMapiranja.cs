@@ -17,5 +17,7 @@ public class OpremaMapiranja : ClassMap<Oprema>
 
         Map(x => x.Opis, "OPIS")
             .Length(1000);
+
+        HasMany(x => x.Vozila).KeyColumn("OPREMA_ID").LazyLoad().Cascade.All().Inverse();
     }
 }

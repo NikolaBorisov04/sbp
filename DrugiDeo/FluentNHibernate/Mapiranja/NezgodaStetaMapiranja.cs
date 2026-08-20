@@ -21,5 +21,9 @@ public class NezgodaStetaMapiranja : ClassMap<NezgodaSteta>
 
         Map(x => x.ProcenaStete, "PROCENA_STETE")
             .Not.Nullable();
+
+        HasMany(x => x.OsiguravajuceKuce).KeyColumn("NEZGODA_STETA_ID").LazyLoad().Cascade.All().Inverse();
+        HasMany(x => x.Zapisnici).KeyColumn("NEZGODA_STETA_ID").LazyLoad().Cascade.All().Inverse();
+        HasMany(x => x.Fotografije).KeyColumn("NEZGODA_STETA_ID").LazyLoad().Cascade.All().Inverse();
     }
 }

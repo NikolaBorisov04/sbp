@@ -56,5 +56,11 @@ public class VoziloMapiranja : ClassMap<Vozilo>
         References(x => x.TipPogona)
             .Column("TIP_POGONA_ID")
             .Not.Nullable();
+
+        HasMany(x => x.Servisi).KeyColumn("VOZILO_ID").LazyLoad().Cascade.All().Inverse();
+        HasMany(x => x.Kvarovi).KeyColumn("VOZILO_ID").LazyLoad().Cascade.All().Inverse();
+        HasMany(x => x.PunjenjaTocenja).KeyColumn("VOZILO_ID").LazyLoad().Cascade.All().Inverse();
+        HasMany(x => x.NezgodeStete).KeyColumn("VOZILO_ID").LazyLoad().Cascade.All().Inverse();
+        HasMany(x => x.DodeljenaOprema).KeyColumn("VOZILO_ID").LazyLoad().Cascade.All().Inverse();
     }
 }

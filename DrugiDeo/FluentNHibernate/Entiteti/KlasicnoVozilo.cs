@@ -2,7 +2,7 @@
 
 public class KlasicnoVozilo : Vozilo
 {
-    public virtual required string TipGoriva { get; set; }
+    public virtual string TipGoriva { get; set; } = null!;
 
     public virtual decimal ZapreminaRezervoara { get; set; }
 

@@ -4,5 +4,5 @@ public class HibridnoVozilo : Vozilo
 {
     public virtual decimal KapacitetBaterije { get; set; }
 
-    public virtual required string TipHibridnogPogona { get; set; }
+    public virtual string TipHibridnogPogona { get; set; } = null!;
 }

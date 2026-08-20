@@ -2,13 +2,13 @@
 
 public class Servis
 {
-    public virtual int Id { get; protected set; }
+    public virtual int Id { get; set; }
 
     public virtual Vozilo Vozilo { get; set; } = null!;
 
     public virtual TipServisa TipServisa { get; set; } = null!;
 
-    public virtual required string ServisniCentar { get; set; }
+    public virtual string ServisniCentar { get; set; } = null!;
 
     public virtual DateTime DatumPrijema { get; set; }
 
@@ -20,5 +20,5 @@ public class Servis
 
     public virtual decimal Troskovi { get; set; }
 
-    public virtual required string Status { get; set; }
+    public virtual string Status { get; set; } = null!;
 }

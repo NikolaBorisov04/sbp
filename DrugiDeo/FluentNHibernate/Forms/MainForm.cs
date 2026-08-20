@@ -89,6 +89,53 @@ public partial class MainForm : Form
         this.Hide();
         f.ShowDialog();
         this.Show();
-        
+    }
+
+    private void btnVozila_Click(object sender, EventArgs e)
+    {
+        VozilaForm f = new();
+        this.Hide();
+        f.ShowDialog();
+        this.Show();
+    }
+
+    private void btnServisi_Click(object sender, EventArgs e)
+    {
+        ServisiForm f = new();
+        this.Hide();
+        f.ShowDialog();
+        this.Show();
+    }
+
+    private void btnKvarovi_Click(object sender, EventArgs e)
+    {
+        KvaroviForm f = new();
+        this.Hide();
+        f.ShowDialog();
+        this.Show();
+    }
+
+    private void btnPunjenja_Click(object sender, EventArgs e)
+    {
+        PunjenjaTocenjaForm f = new();
+        this.Hide();
+        f.ShowDialog();
+        this.Show();
+    }
+
+    private void btnNezgode_Click(object sender, EventArgs e)
+    {
+        NezgodeSteteForm f = new();
+        this.Hide();
+        f.ShowDialog();
+        this.Show();
+    }
+
+    private void btnOprema_Click(object sender, EventArgs e)
+    {
+        OpremaForm f = new();
+        this.Hide();
+        f.ShowDialog();
+        this.Show();
     }
 }

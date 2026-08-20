@@ -2,9 +2,9 @@
 
 public class NezgodaOsiguravajucaKuca
 {
-    public virtual int Id { get; protected set; }
+    public virtual int Id { get; set; }
 
     public virtual NezgodaSteta NezgodaSteta { get; set; } = null!;
 
-    public virtual required string OsiguravajucaKuca { get; set; }
+    public virtual string OsiguravajucaKuca { get; set; } = null!;
 }
