@@ -59,6 +59,7 @@ namespace FluentNHibernateTemplate.Forms
                     cmbKoriscenje.SelectedValue = vozilo.TipKoriscenjaId;
 
                     numKapacitetBaterije.Value = vozilo.KapacitetBaterije;
+                    numKapacitetBaterijeHib.Value = vozilo.KapacitetBaterije;
                     numNivoNapunjenosti.Value = vozilo.TrenutniNivoNapunjenosti;
                     numAutonomija.Value = vozilo.Autonomija;
                     txtTipPunjenja.Text = vozilo.TipPunjenja;
@@ -134,7 +135,7 @@ namespace FluentNHibernateTemplate.Forms
             }
             else if (nazivPogona.Contains("hibrid") || nazivPogona.Contains("hib"))
             {
-                vozilo.KapacitetBaterije = numKapacitetBaterije.Value;
+                vozilo.KapacitetBaterije = numKapacitetBaterijeHib.Value;
                 vozilo.TipHibridnogPogona = txtTipHibridnogPogona.Text.Trim();
             }
             else if (nazivPogona.Contains("klasi") || nazivPogona.Contains("klas"))

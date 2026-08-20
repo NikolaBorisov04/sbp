@@ -3,19 +3,19 @@ namespace FluentNHibernateTemplate.Forms
     partial class KvaroviForm
     {
         private System.ComponentModel.IContainer components = null;
-        private ListView listViewKvarovi;
-        private ColumnHeader colId;
-        private ColumnHeader colVozilo;
-        private ColumnHeader colPrijavio;
-        private ColumnHeader colDatumPrijave;
-        private ColumnHeader colOzbiljnost;
-        private ColumnHeader colStatus;
-        private ColumnHeader colOtklonjeno;
-        private ColumnHeader colOpis;
-        private Button btnDodaj;
-        private Button btnIzmeni;
-        private Button btnObrisi;
-        private GroupBox grpAkcije;
+        private System.Windows.Forms.ListView listViewKvarovi;
+        private System.Windows.Forms.ColumnHeader colId;
+        private System.Windows.Forms.ColumnHeader colVozilo;
+        private System.Windows.Forms.ColumnHeader colPrijavio;
+        private System.Windows.Forms.ColumnHeader colDatumPrijave;
+        private System.Windows.Forms.ColumnHeader colOzbiljnost;
+        private System.Windows.Forms.ColumnHeader colStatus;
+        private System.Windows.Forms.ColumnHeader colOtklonjeno;
+        private System.Windows.Forms.ColumnHeader colOpis;
+        private System.Windows.Forms.GroupBox grpAkcije;
+        private System.Windows.Forms.Button btnDodaj;
+        private System.Windows.Forms.Button btnIzmeni;
+        private System.Windows.Forms.Button btnObrisi;
 
         protected override void Dispose(bool disposing)
         {
@@ -28,132 +28,138 @@ namespace FluentNHibernateTemplate.Forms
 
         private void InitializeComponent()
         {
-            listViewKvarovi = new ListView();
-            colId = new ColumnHeader();
-            colVozilo = new ColumnHeader();
-            colPrijavio = new ColumnHeader();
-            colDatumPrijave = new ColumnHeader();
-            colOzbiljnost = new ColumnHeader();
-            colStatus = new ColumnHeader();
-            colOtklonjeno = new ColumnHeader();
-            colOpis = new ColumnHeader();
-            btnDodaj = new Button();
-            btnIzmeni = new Button();
-            btnObrisi = new Button();
-            grpAkcije = new GroupBox();
-            grpAkcije.SuspendLayout();
-            SuspendLayout();
+            this.listViewKvarovi = new System.Windows.Forms.ListView();
+            this.colId = new System.Windows.Forms.ColumnHeader();
+            this.colVozilo = new System.Windows.Forms.ColumnHeader();
+            this.colPrijavio = new System.Windows.Forms.ColumnHeader();
+            this.colDatumPrijave = new System.Windows.Forms.ColumnHeader();
+            this.colOzbiljnost = new System.Windows.Forms.ColumnHeader();
+            this.colStatus = new System.Windows.Forms.ColumnHeader();
+            this.colOtklonjeno = new System.Windows.Forms.ColumnHeader();
+            this.colOpis = new System.Windows.Forms.ColumnHeader();
+            this.grpAkcije = new System.Windows.Forms.GroupBox();
+            this.btnObrisi = new System.Windows.Forms.Button();
+            this.btnIzmeni = new System.Windows.Forms.Button();
+            this.btnDodaj = new System.Windows.Forms.Button();
+            this.grpAkcije.SuspendLayout();
+            this.SuspendLayout();
             // 
             // listViewKvarovi
             // 
-            listViewKvarovi.Columns.AddRange(new ColumnHeader[] {
-                colId, colVozilo, colPrijavio, colDatumPrijave, colOzbiljnost, colStatus, colOtklonjeno, colOpis
-            });
-            listViewKvarovi.FullRowSelect = true;
-            listViewKvarovi.GridLines = true;
-            listViewKvarovi.Location = new Point(12, 12);
-            listViewKvarovi.MultiSelect = false;
-            listViewKvarovi.Name = "listViewKvarovi";
-            listViewKvarovi.Size = new Size(820, 420);
-            listViewKvarovi.TabIndex = 0;
-            listViewKvarovi.UseCompatibleStateImageBehavior = false;
-            listViewKvarovi.View = View.Details;
+            this.listViewKvarovi.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.colId,
+            this.colVozilo,
+            this.colPrijavio,
+            this.colDatumPrijave,
+            this.colOzbiljnost,
+            this.colStatus,
+            this.colOtklonjeno,
+            this.colOpis});
+            this.listViewKvarovi.FullRowSelect = true;
+            this.listViewKvarovi.GridLines = true;
+            this.listViewKvarovi.Location = new System.Drawing.Point(12, 12);
+            this.listViewKvarovi.MultiSelect = false;
+            this.listViewKvarovi.Name = "listViewKvarovi";
+            this.listViewKvarovi.Size = new System.Drawing.Size(820, 420);
+            this.listViewKvarovi.TabIndex = 0;
+            this.listViewKvarovi.UseCompatibleStateImageBehavior = false;
+            this.listViewKvarovi.View = System.Windows.Forms.View.Details;
             // 
             // colId
             // 
-            colId.Text = "ID";
-            colId.Width = 40;
+            this.colId.Text = "ID";
+            this.colId.Width = 40;
             // 
             // colVozilo
             // 
-            colVozilo.Text = "Vozilo";
-            colVozilo.Width = 140;
+            this.colVozilo.Text = "Vozilo";
+            this.colVozilo.Width = 140;
             // 
             // colPrijavio
             // 
-            colPrijavio.Text = "Prijavio";
-            colPrijavio.Width = 90;
+            this.colPrijavio.Text = "Prijavio";
+            this.colPrijavio.Width = 90;
             // 
             // colDatumPrijave
             // 
-            colDatumPrijave.Text = "Prijava";
-            colDatumPrijave.Width = 90;
+            this.colDatumPrijave.Text = "Prijava";
+            this.colDatumPrijave.Width = 90;
             // 
             // colOzbiljnost
             // 
-            colOzbiljnost.Text = "Ozbiljnost";
-            colOzbiljnost.Width = 90;
+            this.colOzbiljnost.Text = "Ozbiljnost";
+            this.colOzbiljnost.Width = 90;
             // 
             // colStatus
             // 
-            colStatus.Text = "Status";
-            colStatus.Width = 80;
+            this.colStatus.Text = "Status";
+            this.colStatus.Width = 80;
             // 
             // colOtklonjeno
             // 
-            colOtklonjeno.Text = "Otklonjeno";
-            colOtklonjeno.Width = 90;
+            this.colOtklonjeno.Text = "Otklonjeno";
+            this.colOtklonjeno.Width = 90;
             // 
             // colOpis
             // 
-            colOpis.Text = "Opis problema";
-            colOpis.Width = 190;
-            // 
-            // btnDodaj
-            // 
-            btnDodaj.Location = new Point(15, 25);
-            btnDodaj.Name = "btnDodaj";
-            btnDodaj.Size = new Size(130, 30);
-            btnDodaj.TabIndex = 0;
-            btnDodaj.Text = "Prijavi kvar";
-            btnDodaj.UseVisualStyleBackColor = true;
-            btnDodaj.Click += btnDodaj_Click;
-            // 
-            // btnIzmeni
-            // 
-            btnIzmeni.Location = new Point(15, 65);
-            btnIzmeni.Name = "btnIzmeni";
-            btnIzmeni.Size = new Size(130, 30);
-            btnIzmeni.TabIndex = 1;
-            btnIzmeni.Text = "Izmeni kvar";
-            btnIzmeni.UseVisualStyleBackColor = true;
-            btnIzmeni.Click += btnIzmeni_Click;
-            // 
-            // btnObrisi
-            // 
-            btnObrisi.Location = new Point(15, 105);
-            btnObrisi.Name = "btnObrisi";
-            btnObrisi.Size = new Size(130, 30);
-            btnObrisi.TabIndex = 2;
-            btnObrisi.Text = "Obriši kvar";
-            btnObrisi.UseVisualStyleBackColor = true;
-            btnObrisi.Click += btnObrisi_Click;
+            this.colOpis.Text = "Opis problema";
+            this.colOpis.Width = 190;
             // 
             // grpAkcije
             // 
-            grpAkcije.Controls.Add(btnDodaj);
-            grpAkcije.Controls.Add(btnIzmeni);
-            grpAkcije.Controls.Add(btnObrisi);
-            grpAkcije.Location = new Point(845, 12);
-            grpAkcije.Name = "grpAkcije";
-            grpAkcije.Size = new Size(160, 150);
-            grpAkcije.TabIndex = 1;
-            grpAkcije.TabStop = false;
-            grpAkcije.Text = "Akcije";
+            this.grpAkcije.Controls.Add(this.btnObrisi);
+            this.grpAkcije.Controls.Add(this.btnIzmeni);
+            this.grpAkcije.Controls.Add(this.btnDodaj);
+            this.grpAkcije.Location = new System.Drawing.Point(845, 12);
+            this.grpAkcije.Name = "grpAkcije";
+            this.grpAkcije.Size = new System.Drawing.Size(160, 150);
+            this.grpAkcije.TabIndex = 1;
+            this.grpAkcije.TabStop = false;
+            this.grpAkcije.Text = "Akcije";
+            // 
+            // btnObrisi
+            // 
+            this.btnObrisi.Location = new System.Drawing.Point(15, 105);
+            this.btnObrisi.Name = "btnObrisi";
+            this.btnObrisi.Size = new System.Drawing.Size(130, 30);
+            this.btnObrisi.TabIndex = 2;
+            this.btnObrisi.Text = "Obriši kvar";
+            this.btnObrisi.UseVisualStyleBackColor = true;
+            this.btnObrisi.Click += new System.EventHandler(this.btnObrisi_Click);
+            // 
+            // btnIzmeni
+            // 
+            this.btnIzmeni.Location = new System.Drawing.Point(15, 65);
+            this.btnIzmeni.Name = "btnIzmeni";
+            this.btnIzmeni.Size = new System.Drawing.Size(130, 30);
+            this.btnIzmeni.TabIndex = 1;
+            this.btnIzmeni.Text = "Izmeni kvar";
+            this.btnIzmeni.UseVisualStyleBackColor = true;
+            this.btnIzmeni.Click += new System.EventHandler(this.btnIzmeni_Click);
+            // 
+            // btnDodaj
+            // 
+            this.btnDodaj.Location = new System.Drawing.Point(15, 25);
+            this.btnDodaj.Name = "btnDodaj";
+            this.btnDodaj.Size = new System.Drawing.Size(130, 30);
+            this.btnDodaj.TabIndex = 0;
+            this.btnDodaj.Text = "Prijavi kvar";
+            this.btnDodaj.UseVisualStyleBackColor = true;
+            this.btnDodaj.Click += new System.EventHandler(this.btnDodaj_Click);
             // 
             // KvaroviForm
             // 
-            AutoScaleDimensions = new SizeF(8F, 20F);
-            AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1020, 445);
-            Controls.Add(grpAkcije);
-            Controls.Add(listViewKvarovi);
-            Name = "KvaroviForm";
-            StartPosition = FormStartPosition.CenterParent;
-            Text = "Evidencija Kvarova";
-            Load += KvaroviForm_Load;
-            grpAkcije.ResumeLayout(false);
-            ResumeLayout(false);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.ClientSize = new System.Drawing.Size(1020, 445);
+            this.Controls.Add(this.grpAkcije);
+            this.Controls.Add(this.listViewKvarovi);
+            this.Name = "KvaroviForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+            this.Text = "Evidencija Kvarova";
+            this.Load += new System.EventHandler(this.KvaroviForm_Load);
+            this.grpAkcije.ResumeLayout(false);
+            this.ResumeLayout(false);
         }
     }
 }

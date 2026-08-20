@@ -3,18 +3,18 @@ namespace FluentNHibernateTemplate.Forms
     partial class NezgodeSteteForm
     {
         private System.ComponentModel.IContainer components = null;
-        private ListView listViewNezgode;
-        private ColumnHeader colId;
-        private ColumnHeader colVozilo;
-        private ColumnHeader colOdgovornost;
-        private ColumnHeader colProcena;
-        private ColumnHeader colSlike;
-        private ColumnHeader colKuce;
-        private ColumnHeader colZapisnici;
-        private Button btnDodaj;
-        private Button btnIzmeni;
-        private Button btnObrisi;
-        private GroupBox grpAkcije;
+        private System.Windows.Forms.ListView listViewNezgode;
+        private System.Windows.Forms.ColumnHeader colId;
+        private System.Windows.Forms.ColumnHeader colVozilo;
+        private System.Windows.Forms.ColumnHeader colOdgovornost;
+        private System.Windows.Forms.ColumnHeader colProcena;
+        private System.Windows.Forms.ColumnHeader colSlike;
+        private System.Windows.Forms.ColumnHeader colKuce;
+        private System.Windows.Forms.ColumnHeader colZapisnici;
+        private System.Windows.Forms.GroupBox grpAkcije;
+        private System.Windows.Forms.Button btnDodaj;
+        private System.Windows.Forms.Button btnIzmeni;
+        private System.Windows.Forms.Button btnObrisi;
 
         protected override void Dispose(bool disposing)
         {
@@ -27,126 +27,131 @@ namespace FluentNHibernateTemplate.Forms
 
         private void InitializeComponent()
         {
-            listViewNezgode = new ListView();
-            colId = new ColumnHeader();
-            colVozilo = new ColumnHeader();
-            colOdgovornost = new ColumnHeader();
-            colProcena = new ColumnHeader();
-            colSlike = new ColumnHeader();
-            colKuce = new ColumnHeader();
-            colZapisnici = new ColumnHeader();
-            btnDodaj = new Button();
-            btnIzmeni = new Button();
-            btnObrisi = new Button();
-            grpAkcije = new GroupBox();
-            grpAkcije.SuspendLayout();
-            SuspendLayout();
+            this.listViewNezgode = new System.Windows.Forms.ListView();
+            this.colId = new System.Windows.Forms.ColumnHeader();
+            this.colVozilo = new System.Windows.Forms.ColumnHeader();
+            this.colOdgovornost = new System.Windows.Forms.ColumnHeader();
+            this.colProcena = new System.Windows.Forms.ColumnHeader();
+            this.colSlike = new System.Windows.Forms.ColumnHeader();
+            this.colKuce = new System.Windows.Forms.ColumnHeader();
+            this.colZapisnici = new System.Windows.Forms.ColumnHeader();
+            this.grpAkcije = new System.Windows.Forms.GroupBox();
+            this.btnObrisi = new System.Windows.Forms.Button();
+            this.btnIzmeni = new System.Windows.Forms.Button();
+            this.btnDodaj = new System.Windows.Forms.Button();
+            this.grpAkcije.SuspendLayout();
+            this.SuspendLayout();
             // 
             // listViewNezgode
             // 
-            listViewNezgode.Columns.AddRange(new ColumnHeader[] {
-                colId, colVozilo, colOdgovornost, colProcena, colSlike, colKuce, colZapisnici
-            });
-            listViewNezgode.FullRowSelect = true;
-            listViewNezgode.GridLines = true;
-            listViewNezgode.Location = new Point(12, 12);
-            listViewNezgode.MultiSelect = false;
-            listViewNezgode.Name = "listViewNezgode";
-            listViewNezgode.Size = new Size(820, 420);
-            listViewNezgode.TabIndex = 0;
-            listViewNezgode.UseCompatibleStateImageBehavior = false;
-            listViewNezgode.View = View.Details;
+            this.listViewNezgode.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.colId,
+            this.colVozilo,
+            this.colOdgovornost,
+            this.colProcena,
+            this.colSlike,
+            this.colKuce,
+            this.colZapisnici});
+            this.listViewNezgode.FullRowSelect = true;
+            this.listViewNezgode.GridLines = true;
+            this.listViewNezgode.Location = new System.Drawing.Point(12, 12);
+            this.listViewNezgode.MultiSelect = false;
+            this.listViewNezgode.Name = "listViewNezgode";
+            this.listViewNezgode.Size = new System.Drawing.Size(820, 420);
+            this.listViewNezgode.TabIndex = 0;
+            this.listViewNezgode.UseCompatibleStateImageBehavior = false;
+            this.listViewNezgode.View = System.Windows.Forms.View.Details;
             // 
             // colId
             // 
-            colId.Text = "ID";
-            colId.Width = 40;
+            this.colId.Text = "ID";
+            this.colId.Width = 40;
             // 
             // colVozilo
             // 
-            colVozilo.Text = "Vozilo";
-            colVozilo.Width = 160;
+            this.colVozilo.Text = "Vozilo";
+            this.colVozilo.Width = 160;
             // 
             // colOdgovornost
             // 
-            colOdgovornost.Text = "Odgovornost";
-            colOdgovornost.Width = 110;
+            this.colOdgovornost.Text = "Odgovornost";
+            this.colOdgovornost.Width = 110;
             // 
             // colProcena
             // 
-            colProcena.Text = "Procena štete (RSD)";
-            colProcena.Width = 140;
+            this.colProcena.Text = "Procena štete (RSD)";
+            this.colProcena.Width = 140;
             // 
             // colSlike
             // 
-            colSlike.Text = "Fotografije";
-            colSlike.Width = 90;
+            this.colSlike.Text = "Fotografije";
+            this.colSlike.Width = 90;
             // 
             // colKuce
             // 
-            colKuce.Text = "Osiguranja";
-            colKuce.Width = 90;
+            this.colKuce.Text = "Osiguranja";
+            this.colKuce.Width = 90;
             // 
             // colZapisnici
             // 
-            colZapisnici.Text = "Zapisnici";
-            colZapisnici.Width = 90;
-            // 
-            // btnDodaj
-            // 
-            btnDodaj.Location = new Point(15, 25);
-            btnDodaj.Name = "btnDodaj";
-            btnDodaj.Size = new Size(130, 30);
-            btnDodaj.TabIndex = 0;
-            btnDodaj.Text = "Nova šteta";
-            btnDodaj.UseVisualStyleBackColor = true;
-            btnDodaj.Click += btnDodaj_Click;
-            // 
-            // btnIzmeni
-            // 
-            btnIzmeni.Location = new Point(15, 65);
-            btnIzmeni.Name = "btnIzmeni";
-            btnIzmeni.Size = new Size(130, 30);
-            btnIzmeni.TabIndex = 1;
-            btnIzmeni.Text = "Izmeni / Detalji";
-            btnIzmeni.UseVisualStyleBackColor = true;
-            btnIzmeni.Click += btnIzmeni_Click;
-            // 
-            // btnObrisi
-            // 
-            btnObrisi.Location = new Point(15, 105);
-            btnObrisi.Name = "btnObrisi";
-            btnObrisi.Size = new Size(130, 30);
-            btnObrisi.TabIndex = 2;
-            btnObrisi.Text = "Obriši štetu";
-            btnObrisi.UseVisualStyleBackColor = true;
-            btnObrisi.Click += btnObrisi_Click;
+            this.colZapisnici.Text = "Zapisnici";
+            this.colZapisnici.Width = 90;
             // 
             // grpAkcije
             // 
-            grpAkcije.Controls.Add(btnDodaj);
-            grpAkcije.Controls.Add(btnIzmeni);
-            grpAkcije.Controls.Add(btnObrisi);
-            grpAkcije.Location = new Point(845, 12);
-            grpAkcije.Name = "grpAkcije";
-            grpAkcije.Size = new Size(160, 150);
-            grpAkcije.TabIndex = 1;
-            grpAkcije.TabStop = false;
-            grpAkcije.Text = "Akcije";
+            this.grpAkcije.Controls.Add(this.btnObrisi);
+            this.grpAkcije.Controls.Add(this.btnIzmeni);
+            this.grpAkcije.Controls.Add(this.btnDodaj);
+            this.grpAkcije.Location = new System.Drawing.Point(845, 12);
+            this.grpAkcije.Name = "grpAkcije";
+            this.grpAkcije.Size = new System.Drawing.Size(160, 150);
+            this.grpAkcije.TabIndex = 1;
+            this.grpAkcije.TabStop = false;
+            this.grpAkcije.Text = "Akcije";
+            // 
+            // btnObrisi
+            // 
+            this.btnObrisi.Location = new System.Drawing.Point(15, 105);
+            this.btnObrisi.Name = "btnObrisi";
+            this.btnObrisi.Size = new System.Drawing.Size(130, 30);
+            this.btnObrisi.TabIndex = 2;
+            this.btnObrisi.Text = "Obriši štetu";
+            this.btnObrisi.UseVisualStyleBackColor = true;
+            this.btnObrisi.Click += new System.EventHandler(this.btnObrisi_Click);
+            // 
+            // btnIzmeni
+            // 
+            this.btnIzmeni.Location = new System.Drawing.Point(15, 65);
+            this.btnIzmeni.Name = "btnIzmeni";
+            this.btnIzmeni.Size = new System.Drawing.Size(130, 30);
+            this.btnIzmeni.TabIndex = 1;
+            this.btnIzmeni.Text = "Izmeni / Detalji";
+            this.btnIzmeni.UseVisualStyleBackColor = true;
+            this.btnIzmeni.Click += new System.EventHandler(this.btnIzmeni_Click);
+            // 
+            // btnDodaj
+            // 
+            this.btnDodaj.Location = new System.Drawing.Point(15, 25);
+            this.btnDodaj.Name = "btnDodaj";
+            this.btnDodaj.Size = new System.Drawing.Size(130, 30);
+            this.btnDodaj.TabIndex = 0;
+            this.btnDodaj.Text = "Nova šteta";
+            this.btnDodaj.UseVisualStyleBackColor = true;
+            this.btnDodaj.Click += new System.EventHandler(this.btnDodaj_Click);
             // 
             // NezgodeSteteForm
             // 
-            AutoScaleDimensions = new SizeF(8F, 20F);
-            AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1020, 445);
-            Controls.Add(grpAkcije);
-            Controls.Add(listViewNezgode);
-            Name = "NezgodeSteteForm";
-            StartPosition = FormStartPosition.CenterParent;
-            Text = "Evidencija Nezgoda i Šteta";
-            Load += NezgodeSteteForm_Load;
-            grpAkcije.ResumeLayout(false);
-            ResumeLayout(false);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.ClientSize = new System.Drawing.Size(1020, 445);
+            this.Controls.Add(this.grpAkcije);
+            this.Controls.Add(this.listViewNezgode);
+            this.Name = "NezgodeSteteForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+            this.Text = "Evidencija Nezgoda i Šteta";
+            this.Load += new System.EventHandler(this.NezgodeSteteForm_Load);
+            this.grpAkcije.ResumeLayout(false);
+            this.ResumeLayout(false);
         }
     }
 }
