@@ -9,7 +9,7 @@ public class KvarMapiranja : ClassMap<Kvar>
         Table("KVAR");
 
         Id(x => x.Id, "ID")
-            .GeneratedBy.Identity();
+            .GeneratedBy.TriggerIdentity();
 
         References(x => x.Vozilo)
             .Column("VOZILO_ID")

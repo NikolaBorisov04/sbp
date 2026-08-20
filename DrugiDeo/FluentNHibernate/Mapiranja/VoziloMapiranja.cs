@@ -9,7 +9,7 @@ public class VoziloMapiranja : ClassMap<Vozilo>
         Table("VOZILO");
 
         Id(x => x.Id, "ID")
-            .GeneratedBy.Identity();
+            .GeneratedBy.TriggerIdentity();
 
         Map(x => x.RegistarskaOznaka, "REGISTARSKA_OZNAKA")
             .Not.Nullable()

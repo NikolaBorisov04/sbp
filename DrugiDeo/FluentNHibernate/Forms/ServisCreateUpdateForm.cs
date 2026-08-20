@@ -7,23 +7,19 @@ namespace FluentNHibernateTemplate.Forms
     public partial class ServisCreateUpdateForm : Form
     {
         private readonly int? servisId;
-        private readonly int? defaultVoziloId;
+        private readonly int voziloId;
         private ServisBasic servis = new();
 
-        public ServisCreateUpdateForm(int? servisId = null, int? voziloId = null)
+        public ServisCreateUpdateForm(int voziloId, int? servisId = null)
         {
             InitializeComponent();
+            this.voziloId = voziloId;
             this.servisId = servisId;
-            defaultVoziloId = voziloId;
             Text = servisId.HasValue ? "Izmena Servisa" : "Evidentiranje Servisa";
         }
 
         private void ServisCreateUpdateForm_Load(object sender, EventArgs e)
         {
-            cmbVozilo.DataSource = DTOManager.vratiSvaVozila();
-            cmbVozilo.DisplayMember = "ToString";
-            cmbVozilo.ValueMember = "Id";
-
             cmbTipServisa.DataSource = DTOManager.vratiSveTipoveServisa();
             cmbTipServisa.DisplayMember = "Naziv";
             cmbTipServisa.ValueMember = "Id";
@@ -31,16 +27,12 @@ namespace FluentNHibernateTemplate.Forms
             cmbStatus.Items.AddRange(new object[] { "U toku", "Završen", "Otkazan", "Na čekanju" });
             cmbStatus.SelectedIndex = 0;
 
-            if (defaultVoziloId.HasValue)
-                cmbVozilo.SelectedValue = defaultVoziloId.Value;
-
             if (servisId.HasValue)
             {
                 var s = DTOManager.vratiServis(servisId.Value);
                 if (s != null)
                 {
                     servis = s;
-                    cmbVozilo.SelectedValue = s.VoziloId;
                     cmbTipServisa.SelectedValue = s.TipServisaId;
                     txtServisniCentar.Text = s.ServisniCentar;
                     dtpDatumPrijema.Value = s.DatumPrijema;
@@ -70,7 +62,7 @@ namespace FluentNHibernateTemplate.Forms
                 return;
             }
 
-            servis.VoziloId = (int)(cmbVozilo.SelectedValue ?? 1);
+            servis.VoziloId = voziloId;
             servis.TipServisaId = (int)(cmbTipServisa.SelectedValue ?? 1);
             servis.ServisniCentar = txtServisniCentar.Text.Trim();
             servis.DatumPrijema = dtpDatumPrijema.Value;

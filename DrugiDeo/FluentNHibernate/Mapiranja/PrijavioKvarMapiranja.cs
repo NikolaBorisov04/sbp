@@ -9,7 +9,7 @@ public class PrijavioKvarMapiranja : ClassMap<PrijavioKvar>
         Table("PRIJAVIOKVAR");
 
         Id(x => x.Id, "ID")
-            .GeneratedBy.Identity();
+            .GeneratedBy.TriggerIdentity();
 
         Map(x => x.Naziv, "NAZIV")
             .Not.Nullable()

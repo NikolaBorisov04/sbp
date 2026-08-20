@@ -7,23 +7,19 @@ namespace FluentNHibernateTemplate.Forms
     public partial class KvarCreateUpdateForm : Form
     {
         private readonly int? kvarId;
-        private readonly int? defaultVoziloId;
+        private readonly int voziloId;
         private KvarBasic kvar = new();
 
-        public KvarCreateUpdateForm(int? kvarId = null, int? voziloId = null)
+        public KvarCreateUpdateForm(int voziloId, int? kvarId = null)
         {
             InitializeComponent();
+            this.voziloId = voziloId;
             this.kvarId = kvarId;
-            defaultVoziloId = voziloId;
             Text = kvarId.HasValue ? "Izmena Kvara" : "Prijava Kvara";
         }
 
         private void KvarCreateUpdateForm_Load(object sender, EventArgs e)
         {
-            cmbVozilo.DataSource = DTOManager.vratiSvaVozila();
-            cmbVozilo.DisplayMember = "ToString";
-            cmbVozilo.ValueMember = "Id";
-
             cmbPrijavio.DataSource = DTOManager.vratiSvePrijavioKvar();
             cmbPrijavio.DisplayMember = "Naziv";
             cmbPrijavio.ValueMember = "Id";
@@ -34,16 +30,12 @@ namespace FluentNHibernateTemplate.Forms
             cmbStatus.Items.AddRange(new object[] { "Prijavljen", "U obradi", "Na čekanju", "Otklonjen" });
             cmbStatus.SelectedIndex = 0;
 
-            if (defaultVoziloId.HasValue)
-                cmbVozilo.SelectedValue = defaultVoziloId.Value;
-
             if (kvarId.HasValue)
             {
                 var k = DTOManager.vratiKvar(kvarId.Value);
                 if (k != null)
                 {
                     kvar = k;
-                    cmbVozilo.SelectedValue = k.VoziloId;
                     cmbPrijavio.SelectedValue = k.PrijavioId;
                     dtpDatumPrijave.Value = k.DatumPrijave;
                     txtOpis.Text = k.OpisProblema;
@@ -71,7 +63,7 @@ namespace FluentNHibernateTemplate.Forms
                 return;
             }
 
-            kvar.VoziloId = (int)(cmbVozilo.SelectedValue ?? 1);
+            kvar.VoziloId = voziloId;
             kvar.PrijavioId = (int)(cmbPrijavio.SelectedValue ?? 1);
             kvar.DatumPrijave = dtpDatumPrijave.Value;
             kvar.OpisProblema = txtOpis.Text.Trim();

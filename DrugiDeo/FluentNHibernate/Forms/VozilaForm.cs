@@ -35,7 +35,6 @@ namespace FluentNHibernateTemplate.Forms
                     v.BrojSedista.ToString(),
                     v.TipPogona,
                     v.TipKoriscenja,
-                    v.Podtip,
                     v.Vin
                 });
                 listViewVozila.Items.Add(item);
@@ -88,35 +87,45 @@ namespace FluentNHibernateTemplate.Forms
         private void btnServisi_Click(object sender, EventArgs e)
         {
             int? id = GetSelectedVoziloId();
-            ServisiForm form = new(id);
+            if (!id.HasValue) return;
+
+            ServisiForm form = new(id.Value);
             form.ShowDialog();
         }
 
         private void btnKvarovi_Click(object sender, EventArgs e)
         {
             int? id = GetSelectedVoziloId();
-            KvaroviForm form = new(id);
+            if (!id.HasValue) return;
+
+            KvaroviForm form = new(id.Value);
             form.ShowDialog();
         }
 
         private void btnPunjenja_Click(object sender, EventArgs e)
         {
             int? id = GetSelectedVoziloId();
-            PunjenjaTocenjaForm form = new(id);
+            if (!id.HasValue) return;
+
+            PunjenjaTocenjaForm form = new(id.Value);
             form.ShowDialog();
         }
 
         private void btnNezgode_Click(object sender, EventArgs e)
         {
             int? id = GetSelectedVoziloId();
-            NezgodeSteteForm form = new(id);
+            if (!id.HasValue) return;
+
+            NezgodeSteteForm form = new(id.Value);
             form.ShowDialog();
         }
 
         private void btnOprema_Click(object sender, EventArgs e)
         {
             int? id = GetSelectedVoziloId();
-            OpremaForm form = new(id);
+            if (!id.HasValue) return;
+
+            OpremaForm form = new(id.Value);
             form.ShowDialog();
         }
     }

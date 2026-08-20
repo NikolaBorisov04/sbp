@@ -9,7 +9,7 @@ public class PunjenjeTocenjeMapiranja : ClassMap<PunjenjeTocenje>
         Table("PUNJENJETOCENJE");
 
         Id(x => x.Id, "ID")
-            .GeneratedBy.Identity();
+            .GeneratedBy.TriggerIdentity();
 
         References(x => x.Vozilo)
             .Column("VOZILO_ID")

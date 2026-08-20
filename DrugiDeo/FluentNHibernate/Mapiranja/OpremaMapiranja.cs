@@ -9,7 +9,7 @@ public class OpremaMapiranja : ClassMap<Oprema>
         Table("OPREMA");
 
         Id(x => x.Id, "ID")
-            .GeneratedBy.Identity();
+            .GeneratedBy.TriggerIdentity();
 
         Map(x => x.Naziv, "NAZIV")
             .Not.Nullable()

@@ -7,29 +7,22 @@ namespace FluentNHibernateTemplate.Forms
     public partial class NezgodaStetaCreateUpdateForm : Form
     {
         private readonly int? nezgodaId;
-        private readonly int? defaultVoziloId;
+        private readonly int voziloId;
         private NezgodaStetaBasic nezgoda = new();
 
-        public NezgodaStetaCreateUpdateForm(int? nezgodaId = null, int? voziloId = null)
+        public NezgodaStetaCreateUpdateForm(int voziloId, int? nezgodaId = null)
         {
             InitializeComponent();
+            this.voziloId = voziloId;
             this.nezgodaId = nezgodaId;
-            defaultVoziloId = voziloId;
             Text = nezgodaId.HasValue ? "Izmena i Detalji Nezgode / Štete" : "Unos Nezgode / Štete";
         }
 
         private void NezgodaStetaCreateUpdateForm_Load(object sender, EventArgs e)
         {
-            cmbVozilo.DataSource = DTOManager.vratiSvaVozila();
-            cmbVozilo.DisplayMember = "ToString";
-            cmbVozilo.ValueMember = "Id";
-
             cmbOdgovornost.DataSource = DTOManager.vratiSveTipoveOdgovornosti();
             cmbOdgovornost.DisplayMember = "Naziv";
             cmbOdgovornost.ValueMember = "Id";
-
-            if (defaultVoziloId.HasValue)
-                cmbVozilo.SelectedValue = defaultVoziloId.Value;
 
             if (nezgodaId.HasValue)
             {
@@ -37,7 +30,6 @@ namespace FluentNHibernateTemplate.Forms
                 if (n != null)
                 {
                     nezgoda = n;
-                    cmbVozilo.SelectedValue = n.VoziloId;
                     cmbOdgovornost.SelectedValue = n.OdgovornostId;
                     numProcena.Value = n.ProcenaStete;
                     OsveziListuSlika();
@@ -140,7 +132,7 @@ namespace FluentNHibernateTemplate.Forms
 
         private void btnSacuvaj_Click(object sender, EventArgs e)
         {
-            nezgoda.VoziloId = (int)(cmbVozilo.SelectedValue ?? 1);
+            nezgoda.VoziloId = voziloId;
             nezgoda.OdgovornostId = (int)(cmbOdgovornost.SelectedValue ?? 1);
             nezgoda.ProcenaStete = numProcena.Value;
 

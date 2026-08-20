@@ -9,7 +9,7 @@ public class TipPogonaMapiranja : ClassMap<TipPogona>
         Table("TIPPOGONA");
 
         Id(x => x.Id, "ID")
-            .GeneratedBy.Identity();
+            .GeneratedBy.TriggerIdentity();
 
         Map(x => x.Naziv, "NAZIV")
             .Not.Nullable()

@@ -6,23 +6,17 @@ namespace FluentNHibernateTemplate.Forms
 {
     public partial class OpremaForm : Form
     {
-        private readonly int? voziloFilterId;
+        private readonly int voziloFilterId;
 
-        public OpremaForm(int? voziloId = null)
+        public OpremaForm(int voziloId)
         {
             InitializeComponent();
             voziloFilterId = voziloId;
+            Text = $"Oprema za Vozilo (ID: {voziloId})";
         }
 
         private void OpremaForm_Load(object sender, EventArgs e)
         {
-            cmbVozila.DataSource = DTOManager.vratiSvaVozila();
-            cmbVozila.DisplayMember = "ToString";
-            cmbVozila.ValueMember = "Id";
-
-            if (voziloFilterId.HasValue)
-                cmbVozila.SelectedValue = voziloFilterId.Value;
-
             PopuniKatalogOpreme();
             PopuniDodeljenuOpremu();
         }
@@ -47,26 +41,18 @@ namespace FluentNHibernateTemplate.Forms
         public void PopuniDodeljenuOpremu()
         {
             listViewDodeljena.Items.Clear();
-            if (cmbVozila.SelectedValue is int vId)
+            var dodeljena = DTOManager.vratiOpremuZaVozilo(voziloFilterId);
+            foreach (var d in dodeljena)
             {
-                var dodeljena = DTOManager.vratiOpremuZaVozilo(vId);
-                foreach (var d in dodeljena)
-                {
-                    ListViewItem item = new(new string[] {
-                        d.OpremaId.ToString(),
-                        d.OpremaNaziv,
-                        d.IsDodatna ? "Dodatna" : "Fabrička",
-                        d.OpremaOpis ?? string.Empty
-                    });
-                    listViewDodeljena.Items.Add(item);
-                }
+                ListViewItem item = new(new string[] {
+                    d.OpremaId.ToString(),
+                    d.OpremaNaziv,
+                    d.IsDodatna ? "Dodatna" : "Fabrička",
+                    d.OpremaOpis ?? string.Empty
+                });
+                listViewDodeljena.Items.Add(item);
             }
             listViewDodeljena.Refresh();
-        }
-
-        private void cmbVozila_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            PopuniDodeljenuOpremu();
         }
 
         private void btnDodajKatalog_Click(object sender, EventArgs e)
@@ -105,10 +91,10 @@ namespace FluentNHibernateTemplate.Forms
 
         private void btnDodeli_Click(object sender, EventArgs e)
         {
-            if (cmbVozila.SelectedValue is int vId && cmbOpremaIzbor.SelectedItem is OpremaPregled op)
+            if (cmbOpremaIzbor.SelectedItem is OpremaPregled op)
             {
                 bool isDodatna = chkDodatna.Checked;
-                if (DTOManager.dodajOpremuVozilu(vId, op.Id, isDodatna))
+                if (DTOManager.dodajOpremuVozilu(voziloFilterId, op.Id, isDodatna))
                 {
                     PopuniDodeljenuOpremu();
                 }
@@ -117,10 +103,10 @@ namespace FluentNHibernateTemplate.Forms
 
         private void btnUkloniDodeljenu_Click(object sender, EventArgs e)
         {
-            if (cmbVozila.SelectedValue is int vId && listViewDodeljena.SelectedItems.Count > 0)
+            if (listViewDodeljena.SelectedItems.Count > 0)
             {
                 int opId = int.Parse(listViewDodeljena.SelectedItems[0].SubItems[0].Text);
-                if (DTOManager.obrisiOpremuSaVozila(vId, opId))
+                if (DTOManager.obrisiOpremuSaVozila(voziloFilterId, opId))
                 {
                     PopuniDodeljenuOpremu();
                 }

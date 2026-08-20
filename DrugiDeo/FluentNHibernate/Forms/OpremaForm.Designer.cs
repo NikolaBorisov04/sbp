@@ -14,7 +14,6 @@ namespace FluentNHibernateTemplate.Forms
         private GroupBox grpKatalog;
 
         private GroupBox grpDodeljivanje;
-        private ComboBox cmbVozila;
         private ComboBox cmbOpremaIzbor;
         private CheckBox chkDodatna;
         private Button btnDodeli;
@@ -47,7 +46,6 @@ namespace FluentNHibernateTemplate.Forms
             grpKatalog = new GroupBox();
 
             grpDodeljivanje = new GroupBox();
-            cmbVozila = new ComboBox();
             cmbOpremaIzbor = new ComboBox();
             chkDodatna = new CheckBox();
             btnDodeli = new Button();
@@ -98,18 +96,14 @@ namespace FluentNHibernateTemplate.Forms
             // Dodeljivanje Group
             grpDodeljivanje.Location = new Point(480, 12);
             grpDodeljivanje.Size = new Size(540, 480);
-            grpDodeljivanje.Text = "Dodeljena oprema po vozilu";
-
-            Label lv = new() { Text = "Izaberite vozilo:", Location = new Point(15, 25), AutoSize = true };
-            cmbVozila.Location = new Point(125, 22); cmbVozila.Size = new Size(280, 27); cmbVozila.DropDownStyle = ComboBoxStyle.DropDownList;
-            cmbVozila.SelectedIndexChanged += cmbVozila_SelectedIndexChanged;
+            grpDodeljivanje.Text = "Oprema dodeljena ovom vozilu";
 
             listViewDodeljena.Columns.AddRange(new ColumnHeader[] { colDId, colDNaziv, colDTip, colDOpis });
             listViewDodeljena.FullRowSelect = true;
             listViewDodeljena.GridLines = true;
-            listViewDodeljena.Location = new Point(15, 60);
+            listViewDodeljena.Location = new Point(15, 25);
             listViewDodeljena.MultiSelect = false;
-            listViewDodeljena.Size = new Size(510, 260);
+            listViewDodeljena.Size = new Size(510, 295);
             listViewDodeljena.View = View.Details;
             colDId.Text = "ID"; colDId.Width = 40;
             colDNaziv.Text = "Naziv opreme"; colDNaziv.Width = 140;
@@ -121,14 +115,14 @@ namespace FluentNHibernateTemplate.Forms
             btnUkloniDodeljenu.Text = "Ukloni sa vozila";
             btnUkloniDodeljenu.Click += btnUkloniDodeljenu_Click;
 
-            Label ld = new() { Text = "Dodaj opremu:", Location = new Point(15, 380), AutoSize = true };
+            Label ld = new() { Text = "Izaberi opremu:", Location = new Point(15, 380), AutoSize = true };
             cmbOpremaIzbor.Location = new Point(125, 377); cmbOpremaIzbor.Size = new Size(250, 27); cmbOpremaIzbor.DropDownStyle = ComboBoxStyle.DropDownList;
             chkDodatna.Location = new Point(390, 377); chkDodatna.Size = new Size(130, 27); chkDodatna.Text = "Dodatna oprema";
             btnDodeli.Location = new Point(125, 420); btnDodeli.Size = new Size(150, 32); btnDodeli.Text = "Dodeli opremu";
             btnDodeli.Click += btnDodeli_Click;
 
             grpDodeljivanje.Controls.AddRange(new Control[] {
-                lv, cmbVozila, listViewDodeljena, btnUkloniDodeljenu, ld, cmbOpremaIzbor, chkDodatna, btnDodeli
+                listViewDodeljena, btnUkloniDodeljenu, ld, cmbOpremaIzbor, chkDodatna, btnDodeli
             });
 
             AutoScaleDimensions = new SizeF(8F, 20F);

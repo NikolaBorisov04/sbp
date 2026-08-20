@@ -6,12 +6,13 @@ namespace FluentNHibernateTemplate.Forms
 {
     public partial class NezgodeSteteForm : Form
     {
-        private readonly int? voziloFilterId;
+        private readonly int voziloFilterId;
 
-        public NezgodeSteteForm(int? voziloId = null)
+        public NezgodeSteteForm(int voziloId)
         {
             InitializeComponent();
             voziloFilterId = voziloId;
+            Text = $"Evidencija Nezgoda i Šteta za Vozilo (ID: {voziloId})";
         }
 
         private void NezgodeSteteForm_Load(object sender, EventArgs e)
@@ -63,7 +64,7 @@ namespace FluentNHibernateTemplate.Forms
             int? id = GetSelectedId();
             if (!id.HasValue) return;
 
-            NezgodaStetaCreateUpdateForm form = new(nezgodaId: id.Value);
+            NezgodaStetaCreateUpdateForm form = new(voziloId: voziloFilterId, nezgodaId: id.Value);
             if (form.ShowDialog() == DialogResult.OK)
                 PopuniPodacima();
         }

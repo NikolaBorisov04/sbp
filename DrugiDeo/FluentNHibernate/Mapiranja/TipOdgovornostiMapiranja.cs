@@ -9,7 +9,7 @@ public class TipOdgovornostiMapiranja : ClassMap<TipOdgovornosti>
         Table("TIPODGOVORNOSTI");
 
         Id(x => x.Id, "ID")
-            .GeneratedBy.Identity();
+            .GeneratedBy.TriggerIdentity();
 
         Map(x => x.Naziv, "NAZIV")
             .Not.Nullable()

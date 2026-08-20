@@ -24,16 +24,14 @@ namespace FluentNHibernateTemplate.Forms
 
         private void VoziloCreateUpdateForm_Load(object sender, EventArgs e)
         {
-            cmbPogon.DataSource = DTOManager.vratiSveTipovePogona();
+            var pogoni = DTOManager.vratiSveTipovePogona();
+            cmbPogon.DataSource = pogoni;
             cmbPogon.DisplayMember = "Naziv";
             cmbPogon.ValueMember = "Id";
 
             cmbKoriscenje.DataSource = DTOManager.vratiSveTipoveKoriscenja();
             cmbKoriscenje.DisplayMember = "Naziv";
             cmbKoriscenje.ValueMember = "Id";
-
-            cmbPodtip.Items.AddRange(new object[] { "Osnovno", "Elektricno", "Hibridno", "Klasicno" });
-            cmbPodtip.SelectedIndex = 0;
 
             cmbStatus.Items.AddRange(new object[] { "Slobodno", "Iznajmljeno", "Na servisu", "Van funkcije" });
             cmbStatus.SelectedIndex = 0;
@@ -57,10 +55,8 @@ namespace FluentNHibernateTemplate.Forms
                     txtOgranicenja.Text = vozilo.OgranicenjaKoriscenja ?? string.Empty;
 
                     cmbPogon.SelectedValue = vozilo.TipPogonaId;
+                    cmbPogon.Enabled = false;
                     cmbKoriscenje.SelectedValue = vozilo.TipKoriscenjaId;
-
-                    cmbPodtip.SelectedItem = vozilo.Podtip;
-                    cmbPodtip.Enabled = false;
 
                     numKapacitetBaterije.Value = vozilo.KapacitetBaterije;
                     numNivoNapunjenosti.Value = vozilo.TrenutniNivoNapunjenosti;
@@ -75,28 +71,39 @@ namespace FluentNHibernateTemplate.Forms
                     numProsecnaPotrosnja.Value = vozilo.ProsecnaPotrosnja;
                 }
             }
-            PrilagodiPoljaZaPodtip();
+            else
+            {
+                cmbPogon.SelectedIndex = -1;
+            }
+
+            PrilagodiPoljaZaPogon();
         }
 
-        private void cmbPodtip_SelectedIndexChanged(object sender, EventArgs e)
+        private void cmbPogon_SelectedIndexChanged(object sender, EventArgs e)
         {
-            PrilagodiPoljaZaPodtip();
+            PrilagodiPoljaZaPogon();
         }
 
-        private void PrilagodiPoljaZaPodtip()
+        private void PrilagodiPoljaZaPogon()
         {
-            string podtip = cmbPodtip.SelectedItem?.ToString() ?? "Osnovno";
-            pnlElektricno.Visible = podtip == "Elektricno";
-            pnlHibridno.Visible = podtip == "Hibridno";
-            pnlKlasicno.Visible = podtip == "Klasicno";
+            string nazivPogona = (cmbPogon.SelectedItem as TipPogonaPregled)?.Naziv?.ToLowerInvariant() ?? string.Empty;
+
+            bool isEl = nazivPogona.Contains("elektri") || nazivPogona.Contains("el");
+            bool isHib = nazivPogona.Contains("hibrid") || nazivPogona.Contains("hib");
+            bool isKlas = nazivPogona.Contains("klasi") || nazivPogona.Contains("klas");
+
+            pnlElektricno.Visible = isEl;
+            pnlHibridno.Visible = isHib;
+            pnlKlasicno.Visible = isKlas;
         }
 
         private void btnSacuvaj_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrWhiteSpace(txtReg.Text) || string.IsNullOrWhiteSpace(txtVin.Text) ||
-                string.IsNullOrWhiteSpace(txtMarka.Text) || string.IsNullOrWhiteSpace(txtModel.Text))
+                string.IsNullOrWhiteSpace(txtMarka.Text) || string.IsNullOrWhiteSpace(txtModel.Text) ||
+                cmbPogon.SelectedValue == null || cmbKoriscenje.SelectedValue == null)
             {
-                MessageBox.Show("Molimo popunite sva obavezna polja (Registarska oznaka, VIN, Marka, Model).", "Upozorenje", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Molimo popunite sva obavezna polja uključujući i Tip pogona.", "Upozorenje", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
@@ -112,11 +119,12 @@ namespace FluentNHibernateTemplate.Forms
             vozilo.StanjeEksterijera = txtEksterijer.Text.Trim();
             vozilo.OgranicenjaKoriscenja = txtOgranicenja.Text.Trim();
 
-            vozilo.TipPogonaId = (int)(cmbPogon.SelectedValue ?? 1);
-            vozilo.TipKoriscenjaId = (int)(cmbKoriscenje.SelectedValue ?? 1);
-            vozilo.Podtip = cmbPodtip.SelectedItem?.ToString() ?? "Osnovno";
+            vozilo.TipPogonaId = (int)cmbPogon.SelectedValue;
+            vozilo.TipKoriscenjaId = (int)cmbKoriscenje.SelectedValue;
 
-            if (vozilo.Podtip == "Elektricno")
+            string nazivPogona = (cmbPogon.SelectedItem as TipPogonaPregled)?.Naziv?.ToLowerInvariant() ?? string.Empty;
+
+            if (nazivPogona.Contains("elektri") || nazivPogona.Contains("el"))
             {
                 vozilo.KapacitetBaterije = numKapacitetBaterije.Value;
                 vozilo.TrenutniNivoNapunjenosti = numNivoNapunjenosti.Value;
@@ -124,12 +132,12 @@ namespace FluentNHibernateTemplate.Forms
                 vozilo.TipPunjenja = txtTipPunjenja.Text.Trim();
                 vozilo.BrojCiklusaPunjenja = (int)numCiklusi.Value;
             }
-            else if (vozilo.Podtip == "Hibridno")
+            else if (nazivPogona.Contains("hibrid") || nazivPogona.Contains("hib"))
             {
                 vozilo.KapacitetBaterije = numKapacitetBaterije.Value;
                 vozilo.TipHibridnogPogona = txtTipHibridnogPogona.Text.Trim();
             }
-            else if (vozilo.Podtip == "Klasicno")
+            else if (nazivPogona.Contains("klasi") || nazivPogona.Contains("klas"))
             {
                 vozilo.TipGoriva = txtTipGoriva.Text.Trim();
                 vozilo.ZapreminaRezervoara = numZapreminaRezervoara.Value;

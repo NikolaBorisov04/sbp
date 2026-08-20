@@ -3,7 +3,6 @@ namespace FluentNHibernateTemplate.Forms
     partial class NezgodaStetaCreateUpdateForm
     {
         private System.ComponentModel.IContainer components = null;
-        private ComboBox cmbVozilo;
         private ComboBox cmbOdgovornost;
         private NumericUpDown numProcena;
         private GroupBox grpDetalji;
@@ -32,7 +31,6 @@ namespace FluentNHibernateTemplate.Forms
 
         private void InitializeComponent()
         {
-            cmbVozilo = new ComboBox();
             cmbOdgovornost = new ComboBox();
             numProcena = new NumericUpDown();
             grpDetalji = new GroupBox();
@@ -50,16 +48,14 @@ namespace FluentNHibernateTemplate.Forms
             btnObrisiZapisnik = new Button();
             btnSacuvaj = new Button();
 
-            Label l1 = new() { Text = "Vozilo:", Location = new Point(20, 20), AutoSize = true };
-            Label l2 = new() { Text = "Tip odgovornosti:", Location = new Point(20, 60), AutoSize = true };
-            Label l3 = new() { Text = "Procena štete (RSD):", Location = new Point(20, 100), AutoSize = true };
+            Label l2 = new() { Text = "Tip odgovornosti:", Location = new Point(20, 20), AutoSize = true };
+            Label l3 = new() { Text = "Procena štete (RSD):", Location = new Point(20, 60), AutoSize = true };
 
-            cmbVozilo.Location = new Point(160, 17); cmbVozilo.Size = new Size(250, 27); cmbVozilo.DropDownStyle = ComboBoxStyle.DropDownList;
-            cmbOdgovornost.Location = new Point(160, 57); cmbOdgovornost.Size = new Size(250, 27); cmbOdgovornost.DropDownStyle = ComboBoxStyle.DropDownList;
-            numProcena.Location = new Point(160, 97); numProcena.Size = new Size(250, 27); numProcena.DecimalPlaces = 2; numProcena.Maximum = 10000000;
+            cmbOdgovornost.Location = new Point(160, 17); cmbOdgovornost.Size = new Size(250, 27); cmbOdgovornost.DropDownStyle = ComboBoxStyle.DropDownList;
+            numProcena.Location = new Point(160, 57); numProcena.Size = new Size(250, 27); numProcena.DecimalPlaces = 2; numProcena.Maximum = 10000000;
 
             // Details group
-            grpDetalji.Location = new Point(20, 140);
+            grpDetalji.Location = new Point(20, 100);
             grpDetalji.Size = new Size(720, 310);
             grpDetalji.Text = "Prilozi i detalji štete (za izmene)";
 
@@ -87,7 +83,7 @@ namespace FluentNHibernateTemplate.Forms
                 lz, lstZapisnici, txtNoviZapisnik, btnDodajZapisnik, btnObrisiZapisnik
             });
 
-            btnSacuvaj.Location = new Point(300, 465);
+            btnSacuvaj.Location = new Point(300, 425);
             btnSacuvaj.Size = new Size(150, 35);
             btnSacuvaj.Text = "Sačuvaj";
             btnSacuvaj.UseVisualStyleBackColor = true;
@@ -95,9 +91,9 @@ namespace FluentNHibernateTemplate.Forms
 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(760, 515);
+            ClientSize = new Size(760, 475);
             Controls.AddRange(new Control[] {
-                l1, cmbVozilo, l2, cmbOdgovornost, l3, numProcena, grpDetalji, btnSacuvaj
+                l2, cmbOdgovornost, l3, numProcena, grpDetalji, btnSacuvaj
             });
             FormBorderStyle = FormBorderStyle.FixedDialog;
             MaximizeBox = false;

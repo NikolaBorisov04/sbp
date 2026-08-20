@@ -9,7 +9,7 @@ public class TipServisaMapiranja : ClassMap<TipServisa>
         Table("TIPSERVISA");
 
         Id(x => x.Id, "ID")
-            .GeneratedBy.Identity();
+            .GeneratedBy.TriggerIdentity();
 
         Map(x => x.Naziv, "NAZIV")
             .Not.Nullable()

@@ -6,12 +6,13 @@ namespace FluentNHibernateTemplate.Forms
 {
     public partial class PunjenjaTocenjaForm : Form
     {
-        private readonly int? voziloFilterId;
+        private readonly int voziloFilterId;
 
-        public PunjenjaTocenjaForm(int? voziloId = null)
+        public PunjenjaTocenjaForm(int voziloId)
         {
             InitializeComponent();
             voziloFilterId = voziloId;
+            Text = $"Evidencija Punjenja i Točenja za Vozilo (ID: {voziloId})";
         }
 
         private void PunjenjaTocenjaForm_Load(object sender, EventArgs e)
@@ -64,7 +65,7 @@ namespace FluentNHibernateTemplate.Forms
             int? id = GetSelectedId();
             if (!id.HasValue) return;
 
-            PunjenjeTocenjeCreateUpdateForm form = new(punjenjeId: id.Value);
+            PunjenjeTocenjeCreateUpdateForm form = new(voziloId: voziloFilterId, punjenjeId: id.Value);
             if (form.ShowDialog() == DialogResult.OK)
                 PopuniPodacima();
         }

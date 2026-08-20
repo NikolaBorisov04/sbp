@@ -10,7 +10,7 @@ public class NezgodaOsiguravajucaKucaMapiranja
         Table("NEZGODAOSIGURAVAJUCAKUCA");
 
         Id(x => x.Id, "ID")
-            .GeneratedBy.Identity();
+            .GeneratedBy.TriggerIdentity();
 
         References(x => x.NezgodaSteta)
             .Column("NEZGODA_STETA_ID")

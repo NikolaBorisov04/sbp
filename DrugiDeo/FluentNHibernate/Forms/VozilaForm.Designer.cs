@@ -68,7 +68,7 @@ namespace FluentNHibernateTemplate.Forms
             // listViewVozila
             // 
             listViewVozila.Columns.AddRange(new ColumnHeader[] {
-                colId, colReg, colMarka, colModel, colGodina, colDatum, colStatus, colSedista, colPogon, colKoriscenje, colPodtip, colVin
+                colId, colReg, colMarka, colModel, colGodina, colDatum, colStatus, colSedista, colPogon, colKoriscenje, colVin
             });
             listViewVozila.FullRowSelect = true;
             listViewVozila.GridLines = true;
@@ -128,17 +128,12 @@ namespace FluentNHibernateTemplate.Forms
             // colKoriscenje
             // 
             colKoriscenje.Text = "Korišćenje";
-            colKoriscenje.Width = 90;
-            // 
-            // colPodtip
-            // 
-            colPodtip.Text = "Podtip";
-            colPodtip.Width = 80;
+            colKoriscenje.Width = 100;
             // 
             // colVin
             // 
             colVin.Text = "VIN";
-            colVin.Width = 130;
+            colVin.Width = 150;
             // 
             // btnDodajVozilo
             // 

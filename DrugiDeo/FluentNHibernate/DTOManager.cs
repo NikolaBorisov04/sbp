@@ -188,11 +188,6 @@ namespace FluentNHibernateTemplate
 
                 foreach (var v in vozila)
                 {
-                    string podtip = "Osnovno";
-                    if (v is ElektricnoVozilo) podtip = "Električno";
-                    else if (v is HibridnoVozilo) podtip = "Hibridno";
-                    else if (v is KlasicnoVozilo) podtip = "Klasično";
-
                     rez.Add(new VoziloPregled(
                         v.Id,
                         v.RegistarskaOznaka,
@@ -204,8 +199,7 @@ namespace FluentNHibernateTemplate
                         v.Status,
                         v.BrojSedista,
                         v.TipPogona?.Naziv ?? string.Empty,
-                        v.TipKoriscenja?.Naziv ?? string.Empty,
-                        podtip
+                        v.TipKoriscenja?.Naziv ?? string.Empty
                     ));
                 }
             }
@@ -246,7 +240,6 @@ namespace FluentNHibernateTemplate
 
                 if (v is ElektricnoVozilo ev)
                 {
-                    vb.Podtip = "Elektricno";
                     vb.KapacitetBaterije = ev.KapacitetBaterije;
                     vb.TrenutniNivoNapunjenosti = ev.TrenutniNivoNapunjenosti;
                     vb.Autonomija = ev.Autonomija;
@@ -255,13 +248,11 @@ namespace FluentNHibernateTemplate
                 }
                 else if (v is HibridnoVozilo hv)
                 {
-                    vb.Podtip = "Hibridno";
                     vb.KapacitetBaterije = hv.KapacitetBaterije;
                     vb.TipHibridnogPogona = hv.TipHibridnogPogona;
                 }
                 else if (v is KlasicnoVozilo kv)
                 {
-                    vb.Podtip = "Klasicno";
                     vb.TipGoriva = kv.TipGoriva;
                     vb.ZapreminaRezervoara = kv.ZapreminaRezervoara;
                     vb.ProsecnaPotrosnja = kv.ProsecnaPotrosnja;
@@ -283,8 +274,12 @@ namespace FluentNHibernateTemplate
                 using ISession s = DataLayer.GetSession()!;
                 using var tx = s.BeginTransaction();
 
+                TipPogona? tp = s.Get<TipPogona>(vb.TipPogonaId);
+                if (tp == null) return false;
+
+                string nazivPogona = tp.Naziv.ToLowerInvariant();
                 Vozilo v;
-                if (vb.Podtip == "Elektricno")
+                if (nazivPogona.Contains("elektri") || nazivPogona.Contains("el"))
                 {
                     v = new ElektricnoVozilo
                     {
@@ -295,7 +290,7 @@ namespace FluentNHibernateTemplate
                         BrojCiklusaPunjenja = vb.BrojCiklusaPunjenja
                     };
                 }
-                else if (vb.Podtip == "Hibridno")
+                else if (nazivPogona.Contains("hibrid") || nazivPogona.Contains("hib"))
                 {
                     v = new HibridnoVozilo
                     {
@@ -303,7 +298,7 @@ namespace FluentNHibernateTemplate
                         TipHibridnogPogona = vb.TipHibridnogPogona
                     };
                 }
-                else if (vb.Podtip == "Klasicno")
+                else if (nazivPogona.Contains("klasi") || nazivPogona.Contains("klas"))
                 {
                     v = new KlasicnoVozilo
                     {

@@ -98,11 +98,10 @@ namespace FluentNHibernateTemplate
         public int BrojSedista { get; set; }
         public string TipPogona { get; set; } = string.Empty;
         public string TipKoriscenja { get; set; } = string.Empty;
-        public string Podtip { get; set; } = string.Empty;
 
         public VoziloPregled() { }
 
-        public VoziloPregled(int id, string registarskaOznaka, string vin, string marka, string model, int godinaProizvodnje, DateTime datumNabavke, string status, int brojSedista, string tipPogona, string tipKoriscenja, string podtip)
+        public VoziloPregled(int id, string registarskaOznaka, string vin, string marka, string model, int godinaProizvodnje, DateTime datumNabavke, string status, int brojSedista, string tipPogona, string tipKoriscenja)
         {
             Id = id;
             RegistarskaOznaka = registarskaOznaka;
@@ -115,7 +114,6 @@ namespace FluentNHibernateTemplate
             BrojSedista = brojSedista;
             TipPogona = tipPogona;
             TipKoriscenja = tipKoriscenja;
-            Podtip = podtip;
         }
 
         public override string ToString() => $"{Marka} {Model} ({RegistarskaOznaka})";
@@ -140,8 +138,6 @@ namespace FluentNHibernateTemplate
         public string TipKoriscenjaNaziv { get; set; } = string.Empty;
         public int TipPogonaId { get; set; }
         public string TipPogonaNaziv { get; set; } = string.Empty;
-
-        public string Podtip { get; set; } = "Osnovno";
 
         // Elektricno
         public decimal KapacitetBaterije { get; set; }

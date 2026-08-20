@@ -9,7 +9,7 @@ public class NezgodaStetaMapiranja : ClassMap<NezgodaSteta>
         Table("NEZGODASTETA");
 
         Id(x => x.Id, "ID")
-            .GeneratedBy.Identity();
+            .GeneratedBy.TriggerIdentity();
 
         References(x => x.Vozilo)
             .Column("VOZILO_ID")
