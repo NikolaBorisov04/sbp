@@ -12,18 +12,24 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement.TaskbarClock;
 
 namespace FluentNHibernateTemplate.Forms
 {
-    public partial class VoznjaUpdateForm : Form
+    public partial class VoznjaCreateUpdateForm : Form
     {
         public VoznjaPregled voznja;
-        public VoznjaUpdateForm()
+        private bool kreiranje;
+        public VoznjaCreateUpdateForm()
         {
             InitializeComponent();
+            this.voznja = new VoznjaPregled();
+            this.kreiranje = true;
+            this.Text = "Kreiraj vožnju";
         }
 
-        public VoznjaUpdateForm(VoznjaPregled v)
+        public VoznjaCreateUpdateForm(VoznjaPregled v)
         {
             InitializeComponent();
             this.voznja = v;
+            this.Text = "Izmeni vožnju";
+            this.kreiranje = false;
             popuniPodacima();
         }
 
@@ -44,9 +50,9 @@ namespace FluentNHibernateTemplate.Forms
 
         private void button1_Click(object sender, EventArgs e)
         {
-            string poruka = "Da li želite da izvršite izmene vožnje?";
-            string title = "Pitanje";
 
+            string poruka = this.kreiranje ? "Da li želite da kreirate novu vožnju?" : "Da li želite da izvršite izmene vožnje?";
+            string title = "Pitanje";
             MessageBoxButtons buttons = MessageBoxButtons.OKCancel;
             DialogResult result = MessageBox.Show(poruka, title, buttons);
 
@@ -63,8 +69,17 @@ namespace FluentNHibernateTemplate.Forms
                 this.voznja.Cena = numericUpDown5.Value;
                 this.voznja.Naknade = numericUpDown6.Value;
 
-                DTOManager.azurirajVoznju(this.voznja);
-                MessageBox.Show("Ažuriranje vožnje je uspešno izvršeno!");
+                if (this.kreiranje)
+                {
+                    DTOManager.dodajVoznju(this.voznja);
+                    MessageBox.Show("Kreiranje nove vožnje je uspešno izvršeno!");
+                }
+                else
+                {
+                    DTOManager.azurirajVoznju(this.voznja);
+                    MessageBox.Show("Ažuriranje vožnje je uspešno izvršeno!");
+                }
+
                 this.Close();
             }
         }

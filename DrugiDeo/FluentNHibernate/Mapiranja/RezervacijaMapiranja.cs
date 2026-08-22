@@ -13,7 +13,7 @@ namespace FluentNHibernateTemplate.Mapiranja
         {
             Table("REZERVACIJA");
 
-            Id(x => x.Id).Column("ID").GeneratedBy.Identity();
+            Id(x => x.Id).Column("ID").GeneratedBy.TriggerIdentity();
 
             Map(x => x.VremePocetka, "PLANIRANO_VREME_POCETKA").Not.Nullable();
             Map(x => x.VremeZavrsetka, "PLANIRANO_VREME_ZAVRSETKA").Not.Nullable();
@@ -23,8 +23,8 @@ namespace FluentNHibernateTemplate.Mapiranja
             Map(x => x.Status, "STATUS").Not.Nullable();
 
             References(x => x.Vozilo).Column("VOZILO_ID").Not.Nullable();
-            //References(x => x.Korisnik).Column("KORISNIK_ID").Not.Nullable();
-            //References(x => x.Vozac).Column("VOZAC_ID");
+            References(x => x.Korisnik).Column("KORISNIK_ID").Not.Nullable();
+            References(x => x.Vozac).Column("VOZAC_ID");
 
 
         }

@@ -48,7 +48,7 @@ namespace FluentNHibernateTemplate.Forms
             listaVoznji.Refresh();
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        private void btnIzmeni_Click(object sender, EventArgs e)
         {
             if (listaVoznji.SelectedItems.Count == 0)
             {
@@ -59,9 +59,53 @@ namespace FluentNHibernateTemplate.Forms
             int idVoznje = Int32.Parse(listaVoznji.SelectedItems[0].SubItems[0].Text);
             VoznjaPregled vb = DTOManager.vratiVoznju(idVoznje);
 
-            VoznjaUpdateForm formaUpdate = new VoznjaUpdateForm(vb);
+            VoznjaCreateUpdateForm formaUpdate = new VoznjaCreateUpdateForm(vb);
             formaUpdate.ShowDialog();
 
+            this.popuniPodacima();
+        }
+
+        private void btnIzbrisi_Click(object sender, EventArgs e)
+        {
+            if (listaVoznji.SelectedItems.Count == 0)
+            {
+                MessageBox.Show("Izaberite vožnju čije podatke želite da obrišete");
+                return;
+            }
+            int idVoznje = Int32.Parse(listaVoznji.SelectedItems[0].SubItems[0].Text);
+            string poruka = "Da li želite da obrišete izabranu vožnju?";
+            string title = "Pitanje";
+            MessageBoxButtons buttons = MessageBoxButtons.OKCancel;
+            DialogResult result = MessageBox.Show(poruka, title, buttons);
+
+            if (result == DialogResult.OK)
+            {
+                DTOManager.obrisiVoznju(idVoznje);
+                MessageBox.Show("Brisanje vožnje je uspešno obavljeno!");
+                this.popuniPodacima();
+            }
+        }
+
+        private void btnPrikaziDogadjaje_Click(object sender, EventArgs e)
+        {
+            if (listaVoznji.SelectedItems.Count == 0)
+            {
+                MessageBox.Show("Izaberite vožnju čije događaje želite da vidite");
+                return;
+            }
+            int idVoznje = Int32.Parse(listaVoznji.SelectedItems[0].SubItems[0].Text);
+            VoznjaPregled vb = DTOManager.vratiVoznju(idVoznje);
+
+            DogadjajUVoznjiForm forma = new DogadjajUVoznjiForm(vb);
+            this.Hide();
+            forma.ShowDialog();
+            this.Show();
+        }
+
+        private void btnKreiraj_Click(object sender, EventArgs e)
+        {
+            VoznjaCreateUpdateForm form = new VoznjaCreateUpdateForm();
+            form.ShowDialog();
             this.popuniPodacima();
         }
     }

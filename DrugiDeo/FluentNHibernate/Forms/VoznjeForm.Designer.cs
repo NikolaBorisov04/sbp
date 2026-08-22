@@ -40,11 +40,14 @@
             columnHeader9 = new ColumnHeader();
             columnHeader10 = new ColumnHeader();
             columnHeader11 = new ColumnHeader();
-            button1 = new Button();
-            button2 = new Button();
-            button3 = new Button();
+            btnKreiraj = new Button();
+            btnIzmeni = new Button();
+            btnIzbrisi = new Button();
             groupBox1 = new GroupBox();
+            groupBox2 = new GroupBox();
+            btnPrikaziDogadjaje = new Button();
             groupBox1.SuspendLayout();
+            groupBox2.SuspendLayout();
             SuspendLayout();
             // 
             // listaVoznji
@@ -123,39 +126,41 @@
             columnHeader11.TextAlign = HorizontalAlignment.Center;
             columnHeader11.Width = 80;
             // 
-            // button1
+            // btnKreiraj
             // 
-            button1.Location = new Point(6, 40);
-            button1.Name = "button1";
-            button1.Size = new Size(143, 30);
-            button1.TabIndex = 1;
-            button1.Text = "Kreiraj voznju";
-            button1.UseVisualStyleBackColor = true;
+            btnKreiraj.Location = new Point(6, 40);
+            btnKreiraj.Name = "btnKreiraj";
+            btnKreiraj.Size = new Size(143, 30);
+            btnKreiraj.TabIndex = 1;
+            btnKreiraj.Text = "Kreiraj voznju";
+            btnKreiraj.UseVisualStyleBackColor = true;
+            btnKreiraj.Click += btnKreiraj_Click;
             // 
-            // button2
+            // btnIzmeni
             // 
-            button2.Location = new Point(6, 76);
-            button2.Name = "button2";
-            button2.Size = new Size(143, 30);
-            button2.TabIndex = 2;
-            button2.Text = "Izmeni voznju";
-            button2.UseVisualStyleBackColor = true;
-            button2.Click += button2_Click;
+            btnIzmeni.Location = new Point(6, 76);
+            btnIzmeni.Name = "btnIzmeni";
+            btnIzmeni.Size = new Size(143, 30);
+            btnIzmeni.TabIndex = 2;
+            btnIzmeni.Text = "Izmeni voznju";
+            btnIzmeni.UseVisualStyleBackColor = true;
+            btnIzmeni.Click += btnIzmeni_Click;
             // 
-            // button3
+            // btnIzbrisi
             // 
-            button3.Location = new Point(6, 112);
-            button3.Name = "button3";
-            button3.Size = new Size(143, 30);
-            button3.TabIndex = 3;
-            button3.Text = "Izbriši voznju";
-            button3.UseVisualStyleBackColor = true;
+            btnIzbrisi.Location = new Point(6, 112);
+            btnIzbrisi.Name = "btnIzbrisi";
+            btnIzbrisi.Size = new Size(143, 30);
+            btnIzbrisi.TabIndex = 3;
+            btnIzbrisi.Text = "Izbriši voznju";
+            btnIzbrisi.UseVisualStyleBackColor = true;
+            btnIzbrisi.Click += btnIzbrisi_Click;
             // 
             // groupBox1
             // 
-            groupBox1.Controls.Add(button3);
-            groupBox1.Controls.Add(button1);
-            groupBox1.Controls.Add(button2);
+            groupBox1.Controls.Add(btnIzbrisi);
+            groupBox1.Controls.Add(btnKreiraj);
+            groupBox1.Controls.Add(btnIzmeni);
             groupBox1.Location = new Point(1435, 12);
             groupBox1.Name = "groupBox1";
             groupBox1.Size = new Size(160, 153);
@@ -163,11 +168,32 @@
             groupBox1.TabStop = false;
             groupBox1.Text = "Podaci o vožnji";
             // 
+            // groupBox2
+            // 
+            groupBox2.Controls.Add(btnPrikaziDogadjaje);
+            groupBox2.Location = new Point(1435, 190);
+            groupBox2.Name = "groupBox2";
+            groupBox2.Size = new Size(160, 65);
+            groupBox2.TabIndex = 5;
+            groupBox2.TabStop = false;
+            groupBox2.Text = "Događaji u vožnji";
+            // 
+            // btnPrikaziDogadjaje
+            // 
+            btnPrikaziDogadjaje.Location = new Point(6, 26);
+            btnPrikaziDogadjaje.Name = "btnPrikaziDogadjaje";
+            btnPrikaziDogadjaje.Size = new Size(143, 29);
+            btnPrikaziDogadjaje.TabIndex = 0;
+            btnPrikaziDogadjaje.Text = "Vidi događaje";
+            btnPrikaziDogadjaje.UseVisualStyleBackColor = true;
+            btnPrikaziDogadjaje.Click += btnPrikaziDogadjaje_Click;
+            // 
             // VoznjeForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1619, 450);
+            Controls.Add(groupBox2);
             Controls.Add(groupBox1);
             Controls.Add(listaVoznji);
             Name = "VoznjeForm";
@@ -175,6 +201,7 @@
             Text = "Voznje";
             Load += VoznjeForm_Load;
             groupBox1.ResumeLayout(false);
+            groupBox2.ResumeLayout(false);
             ResumeLayout(false);
         }
 
@@ -192,9 +219,11 @@
         private ColumnHeader columnHeader9;
         private ColumnHeader columnHeader10;
         private ColumnHeader columnHeader11;
-        private Button button1;
-        private Button button2;
-        private Button button3;
+        private Button btnKreiraj;
+        private Button btnIzmeni;
+        private Button btnIzbrisi;
         private GroupBox groupBox1;
+        private GroupBox groupBox2;
+        private Button btnPrikaziDogadjaje;
     }
 }

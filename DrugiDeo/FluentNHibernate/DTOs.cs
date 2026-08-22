@@ -425,14 +425,14 @@ namespace FluentNHibernateTemplate
         public string LokacijaVracanja;
         public string Tip;
         public string Status;
-        //public Korisnik Korisnik;
-        //public FizickoLice Vozac;
-        public Vozilo Vozilo; // popraviti da i ovde bude dto
+        public Korisnik Korisnik; // popraviti da i ovde bude dto
+        public VoziloPregled Vozilo;
+        public FizickoLice Vozac; // popraviti da i ovde bude dto
 
         public RezervacijaPregled() { }
 
-        // popraviti da i u konstruktoru vozilo bude dto
-        public RezervacijaPregled(int id, DateTime vremePocetka, DateTime vremeZavrsetka, string lokacijaPreuzimanja, string lokacijaVracanja, string tip, string status, Vozilo vozilo)
+        // popraviti da i u konstruktoru voac i korisnik budu dto
+        public RezervacijaPregled(int id, DateTime vremePocetka, DateTime vremeZavrsetka, string lokacijaPreuzimanja, string lokacijaVracanja, string tip, string status, Korisnik korisnik, VoziloPregled vozilo, FizickoLice vozac)
         {
             this.Id = id;
             this.VremePocetka = vremePocetka;
@@ -441,7 +441,9 @@ namespace FluentNHibernateTemplate
             this.LokacijaVracanja = lokacijaVracanja;
             this.Tip = tip;
             this.Status = status;
+            this.Korisnik = korisnik;
             this.Vozilo = vozilo;
+            this.Vozac = vozac;
         }
     }
     #endregion
@@ -529,8 +531,8 @@ namespace FluentNHibernateTemplate
 
         public SluzbenaVoznjaPregled() { }
 
-        public SluzbenaVoznjaPregled(int id, DateTime vremePocetka, DateTime vremeZavrsetka, string lokacijaPreuzimanja, string lokacijaVracanja, string tip, string status, Vozilo vozilo, string razlog, string ovlascenoLice)
-            : base(id, vremePocetka, vremeZavrsetka, lokacijaPreuzimanja, lokacijaVracanja, tip, status, vozilo)
+        public SluzbenaVoznjaPregled(int id, DateTime vremePocetka, DateTime vremeZavrsetka, string lokacijaPreuzimanja, string lokacijaVracanja, string tip, string status, Korisnik korisnik, VoziloPregled vozilo, FizickoLice vozac, string razlog, string ovlascenoLice)
+        : base(id, vremePocetka, vremeZavrsetka, lokacijaPreuzimanja, lokacijaVracanja, tip, status, korisnik, vozilo, vozac)
         {
             Razlog = razlog;
             OvlascenoLice = ovlascenoLice;

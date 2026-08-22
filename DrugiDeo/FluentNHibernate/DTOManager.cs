@@ -30,7 +30,7 @@ namespace FluentNHibernateTemplate
             }
             catch (Exception ex)
             {
-
+                MessageBox.Show(ex.FormatExceptionMessage(), "Greška pri učitavanju vožnja");
             }
 
             return voznje;
@@ -45,17 +45,47 @@ namespace FluentNHibernateTemplate
 
                 Voznja v = s.Load<Voznja>(id);
                 vb = new VoznjaPregled(v.Id, v.VremePocetka, v.VremeZavrsetka, v.PredjenaKilometraza, v.TrajanjeMinuti, v.PocetniNivo, v.KrajnjiNivo, v.PocetnaLokacija, v.KrajnjaLokacija, v.Cena, v.Naknade);
-                
+
                 s.Close();
             }
             catch (Exception ex)
             {
-
+                MessageBox.Show(ex.FormatExceptionMessage(), "Greška pri učitavanju vožnje");
             }
 
             return vb;
         }
 
+        public static VoznjaPregled dodajVoznju(VoznjaPregled v)
+        {
+            try
+            {
+                ISession s = DataLayer.GetSession();
+                Voznja voznja = new Voznja
+                {
+                    VremePocetka = v.VremePocetka,
+                    VremeZavrsetka = v.VremeZavrsetka,
+                    PredjenaKilometraza = v.PredjenaKilometraza,
+                    TrajanjeMinuti = v.TrajanjeMinuti,
+                    PocetniNivo = v.PocetniNivo,
+                    KrajnjiNivo = v.KrajnjiNivo,
+                    PocetnaLokacija = v.PocetnaLokacija,
+                    KrajnjaLokacija = v.KrajnjaLokacija,
+                    Cena = v.Cena,
+                    Naknade = v.Naknade
+                };
+
+                s.Save(voznja);
+                s.Flush();
+                s.Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.FormatExceptionMessage(), "Greška pri kreiranju vožnje");
+            }
+
+            return v;
+        }
         public static VoznjaPregled azurirajVoznju(VoznjaPregled v)
         {
             try
@@ -80,10 +110,146 @@ namespace FluentNHibernateTemplate
             }
             catch (Exception ex)
             {
-
+                MessageBox.Show(ex.FormatExceptionMessage(), "Greška pri ažuriranju vožnje");
             }
 
             return v;
+        }
+
+        public static void obrisiVoznju(int id)
+        {
+            try
+            {
+                ISession s = DataLayer.GetSession();
+                Voznja v = s.Load<Voznja>(id);
+                s.Delete(v);
+                s.Flush();
+                s.Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.FormatExceptionMessage(), "Greška pri brisanju vožnje");
+            }
+        }
+        #endregion
+
+        #region Dogadjaji
+        public static List<DogadjajUVoznjiPregled> vratiDogadjajeZaVoznju(int id)
+        {
+            List<DogadjajUVoznjiPregled> dogadjaji = new List<DogadjajUVoznjiPregled>();
+            try
+            {
+                ISession s = DataLayer.GetSession();
+                IEnumerable<DogadjajUVoznji> rezultati = from d in s.Query<DogadjajUVoznji>()
+                                                         where d.Voznja.Id == id
+                                                         select d;
+
+                foreach (DogadjajUVoznji d in rezultati)
+                {
+                    dogadjaji.Add(new DogadjajUVoznjiPregled(d.Id, d.Tip, d.Vreme, d.Lokacija, d.Opis));
+                }
+
+                s.Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.FormatExceptionMessage(), "Greška pri učitavanju događaja");
+            }
+
+            return dogadjaji;
+        }
+
+        public static DogadjajUVoznjiPregled vratiDogadjaj(int id)
+        {
+            DogadjajUVoznjiPregled d = new DogadjajUVoznjiPregled();
+            try
+            {
+                ISession s = DataLayer.GetSession();
+
+                DogadjajUVoznji v = s.Load<DogadjajUVoznji>(id);
+                d = new DogadjajUVoznjiPregled(v.Id, v.Tip, v.Vreme, v.Lokacija, v.Opis);
+
+                s.Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.FormatExceptionMessage(), "Greška pri učitavanju događaja");
+            }
+
+            return d;
+        }
+
+        public static DogadjajUVoznjiPregled dodajDogadjaj(DogadjajUVoznjiPregled d, VoznjaPregled voznja)
+        {
+            try
+            {
+                ISession s = DataLayer.GetSession();
+                Voznja v = s.Load<Voznja>(voznja.Id);
+
+                DogadjajUVoznji dogadjaj = new DogadjajUVoznji
+                {
+                    Tip = d.Tip,
+                    Vreme = d.Vreme,
+                    Lokacija = d.Lokacija,
+                    Opis = d.Opis,
+                    Voznja = v
+                };
+
+                s.Save(dogadjaj);
+                s.Flush();
+                s.Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.FormatExceptionMessage(), "Greška pri kreiranju događaja");
+            }
+
+            return d;
+        }
+        public static DogadjajUVoznjiPregled azurirajDogadjaj(DogadjajUVoznjiPregled d)
+        {
+            try
+            {
+                ISession s = DataLayer.GetSession();
+
+                DogadjajUVoznji dogadjaj = s.Load<DogadjajUVoznji>(d.Id);
+                dogadjaj.Tip = d.Tip;
+                dogadjaj.Vreme = d.Vreme;
+                dogadjaj.Lokacija = d.Lokacija;
+                dogadjaj.Opis = d.Opis;
+
+                s.Update(dogadjaj);
+                s.Flush();
+                s.Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.FormatExceptionMessage(), "Greška pri ažuriranju događaja");
+            }
+
+            return d;
+        }
+
+        public static void obrisiDogadjaj(int id)
+        {
+            try
+            {
+                ISession s = DataLayer.GetSession();
+
+                DogadjajUVoznji dogadjaj = s.Load<DogadjajUVoznji>(id);
+
+                if (dogadjaj != null)
+                {
+                    s.Delete(dogadjaj);
+                    s.Flush();
+                }
+
+                s.Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.FormatExceptionMessage(), "Greška pri brisanju događaja");
+            }
         }
         #endregion
 

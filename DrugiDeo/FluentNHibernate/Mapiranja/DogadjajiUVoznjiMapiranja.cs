@@ -13,7 +13,7 @@ namespace FluentNHibernateTemplate.Mapiranja
         {
             Table("DOGADJAJVOZNJE");
 
-            Id(x => x.Id, "ID").GeneratedBy.Identity();
+            Id(x => x.Id, "ID").GeneratedBy.TriggerIdentity();
 
             Map(x => x.Tip, "TIP_DOGADJAJA").Not.Nullable();
             Map(x => x.Vreme, "VREME_DOGADJAJA").Not.Nullable();
