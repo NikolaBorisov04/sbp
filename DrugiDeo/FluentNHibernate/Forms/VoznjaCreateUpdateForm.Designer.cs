@@ -49,6 +49,8 @@
             numericUpDown5 = new NumericUpDown();
             numericUpDown6 = new NumericUpDown();
             button1 = new Button();
+            label1 = new Label();
+            comboBox1 = new ComboBox();
             ((System.ComponentModel.ISupportInitialize)numericUpDown1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numericUpDown2).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numericUpDown3).BeginInit();
@@ -202,7 +204,7 @@
             // label10
             // 
             label10.AutoSize = true;
-            label10.Location = new Point(166, 335);
+            label10.Location = new Point(523, 31);
             label10.Name = "label10";
             label10.Size = new Size(45, 20);
             label10.TabIndex = 23;
@@ -211,7 +213,7 @@
             // label11
             // 
             label11.AutoSize = true;
-            label11.Location = new Point(140, 373);
+            label11.Location = new Point(497, 71);
             label11.Name = "label11";
             label11.Size = new Size(71, 20);
             label11.TabIndex = 24;
@@ -220,7 +222,7 @@
             // numericUpDown5
             // 
             numericUpDown5.DecimalPlaces = 2;
-            numericUpDown5.Location = new Point(217, 332);
+            numericUpDown5.Location = new Point(574, 28);
             numericUpDown5.Maximum = new decimal(new int[] { 1000000000, 0, 0, 0 });
             numericUpDown5.Name = "numericUpDown5";
             numericUpDown5.Size = new Size(248, 27);
@@ -229,7 +231,7 @@
             // numericUpDown6
             // 
             numericUpDown6.DecimalPlaces = 2;
-            numericUpDown6.Location = new Point(217, 370);
+            numericUpDown6.Location = new Point(574, 66);
             numericUpDown6.Maximum = new decimal(new int[] { 1000000000, 0, 0, 0 });
             numericUpDown6.Name = "numericUpDown6";
             numericUpDown6.Size = new Size(248, 27);
@@ -237,7 +239,7 @@
             // 
             // button1
             // 
-            button1.Location = new Point(347, 444);
+            button1.Location = new Point(704, 291);
             button1.Name = "button1";
             button1.Size = new Size(118, 33);
             button1.TabIndex = 27;
@@ -245,11 +247,31 @@
             button1.UseVisualStyleBackColor = true;
             button1.Click += button1_Click;
             // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Location = new Point(481, 111);
+            label1.Name = "label1";
+            label1.Size = new Size(87, 20);
+            label1.TabIndex = 28;
+            label1.Text = "Rezervacija:";
+            // 
+            // comboBox1
+            // 
+            comboBox1.FormattingEnabled = true;
+            comboBox1.Location = new Point(574, 111);
+            comboBox1.Name = "comboBox1";
+            comboBox1.Size = new Size(248, 28);
+            comboBox1.TabIndex = 29;
+            comboBox1.SelectedIndexChanged += comboBox1_SelectedIndexChanged;
+            // 
             // VoznjaCreateUpdateForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(500, 490);
+            ClientSize = new Size(874, 351);
+            Controls.Add(comboBox1);
+            Controls.Add(label1);
             Controls.Add(button1);
             Controls.Add(numericUpDown6);
             Controls.Add(numericUpDown5);
@@ -275,6 +297,7 @@
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Izmeni vožnju";
             TopMost = true;
+            Load += VoznjaCreateUpdateForm_Load;
             ((System.ComponentModel.ISupportInitialize)numericUpDown1).EndInit();
             ((System.ComponentModel.ISupportInitialize)numericUpDown2).EndInit();
             ((System.ComponentModel.ISupportInitialize)numericUpDown3).EndInit();
@@ -308,5 +331,7 @@
         private NumericUpDown numericUpDown5;
         private NumericUpDown numericUpDown6;
         private Button button1;
+        private Label label1;
+        private ComboBox comboBox1;
     }
 }

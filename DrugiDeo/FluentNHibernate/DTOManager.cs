@@ -10,6 +10,214 @@ namespace FluentNHibernateTemplate
 {
     public class DTOManager
     {
+        #region Rezervacije
+        public static List<RezervacijaPregled> vratiSveRezervacije()
+        {
+            List<RezervacijaPregled> rezervacije = new List<RezervacijaPregled>();
+            try
+            {
+                ISession s = DataLayer.GetSession();
+                IEnumerable<Rezervacija> sveRezervacije = from o in s.Query<Rezervacija>()
+                                                         select o;
+
+                foreach (Rezervacija v in sveRezervacije)
+                {
+                    int vozacId = v.Vozac != null ? v.Vozac.Id : -1;
+
+                    if (v is SluzbenaVoznja sv)
+                    {
+                        rezervacije.Add(new SluzbenaVoznjaPregled(
+                                sv.Id, sv.VremePocetka, sv.VremeZavrsetka,
+                                sv.LokacijaPreuzimanja, sv.LokacijaVracanja,
+                                sv.Tip, sv.Status, sv.Korisnik.Id, sv.Vozilo.Id, vozacId,
+                                sv.Razlog, sv.OvlascenoLice
+                            ));
+                    }
+                    else
+                    {
+                        rezervacije.Add(new RezervacijaPregled(
+                                v.Id, v.VremePocetka, v.VremeZavrsetka,
+                                v.LokacijaPreuzimanja, v.LokacijaVracanja,
+                                v.Tip, v.Status, v.Korisnik.Id, v.Vozilo.Id, vozacId
+                            ));
+                    }
+                }
+
+                s.Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.FormatExceptionMessage(), "Greška pri učitavanju rezervacija");
+            }
+
+            return rezervacije;
+        }
+
+        public static RezervacijaPregled vratiRezervaciju(int id)
+        {
+            RezervacijaPregled rp = new RezervacijaPregled();
+            try
+            {
+                ISession s = DataLayer.GetSession();
+
+                Rezervacija r = s.Load<Rezervacija>(id);
+                int vozacId = r.Vozac != null ? r.Vozac.Id : -1;
+                if (r is SluzbenaVoznja sv)
+                {
+                    rp = new SluzbenaVoznjaPregled(
+                        sv.Id, sv.VremePocetka, sv.VremeZavrsetka,
+                        sv.LokacijaPreuzimanja, sv.LokacijaVracanja,
+                        sv.Tip, sv.Status, sv.Korisnik.Id, sv.Vozilo.Id, vozacId,
+                        sv.Razlog, sv.OvlascenoLice
+                    );
+                }
+                else
+                {
+                    rp = new RezervacijaPregled(
+                        r.Id, r.VremePocetka, r.VremeZavrsetka,
+                        r.LokacijaPreuzimanja, r.LokacijaVracanja,
+                        r.Tip, r.Status, r.Korisnik.Id, r.Vozilo.Id, vozacId
+                    );
+                }
+
+                s.Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.FormatExceptionMessage(), "Greška pri učitavanju rezervacije");
+            }
+
+            return rp;
+        }
+
+        public static RezervacijaPregled dodajRezervaciju(RezervacijaPregled v)
+        {
+            try
+            {
+                ISession s = DataLayer.GetSession();
+                Korisnik korisnik = s.Load<Korisnik>(v.KorisnikId);
+                Vozilo vozilo = s.Load<Vozilo>(v.VoziloId);
+
+                FizickoLice vozac = null;
+                if (v.VozacId != 0)
+                {
+                    vozac = s.Load<FizickoLice>(v.VozacId);
+                }
+                Rezervacija r = new Rezervacija
+                {
+                    VremePocetka = v.VremePocetka,
+                    VremeZavrsetka = v.VremeZavrsetka,
+                    LokacijaPreuzimanja = v.LokacijaPreuzimanja,
+                    LokacijaVracanja = v.LokacijaVracanja,
+                    Tip = v.Tip,
+                    Status = v.Status,
+                    Korisnik = korisnik,
+                    Vozilo = vozilo,
+                    Vozac = vozac
+                };
+
+                s.Save(r);
+                s.Flush();
+                s.Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.FormatExceptionMessage(), "Greška pri kreiranju rezervacije");
+            }
+
+            return v;
+        }
+        public static RezervacijaPregled azurirajRezervaciju(RezervacijaPregled v)
+        {
+            try
+            {
+                ISession s = DataLayer.GetSession();
+
+                Rezervacija r = s.Load<Rezervacija>(v.Id);
+
+                r.VremePocetka = v.VremePocetka;
+                r.VremeZavrsetka = v.VremeZavrsetka;
+                r.LokacijaPreuzimanja = v.LokacijaPreuzimanja;
+                r.LokacijaVracanja = v.LokacijaVracanja;
+                r.Tip = v.Tip;
+                r.Status = v.Status;
+
+                r.Korisnik = s.Load<Korisnik>(v.KorisnikId);
+                r.Vozilo = s.Load<Vozilo>(v.VoziloId);
+                r.Vozac = (v.VozacId != 0) ? s.Load<FizickoLice>(v.VozacId) : null;
+
+                s.Update(r);
+                s.Flush();
+                s.Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.FormatExceptionMessage(), "Greška pri ažuriranju rezervacije");
+            }
+
+            return v;
+        }
+        public static void obrisiRezervaciju(int id)
+        {
+            try
+            {
+                ISession s = DataLayer.GetSession();
+                Rezervacija r = s.Get<Rezervacija>(id);
+                if (r != null)
+                {
+                    s.Delete(r);
+                    s.Flush();
+                }
+                s.Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.FormatExceptionMessage(), "Greška pri brisanju rezervacije");
+            }
+        }
+
+        public static List<RezervacijaPregled> vratiRezervacijeBezVoznje()
+        {
+            List<RezervacijaPregled> rezervacije = new List<RezervacijaPregled>();
+            try
+            {
+                ISession s = DataLayer.GetSession();
+                List<int> rezSaVoznjom = s.Query<Voznja>()
+                          .Where(v => v.Rezervacija != null)
+                          .Select(v => v.Rezervacija.Id)
+                          .ToList();
+
+                IEnumerable<Rezervacija> sveRezervacije = from o in s.Query<Rezervacija>()
+                                                          where !rezSaVoznjom.Contains(o.Id)
+                                                          select o;
+
+                foreach (Rezervacija v in sveRezervacije)
+                {
+                    rezervacije.Add(new RezervacijaPregled(
+                        v.Id,
+                        v.VremePocetka,
+                        v.VremeZavrsetka,
+                        v.LokacijaPreuzimanja,
+                        v.LokacijaVracanja,
+                        v.Tip,
+                        v.Status,
+                        v.Korisnik.Id,
+                        v.Vozilo.Id,
+                        (v.Vozac != null) ? v.Vozac.Id : 0
+                    ));
+                }
+
+                s.Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.FormatExceptionMessage(), "Greška pri učitavanju rezervacija");
+            }
+
+            return rezervacije;
+        }
+        #endregion
+
         #region Voznje
 
         public static List<VoznjaPregled> vratiSveVoznje()
@@ -23,7 +231,20 @@ namespace FluentNHibernateTemplate
 
                 foreach (Entiteti.Voznja v in sveVoznje)
                 {
-                    voznje.Add(new VoznjaPregled(v.Id, v.VremePocetka, v.VremeZavrsetka, v.PredjenaKilometraza, v.TrajanjeMinuti, v.PocetniNivo, v.KrajnjiNivo, v.PocetnaLokacija, v.KrajnjaLokacija, v.Cena, v.Naknade));
+                    voznje.Add(new VoznjaPregled(
+                        v.Id, 
+                        v.VremePocetka, 
+                        v.VremeZavrsetka, 
+                        v.PredjenaKilometraza, 
+                        v.TrajanjeMinuti, 
+                        v.PocetniNivo, 
+                        v.KrajnjiNivo, 
+                        v.PocetnaLokacija, 
+                        v.KrajnjaLokacija, 
+                        v.Cena, 
+                        v.Naknade,
+                        v.Rezervacija.Id
+                     ));
                 }
 
                 s.Close();
@@ -44,7 +265,7 @@ namespace FluentNHibernateTemplate
                 ISession s = DataLayer.GetSession();
 
                 Voznja v = s.Load<Voznja>(id);
-                vb = new VoznjaPregled(v.Id, v.VremePocetka, v.VremeZavrsetka, v.PredjenaKilometraza, v.TrajanjeMinuti, v.PocetniNivo, v.KrajnjiNivo, v.PocetnaLokacija, v.KrajnjaLokacija, v.Cena, v.Naknade);
+                vb = new VoznjaPregled(v.Id, v.VremePocetka, v.VremeZavrsetka, v.PredjenaKilometraza, v.TrajanjeMinuti, v.PocetniNivo, v.KrajnjiNivo, v.PocetnaLokacija, v.KrajnjaLokacija, v.Cena, v.Naknade, v.Rezervacija.Id);
 
                 s.Close();
             }
@@ -61,6 +282,8 @@ namespace FluentNHibernateTemplate
             try
             {
                 ISession s = DataLayer.GetSession();
+                Rezervacija rezervacija = s.Get<Rezervacija>(v.RezervacijaId);
+
                 Voznja voznja = new Voznja
                 {
                     VremePocetka = v.VremePocetka,
@@ -72,7 +295,8 @@ namespace FluentNHibernateTemplate
                     PocetnaLokacija = v.PocetnaLokacija,
                     KrajnjaLokacija = v.KrajnjaLokacija,
                     Cena = v.Cena,
-                    Naknade = v.Naknade
+                    Naknade = v.Naknade,
+                    Rezervacija = rezervacija
                 };
 
                 s.Save(voznja);
@@ -121,15 +345,92 @@ namespace FluentNHibernateTemplate
             try
             {
                 ISession s = DataLayer.GetSession();
-                Voznja v = s.Load<Voznja>(id);
-                s.Delete(v);
-                s.Flush();
+                Voznja v = s.Get<Voznja>(id);
+                if (v != null)
+                {
+                    s.Delete(v);
+                    s.Flush();
+                }
                 s.Close();
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.FormatExceptionMessage(), "Greška pri brisanju vožnje");
             }
+        }
+        #endregion
+
+        #region SluzbeneVoznje
+        public static SluzbenaVoznjaPregled dodajSluzbenuVoznju(SluzbenaVoznjaPregled v)
+        {
+            try
+            {
+                ISession s = DataLayer.GetSession();
+                Korisnik korisnik = s.Load<Korisnik>(v.KorisnikId);
+                Vozilo vozilo = s.Load<Vozilo>(v.VoziloId);
+
+                FizickoLice vozac = null;
+                if (v.VozacId != 0)
+                {
+                    vozac = s.Load<FizickoLice>(v.VozacId);
+                }
+                SluzbenaVoznja sv = new SluzbenaVoznja
+                {
+                    VremePocetka = v.VremePocetka,
+                    VremeZavrsetka = v.VremeZavrsetka,
+                    LokacijaPreuzimanja = v.LokacijaPreuzimanja,
+                    LokacijaVracanja = v.LokacijaVracanja,
+                    Tip = v.Tip,
+                    Status = v.Status,
+                    Korisnik = korisnik,
+                    Vozilo = vozilo,
+                    Vozac = vozac,
+                    Razlog = v.Razlog,
+                    OvlascenoLice = v.OvlascenoLice
+                };
+
+                s.Save(sv);
+                s.Flush();
+                s.Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.FormatExceptionMessage(), "Greška pri kreiranju službene vožnje");
+            }
+
+            return v;
+        }
+        public static SluzbenaVoznjaPregled azurirajSluzbenuVoznju(SluzbenaVoznjaPregled v)
+        {
+            try
+            {
+                ISession s = DataLayer.GetSession();
+
+                SluzbenaVoznja r = s.Load<SluzbenaVoznja>(v.Id);
+
+                r.VremePocetka = v.VremePocetka;
+                r.VremeZavrsetka = v.VremeZavrsetka;
+                r.LokacijaPreuzimanja = v.LokacijaPreuzimanja;
+                r.LokacijaVracanja = v.LokacijaVracanja;
+                r.Tip = v.Tip;
+                r.Status = v.Status;
+
+                r.Korisnik = s.Load<Korisnik>(v.KorisnikId);
+                r.Vozilo = s.Load<Vozilo>(v.VoziloId);
+                r.Vozac = (v.VozacId != 0) ? s.Load<FizickoLice>(v.VozacId) : null;
+                r.Razlog = v.Razlog;
+                r.OvlascenoLice = v.OvlascenoLice;
+
+                s.Update(r);
+                s.Flush();
+                s.Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.FormatExceptionMessage(), "Greška pri ažuriranju službene vožnje");
+            }
+
+            return v;
         }
         #endregion
 
@@ -236,7 +537,7 @@ namespace FluentNHibernateTemplate
             {
                 ISession s = DataLayer.GetSession();
 
-                DogadjajUVoznji dogadjaj = s.Load<DogadjajUVoznji>(id);
+                DogadjajUVoznji dogadjaj = s.Get<DogadjajUVoznji>(id);
 
                 if (dogadjaj != null)
                 {

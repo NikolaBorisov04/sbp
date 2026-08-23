@@ -13,10 +13,10 @@ namespace FluentNHibernateTemplate.Mapiranja
         {
             Table("SluzbenaVoznjaDetalji");
 
-            KeyColumn("rezervacija_id");
+            KeyColumn("REZERVACIJA_ID");
 
-            Map(x => x.Razlog, "razlog_voznje").Not.Nullable();
-            Map(x => x.OvlascenoLice, "ovlasceno_lice").Not.Nullable();
+            Map(x => x.Razlog, "RAZLOG_VOZNJE").Not.Nullable();
+            Map(x => x.OvlascenoLice, "OVLASCENO_LICE").Not.Nullable();
         }
     }
 }

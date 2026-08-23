@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using FluentNHibernateTemplate.Entiteti;
@@ -418,21 +419,21 @@ namespace FluentNHibernateTemplate
     #region Rezervacije
     public class RezervacijaPregled
     {
-        public int Id;
-        public DateTime VremePocetka;
-        public DateTime VremeZavrsetka;
-        public string LokacijaPreuzimanja;
-        public string LokacijaVracanja;
-        public string Tip;
-        public string Status;
-        public Korisnik Korisnik; // popraviti da i ovde bude dto
-        public VoziloPregled Vozilo;
-        public FizickoLice Vozac; // popraviti da i ovde bude dto
+
+        public int Id { get; set; }
+        public DateTime VremePocetka { get; set; }
+        public DateTime VremeZavrsetka { get; set; }
+        public string LokacijaPreuzimanja { get; set; }
+        public string LokacijaVracanja { get; set; }
+        public string Tip { get; set; }
+        public string Status { get; set; }
+        public int KorisnikId { get; set; }
+        public int VoziloId { get; set; }
+        public int VozacId { get; set; }
 
         public RezervacijaPregled() { }
 
-        // popraviti da i u konstruktoru voac i korisnik budu dto
-        public RezervacijaPregled(int id, DateTime vremePocetka, DateTime vremeZavrsetka, string lokacijaPreuzimanja, string lokacijaVracanja, string tip, string status, Korisnik korisnik, VoziloPregled vozilo, FizickoLice vozac)
+        public RezervacijaPregled(int id, DateTime vremePocetka, DateTime vremeZavrsetka, string lokacijaPreuzimanja, string lokacijaVracanja, string tip, string status, int korisnik, int vozilo, int vozac)
         {
             this.Id = id;
             this.VremePocetka = vremePocetka;
@@ -441,9 +442,9 @@ namespace FluentNHibernateTemplate
             this.LokacijaVracanja = lokacijaVracanja;
             this.Tip = tip;
             this.Status = status;
-            this.Korisnik = korisnik;
-            this.Vozilo = vozilo;
-            this.Vozac = vozac;
+            this.KorisnikId = korisnik;
+            this.VoziloId = vozilo;
+            this.VozacId = vozac;
         }
     }
     #endregion
@@ -452,21 +453,22 @@ namespace FluentNHibernateTemplate
 
     public class VoznjaPregled
     {
-        public int Id;
-        public DateTime VremePocetka;
-        public DateTime VremeZavrsetka;
-        public decimal PredjenaKilometraza;
-        public int TrajanjeMinuti;
-        public decimal PocetniNivo;
-        public decimal KrajnjiNivo;
-        public string PocetnaLokacija;
-        public string KrajnjaLokacija;
-        public decimal Cena;
-        public decimal Naknade;
+        public int Id { get; set; }
+        public DateTime VremePocetka { get; set; }
+        public DateTime VremeZavrsetka { get; set; }
+        public decimal PredjenaKilometraza { get; set; }
+        public int TrajanjeMinuti { get; set; }
+        public decimal PocetniNivo { get; set; }
+        public decimal KrajnjiNivo { get; set; }
+        public string PocetnaLokacija { get; set; }
+        public string KrajnjaLokacija { get; set; }
+        public decimal Cena { get; set; }
+        public decimal Naknade { get; set; }
+        public int RezervacijaId {  get; set; }    
 
         public VoznjaPregled() { }
 
-        public VoznjaPregled(int id, DateTime vremePocetka, DateTime vremeZavrsetka, decimal predjenaKilometraza, int trajanjeMinuti, decimal pocetniNivo, decimal krajnjiNivo, string pocetnaLokacija, string krajnjaLokacija, decimal cena, decimal naknade)
+        public VoznjaPregled(int id, DateTime vremePocetka, DateTime vremeZavrsetka, decimal predjenaKilometraza, int trajanjeMinuti, decimal pocetniNivo, decimal krajnjiNivo, string pocetnaLokacija, string krajnjaLokacija, decimal cena, decimal naknade, int rezervacija)
         {
             Id = id;
             VremePocetka = vremePocetka;
@@ -479,23 +481,24 @@ namespace FluentNHibernateTemplate
             KrajnjaLokacija = krajnjaLokacija;
             Cena = cena;
             Naknade = naknade;
+            RezervacijaId = rezervacija;
         }
     }
 
     public class VoznjaBasic
     {
-        public int Id;
-        public DateTime VremePocetka;
-        public DateTime VremeZavrsetka;
-        public decimal PredjenaKilometraza;
-        public int TrajanjeMinuti;
-        public decimal PocetniNivo;
-        public decimal KrajnjiNivo;
-        public string PocetnaLokacija;
-        public string KrajnjaLokacija;
-        public decimal Cena;
-        public decimal Naknade;
-        public RezervacijaPregled Rezervacija;
+        public int Id { get; set; }
+        public DateTime VremePocetka { get; set; }
+        public DateTime VremeZavrsetka { get; set; }
+        public decimal PredjenaKilometraza { get; set; }
+        public int TrajanjeMinuti { get; set; }
+        public decimal PocetniNivo { get; set; }
+        public decimal KrajnjiNivo { get; set; }
+        public string PocetnaLokacija { get; set; }
+        public string KrajnjaLokacija { get; set; }
+        public decimal Cena { get; set; }
+        public decimal Naknade { get; set; }
+        public RezervacijaPregled Rezervacija { get; set; }
 
         public virtual IList<DogadjajUVoznjiPregled> Dogadjaji { get; set; }
 
@@ -526,12 +529,12 @@ namespace FluentNHibernateTemplate
     #region SluzbeneVoznje
     public class SluzbenaVoznjaPregled : RezervacijaPregled
     {
-        public string Razlog;
-        public string OvlascenoLice;
+        public string Razlog { get; set; }  
+        public string OvlascenoLice { get; set; }
 
-        public SluzbenaVoznjaPregled() { }
+        public SluzbenaVoznjaPregled() : base() { }
 
-        public SluzbenaVoznjaPregled(int id, DateTime vremePocetka, DateTime vremeZavrsetka, string lokacijaPreuzimanja, string lokacijaVracanja, string tip, string status, Korisnik korisnik, VoziloPregled vozilo, FizickoLice vozac, string razlog, string ovlascenoLice)
+        public SluzbenaVoznjaPregled(int id, DateTime vremePocetka, DateTime vremeZavrsetka, string lokacijaPreuzimanja, string lokacijaVracanja, string tip, string status, int korisnik, int vozilo, int vozac, string razlog, string ovlascenoLice)
         : base(id, vremePocetka, vremeZavrsetka, lokacijaPreuzimanja, lokacijaVracanja, tip, status, korisnik, vozilo, vozac)
         {
             Razlog = razlog;
@@ -543,11 +546,11 @@ namespace FluentNHibernateTemplate
     #region DogadjajiUVoznji
     public class DogadjajUVoznjiPregled
     {
-        public int Id;
-        public string Tip;
-        public DateTime Vreme;
-        public string Lokacija;
-        public string Opis;
+        public int Id { get; set; }
+        public string Tip { get; set; }
+        public DateTime Vreme { get; set; }
+        public string Lokacija { get; set; }
+        public string Opis { get; set; }
 
         public DogadjajUVoznjiPregled() { }
 

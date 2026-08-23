@@ -37,6 +37,8 @@
             btnDodaj = new Button();
             btnIzmeni = new Button();
             btnIzbrisi = new Button();
+            groupBox1 = new GroupBox();
+            groupBox1.SuspendLayout();
             SuspendLayout();
             // 
             // listaDogadjaja
@@ -82,9 +84,9 @@
             // 
             // btnDodaj
             // 
-            btnDodaj.Location = new Point(953, 41);
+            btnDodaj.Location = new Point(6, 31);
             btnDodaj.Name = "btnDodaj";
-            btnDodaj.Size = new Size(129, 29);
+            btnDodaj.Size = new Size(171, 29);
             btnDodaj.TabIndex = 1;
             btnDodaj.Text = "Dodaj događaj";
             btnDodaj.UseVisualStyleBackColor = true;
@@ -92,9 +94,9 @@
             // 
             // btnIzmeni
             // 
-            btnIzmeni.Location = new Point(953, 76);
+            btnIzmeni.Location = new Point(6, 66);
             btnIzmeni.Name = "btnIzmeni";
-            btnIzmeni.Size = new Size(129, 29);
+            btnIzmeni.Size = new Size(171, 29);
             btnIzmeni.TabIndex = 2;
             btnIzmeni.Text = "Izmeni događaj";
             btnIzmeni.UseVisualStyleBackColor = true;
@@ -102,27 +104,38 @@
             // 
             // btnIzbrisi
             // 
-            btnIzbrisi.Location = new Point(953, 111);
+            btnIzbrisi.Location = new Point(6, 101);
             btnIzbrisi.Name = "btnIzbrisi";
-            btnIzbrisi.Size = new Size(129, 29);
+            btnIzbrisi.Size = new Size(171, 29);
             btnIzbrisi.TabIndex = 3;
             btnIzbrisi.Text = "Izbriši događaj";
             btnIzbrisi.UseVisualStyleBackColor = true;
             btnIzbrisi.Click += btnIzbrisi_Click;
             // 
+            // groupBox1
+            // 
+            groupBox1.Controls.Add(btnIzbrisi);
+            groupBox1.Controls.Add(btnDodaj);
+            groupBox1.Controls.Add(btnIzmeni);
+            groupBox1.Location = new Point(937, 12);
+            groupBox1.Name = "groupBox1";
+            groupBox1.Size = new Size(193, 145);
+            groupBox1.TabIndex = 4;
+            groupBox1.TabStop = false;
+            groupBox1.Text = "Podaci o događajima";
+            // 
             // DogadjajUVoznjiForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1105, 450);
-            Controls.Add(btnIzbrisi);
-            Controls.Add(btnIzmeni);
-            Controls.Add(btnDodaj);
+            ClientSize = new Size(1144, 450);
+            Controls.Add(groupBox1);
             Controls.Add(listaDogadjaja);
             Name = "DogadjajUVoznjiForm";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Događaji";
             Load += DogadjajUVoznjiForm_Load;
+            groupBox1.ResumeLayout(false);
             ResumeLayout(false);
         }
 
@@ -137,5 +150,6 @@
         private Button btnDodaj;
         private Button btnIzmeni;
         private Button btnIzbrisi;
+        private GroupBox groupBox1;
     }
 }

@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using NHibernate.Mapping;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.TaskbarClock;
 
 namespace FluentNHibernateTemplate.Forms
@@ -22,6 +23,7 @@ namespace FluentNHibernateTemplate.Forms
             this.voznja = new VoznjaPregled();
             this.kreiranje = true;
             this.Text = "Kreiraj vožnju";
+            comboBox1.Enabled = true;
         }
 
         public VoznjaCreateUpdateForm(VoznjaPregled v)
@@ -30,6 +32,7 @@ namespace FluentNHibernateTemplate.Forms
             this.voznja = v;
             this.Text = "Izmeni vožnju";
             this.kreiranje = false;
+            comboBox1.Enabled = false;
             popuniPodacima();
         }
 
@@ -45,7 +48,6 @@ namespace FluentNHibernateTemplate.Forms
             textBox6.Text = voznja.KrajnjaLokacija;
             numericUpDown5.Value = voznja.Cena;
             numericUpDown6.Value = voznja.Naknade;
-
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -68,9 +70,10 @@ namespace FluentNHibernateTemplate.Forms
                 this.voznja.KrajnjaLokacija = textBox6.Text;
                 this.voznja.Cena = numericUpDown5.Value;
                 this.voznja.Naknade = numericUpDown6.Value;
-
+                
                 if (this.kreiranje)
                 {
+                    this.voznja.RezervacijaId = (int)comboBox1.SelectedValue;
                     DTOManager.dodajVoznju(this.voznja);
                     MessageBox.Show("Kreiranje nove vožnje je uspešno izvršeno!");
                 }
@@ -82,6 +85,18 @@ namespace FluentNHibernateTemplate.Forms
 
                 this.Close();
             }
+        }
+
+        private void VoznjaCreateUpdateForm_Load(object sender, EventArgs e)
+        {
+            comboBox1.DataSource = DTOManager.vratiRezervacijeBezVoznje();
+            comboBox1.DisplayMember = "";
+            comboBox1.ValueMember = "Id";
+        }
+
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            
         }
     }
 }
