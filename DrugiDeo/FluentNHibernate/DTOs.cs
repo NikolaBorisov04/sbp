@@ -416,6 +416,148 @@ namespace FluentNHibernateTemplate
     }
     #endregion
 
+    #region Korisnici
+
+    public class TipKorisnikaPregled
+    {
+        public int Id { get; set; }
+        public string Naziv { get; set; } = string.Empty;
+
+        public TipKorisnikaPregled() { }
+        public TipKorisnikaPregled(int id, string naziv)
+        {
+            Id = id;
+            Naziv = naziv;
+        }
+
+        public override string ToString() => Naziv;
+    }
+
+    public class UlogaPregled
+    {
+        public int Id { get; set; }
+        public string Naziv { get; set; } = string.Empty;
+
+        public UlogaPregled() { }
+        public UlogaPregled(int id, string naziv)
+        {
+            Id = id;
+            Naziv = naziv;
+        }
+
+        public override string ToString() => Naziv;
+    }
+
+    public class KorisnikPregled
+    {
+        public int Id { get; set; }
+        public string ImeNazivPrikaz { get; set; } = string.Empty;
+        public string EmailAdresa { get; set; } = string.Empty;
+        public string StatusNaloga { get; set; } = string.Empty;
+        public string TipKorisnika { get; set; } = string.Empty;
+        public DateTime DatumRegistracije { get; set; }
+
+        public KorisnikPregled() { }
+        public KorisnikPregled(int id, string imeNazivPrikaz, string emailAdresa, string statusNaloga, string tipKorisnika, DateTime datumRegistracije)
+        {
+            Id = id;
+            ImeNazivPrikaz = imeNazivPrikaz;
+            EmailAdresa = emailAdresa;
+            StatusNaloga = statusNaloga;
+            TipKorisnika = tipKorisnika;
+            DatumRegistracije = datumRegistracije;
+        }
+    }
+
+    public class KorisnikBasic
+    {
+        public int Id { get; set; }
+        public string Adresa { get; set; } = string.Empty;
+        public string EmailAdresa { get; set; } = string.Empty;
+        public DateTime DatumRegistracije { get; set; }
+        public string StatusNaloga { get; set; } = string.Empty;
+        public string NacinVerifikacije { get; set; } = string.Empty;
+
+        public int TipKorisnikaId { get; set; }
+        public string TipKorisnikaNaziv { get; set; } = string.Empty;
+
+        // FizickoLice
+        public string Jmbg { get; set; } = string.Empty;
+        public string Ime { get; set; } = string.Empty;
+        public string Prezime { get; set; } = string.Empty;
+        public string BrojVozackeDozvole { get; set; } = string.Empty;
+        public string KategorijeDozvole { get; set; } = string.Empty;
+        public DateTime DatumIzdavanjaDozvole { get; set; }
+        public DateTime DatumIstekaDozvole { get; set; }
+
+        // PravnoLice
+        public string Naziv { get; set; } = string.Empty;
+        public string Pib { get; set; } = string.Empty;
+        public string MaticniBroj { get; set; } = string.Empty;
+        public string Sediste { get; set; } = string.Empty;
+        public string KontaktOsoba { get; set; } = string.Empty;
+        public string? UgovoreniUsloviKoriscenja { get; set; }
+
+        public KorisnikBasic() { }
+    }
+
+    #endregion
+
+    #region DodatniPodaciKorisnika
+
+    public class TelefonPregled
+    {
+        public int Id { get; set; }
+        public string BrojTelefona { get; set; } = string.Empty;
+
+        public TelefonPregled() { }
+        public TelefonPregled(int id, string brojTelefona)
+        {
+            Id = id;
+            BrojTelefona = brojTelefona;
+        }
+    }
+
+    public class VerifikacijaPregled
+    {
+        public int Id { get; set; }
+        public DateTime DatumVerifikacije { get; set; }
+        public string Verifikator { get; set; } = string.Empty;
+        public string Rezultat { get; set; } = string.Empty;
+        public string? Ogranicenja { get; set; }
+
+        public VerifikacijaPregled() { }
+        public VerifikacijaPregled(int id, DateTime datumVerifikacije, string verifikator, string rezultat, string? ogranicenja)
+        {
+            Id = id;
+            DatumVerifikacije = datumVerifikacije;
+            Verifikator = verifikator;
+            Rezultat = rezultat;
+            Ogranicenja = ogranicenja;
+        }
+    }
+
+    public class NacinPlacanjaPregled
+    {
+        public int Id { get; set; }
+        public string TipPlacanja { get; set; } = string.Empty;
+        public string Status { get; set; } = string.Empty;
+        public DateTime DatumDodavanja { get; set; }
+        public string? Ogranicenja { get; set; }
+
+        public NacinPlacanjaPregled() { }
+        public NacinPlacanjaPregled(int id, string tipPlacanja, string status, DateTime datumDodavanja, string? ogranicenja)
+        {
+            Id = id;
+            TipPlacanja = tipPlacanja;
+            Status = status;
+            DatumDodavanja = datumDodavanja;
+            Ogranicenja = ogranicenja;
+        }
+    }
+
+    #endregion
+
     #region Rezervacije
     public class RezervacijaPregled
     {

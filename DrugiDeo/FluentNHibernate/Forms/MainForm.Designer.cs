@@ -59,6 +59,7 @@ partial class MainForm
         button3.TabIndex = 6;
         button3.Text = "Upravljaj korisnicima";
         button3.UseVisualStyleBackColor = true;
+        button3.Click += button3_Click;
         // 
         // label1
         // 

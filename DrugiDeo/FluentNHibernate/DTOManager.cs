@@ -1067,6 +1067,629 @@ namespace FluentNHibernateTemplate
 
         #endregion
 
+        #region Korisnici
+
+        public static List<TipKorisnikaPregled> vratiSveTipoveKorisnika()
+        {
+            List<TipKorisnikaPregled> rez = new();
+            try
+            {
+                using ISession s = DataLayer.GetSession()!;
+                var list = s.Query<TipKorisnika>().ToList();
+                foreach (var t in list)
+                    rez.Add(new TipKorisnikaPregled(t.Id, t.Naziv));
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.FormatExceptionMessage(), "Greška");
+            }
+            return rez;
+        }
+
+        public static List<UlogaPregled> vratiSveUloge()
+        {
+            List<UlogaPregled> rez = new();
+            try
+            {
+                using ISession s = DataLayer.GetSession()!;
+                var list = s.Query<Uloga>().ToList();
+                foreach (var u in list)
+                    rez.Add(new UlogaPregled(u.Id, u.Naziv));
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.FormatExceptionMessage(), "Greška");
+            }
+            return rez;
+        }
+
+        public static List<KorisnikPregled> vratiSveKorisnike()
+        {
+            List<KorisnikPregled> rez = new();
+            try
+            {
+                using ISession s = DataLayer.GetSession()!;
+                var korisnici = s.Query<Korisnik>().ToList();
+
+                foreach (var k in korisnici)
+                {
+                    string prikaz;
+                    if (k is FizickoLice fl)
+                        prikaz = $"{fl.Ime} {fl.Prezime}";
+                    else if (k is PravnoLice pl)
+                        prikaz = pl.Naziv;
+                    else
+                        prikaz = $"Korisnik #{k.Id}";
+
+                    rez.Add(new KorisnikPregled(
+                        k.Id,
+                        prikaz,
+                        k.EmailAdresa,
+                        k.StatusNaloga,
+                        k.TipKorisnika?.Naziv ?? string.Empty,
+                        k.DatumRegistracije
+                    ));
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.FormatExceptionMessage(), "Greška pri učitavanju korisnika");
+            }
+            return rez;
+        }
+
+        public static KorisnikBasic? vratiKorisnika(int id)
+        {
+            try
+            {
+                using ISession s = DataLayer.GetSession()!;
+                Korisnik? k = s.Get<Korisnik>(id);
+                if (k == null) return null;
+
+                KorisnikBasic kb = new()
+                {
+                    Id = k.Id,
+                    Adresa = k.Adresa,
+                    EmailAdresa = k.EmailAdresa,
+                    DatumRegistracije = k.DatumRegistracije,
+                    StatusNaloga = k.StatusNaloga,
+                    NacinVerifikacije = k.NacinVerifikacije,
+                    TipKorisnikaId = k.TipKorisnika?.Id ?? 0,
+                    TipKorisnikaNaziv = k.TipKorisnika?.Naziv ?? string.Empty
+                };
+
+                if (k is FizickoLice fl)
+                {
+                    kb.Jmbg = fl.Jmbg;
+                    kb.Ime = fl.Ime;
+                    kb.Prezime = fl.Prezime;
+                    kb.BrojVozackeDozvole = fl.BrojVozackeDozvole;
+                    kb.KategorijeDozvole = fl.KategorijeDozvole;
+                    kb.DatumIzdavanjaDozvole = fl.DatumIzdavanjaDozvole;
+                    kb.DatumIstekaDozvole = fl.DatumIstekaDozvole;
+                }
+                else if (k is PravnoLice pl)
+                {
+                    kb.Naziv = pl.Naziv;
+                    kb.Pib = pl.Pib;
+                    kb.MaticniBroj = pl.MaticniBroj;
+                    kb.Sediste = pl.Sediste;
+                    kb.KontaktOsoba = pl.KontaktOsoba;
+                    kb.UgovoreniUsloviKoriscenja = pl.UgovoreniUsloviKoriscenja;
+                }
+
+                return kb;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.FormatExceptionMessage(), "Greška");
+                return null;
+            }
+        }
+
+        public static bool dodajKorisnika(KorisnikBasic kb)
+        {
+            try
+            {
+                using ISession s = DataLayer.GetSession()!;
+                using var tx = s.BeginTransaction();
+
+                TipKorisnika? tk = s.Get<TipKorisnika>(kb.TipKorisnikaId);
+                if (tk == null) return false;
+
+                string nazivTipa = tk.Naziv.ToLowerInvariant();
+                Korisnik k;
+
+                if (nazivTipa.Contains("fizic") || nazivTipa.Contains("fizič"))
+                {
+                    k = new FizickoLice
+                    {
+                        Jmbg = kb.Jmbg,
+                        Ime = kb.Ime,
+                        Prezime = kb.Prezime,
+                        BrojVozackeDozvole = kb.BrojVozackeDozvole,
+                        KategorijeDozvole = kb.KategorijeDozvole,
+                        DatumIzdavanjaDozvole = kb.DatumIzdavanjaDozvole,
+                        DatumIstekaDozvole = kb.DatumIstekaDozvole
+                    };
+                }
+                else if (nazivTipa.Contains("pravn"))
+                {
+                    k = new PravnoLice
+                    {
+                        Naziv = kb.Naziv,
+                        Pib = kb.Pib,
+                        MaticniBroj = kb.MaticniBroj,
+                        Sediste = kb.Sediste,
+                        KontaktOsoba = kb.KontaktOsoba,
+                        UgovoreniUsloviKoriscenja = kb.UgovoreniUsloviKoriscenja
+                    };
+                }
+                else
+                {
+                    k = new Korisnik();
+                }
+
+                k.Adresa = kb.Adresa;
+                k.EmailAdresa = kb.EmailAdresa;
+                k.DatumRegistracije = kb.DatumRegistracije;
+                k.StatusNaloga = kb.StatusNaloga;
+                k.NacinVerifikacije = kb.NacinVerifikacije;
+                k.TipKorisnika = tk;
+
+                s.Save(k);
+                tx.Commit();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.FormatExceptionMessage(), "Greška pri dodavanju korisnika");
+                return false;
+            }
+        }
+
+        public static bool azurirajKorisnika(KorisnikBasic kb)
+        {
+            try
+            {
+                using ISession s = DataLayer.GetSession()!;
+                using var tx = s.BeginTransaction();
+
+                Korisnik? k = s.Get<Korisnik>(kb.Id);
+                if (k == null) return false;
+
+                k.Adresa = kb.Adresa;
+                k.EmailAdresa = kb.EmailAdresa;
+                k.DatumRegistracije = kb.DatumRegistracije;
+                k.StatusNaloga = kb.StatusNaloga;
+                k.NacinVerifikacije = kb.NacinVerifikacije;
+
+                if (kb.TipKorisnikaId > 0 && (k.TipKorisnika == null || k.TipKorisnika.Id != kb.TipKorisnikaId))
+                    k.TipKorisnika = s.Load<TipKorisnika>(kb.TipKorisnikaId);
+
+                if (k is FizickoLice fl)
+                {
+                    fl.Jmbg = kb.Jmbg;
+                    fl.Ime = kb.Ime;
+                    fl.Prezime = kb.Prezime;
+                    fl.BrojVozackeDozvole = kb.BrojVozackeDozvole;
+                    fl.KategorijeDozvole = kb.KategorijeDozvole;
+                    fl.DatumIzdavanjaDozvole = kb.DatumIzdavanjaDozvole;
+                    fl.DatumIstekaDozvole = kb.DatumIstekaDozvole;
+                }
+                else if (k is PravnoLice pl)
+                {
+                    pl.Naziv = kb.Naziv;
+                    pl.Pib = kb.Pib;
+                    pl.MaticniBroj = kb.MaticniBroj;
+                    pl.Sediste = kb.Sediste;
+                    pl.KontaktOsoba = kb.KontaktOsoba;
+                    pl.UgovoreniUsloviKoriscenja = kb.UgovoreniUsloviKoriscenja;
+                }
+
+                s.Update(k);
+                tx.Commit();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.FormatExceptionMessage(), "Greška pri ažuriranju korisnika");
+                return false;
+            }
+        }
+
+        public static bool obrisiKorisnika(int id)
+        {
+            try
+            {
+                using ISession s = DataLayer.GetSession()!;
+                using var tx = s.BeginTransaction();
+
+                Korisnik? k = s.Get<Korisnik>(id);
+                if (k != null)
+                {
+                    s.Delete(k);
+                    tx.Commit();
+                    return true;
+                }
+                return false;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.FormatExceptionMessage(), "Greška pri brisanju korisnika");
+                return false;
+            }
+        }
+
+        #endregion
+
+        #region DodatniPodaciKorisnika
+
+        public static List<TelefonPregled> vratiTelefoneKorisnika(int korisnikId)
+        {
+            List<TelefonPregled> rez = new();
+            try
+            {
+                using ISession s = DataLayer.GetSession()!;
+                var list = s.Query<TelefonKorisnika>()
+                            .Where(t => t.Korisnik.Id == korisnikId)
+                            .ToList();
+                foreach (var t in list)
+                    rez.Add(new TelefonPregled(t.Id, t.BrojTelefona));
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.FormatExceptionMessage(), "Greška");
+            }
+            return rez;
+        }
+
+        public static bool dodajTelefonKorisniku(int korisnikId, string brojTelefona)
+        {
+            try
+            {
+                using ISession s = DataLayer.GetSession()!;
+                using var tx = s.BeginTransaction();
+
+                Korisnik? k = s.Get<Korisnik>(korisnikId);
+                if (k == null) return false;
+
+                TelefonKorisnika t = new()
+                {
+                    Korisnik = k,
+                    BrojTelefona = brojTelefona
+                };
+
+                s.Save(t);
+                tx.Commit();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.FormatExceptionMessage(), "Greška pri dodavanju telefona");
+                return false;
+            }
+        }
+
+        public static bool obrisiTelefonKorisnika(int telefonId)
+        {
+            try
+            {
+                using ISession s = DataLayer.GetSession()!;
+                using var tx = s.BeginTransaction();
+
+                var t = s.Get<TelefonKorisnika>(telefonId);
+                if (t != null)
+                {
+                    s.Delete(t);
+                    tx.Commit();
+                    return true;
+                }
+                return false;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.FormatExceptionMessage(), "Greška");
+                return false;
+            }
+        }
+
+        public static List<VerifikacijaPregled> vratiVerifikacijeKorisnika(int korisnikId)
+        {
+            List<VerifikacijaPregled> rez = new();
+            try
+            {
+                using ISession s = DataLayer.GetSession()!;
+                var list = s.Query<VerifikacijaKorisnika>()
+                            .Where(v => v.Korisnik.Id == korisnikId)
+                            .ToList();
+                foreach (var v in list)
+                    rez.Add(new VerifikacijaPregled(v.Id, v.DatumVerifikacije, v.Verifikator, v.Rezultat, v.Ogranicenja));
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.FormatExceptionMessage(), "Greška");
+            }
+            return rez;
+        }
+
+        public static bool dodajVerifikacijuKorisniku(int korisnikId, DateTime datum, string verifikator, string rezultat, string? ogranicenja)
+        {
+            try
+            {
+                using ISession s = DataLayer.GetSession()!;
+                using var tx = s.BeginTransaction();
+
+                Korisnik? k = s.Get<Korisnik>(korisnikId);
+                if (k == null) return false;
+
+                VerifikacijaKorisnika v = new()
+                {
+                    Korisnik = k,
+                    DatumVerifikacije = datum,
+                    Verifikator = verifikator,
+                    Rezultat = rezultat,
+                    Ogranicenja = ogranicenja
+                };
+
+                s.Save(v);
+                tx.Commit();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.FormatExceptionMessage(), "Greška pri dodavanju verifikacije");
+                return false;
+            }
+        }
+
+        public static bool obrisiVerifikacijuKorisnika(int verifikacijaId)
+        {
+            try
+            {
+                using ISession s = DataLayer.GetSession()!;
+                using var tx = s.BeginTransaction();
+
+                var v = s.Get<VerifikacijaKorisnika>(verifikacijaId);
+                if (v != null)
+                {
+                    s.Delete(v);
+                    tx.Commit();
+                    return true;
+                }
+                return false;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.FormatExceptionMessage(), "Greška");
+                return false;
+            }
+        }
+
+        public static List<NacinPlacanjaPregled> vratiNacinePlacanjaKorisnika(int korisnikId)
+        {
+            List<NacinPlacanjaPregled> rez = new();
+            try
+            {
+                using ISession s = DataLayer.GetSession()!;
+                var list = s.Query<NacinPlacanja>()
+                            .Where(n => n.Korisnik.Id == korisnikId)
+                            .ToList();
+                foreach (var n in list)
+                    rez.Add(new NacinPlacanjaPregled(n.Id, n.TipPlacanja, n.Status, n.DatumDodavanja, n.Ogranicenja));
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.FormatExceptionMessage(), "Greška");
+            }
+            return rez;
+        }
+
+        public static bool dodajNacinPlacanjaKorisniku(int korisnikId, string tip, string status, DateTime datumDodavanja, string? ogranicenja)
+        {
+            try
+            {
+                using ISession s = DataLayer.GetSession()!;
+                using var tx = s.BeginTransaction();
+
+                Korisnik? k = s.Get<Korisnik>(korisnikId);
+                if (k == null) return false;
+
+                NacinPlacanja n = new()
+                {
+                    Korisnik = k,
+                    TipPlacanja = tip,
+                    Status = status,
+                    DatumDodavanja = datumDodavanja,
+                    Ogranicenja = ogranicenja
+                };
+
+                s.Save(n);
+                tx.Commit();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.FormatExceptionMessage(), "Greška pri dodavanju načina plaćanja");
+                return false;
+            }
+        }
+
+        public static bool obrisiNacinPlacanjaKorisnika(int nacinId)
+        {
+            try
+            {
+                using ISession s = DataLayer.GetSession()!;
+                using var tx = s.BeginTransaction();
+
+                var n = s.Get<NacinPlacanja>(nacinId);
+                if (n != null)
+                {
+                    s.Delete(n);
+                    tx.Commit();
+                    return true;
+                }
+                return false;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.FormatExceptionMessage(), "Greška");
+                return false;
+            }
+        }
+
+        #endregion
+
+        #region UlogeKorisnika
+
+        public static bool dodajUlogu(UlogaPregled up)
+        {
+            try
+            {
+                using ISession s = DataLayer.GetSession()!;
+                using var tx = s.BeginTransaction();
+
+                Uloga u = new()
+                {
+                    Naziv = up.Naziv
+                };
+                s.Save(u);
+                tx.Commit();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.FormatExceptionMessage(), "Greška");
+                return false;
+            }
+        }
+
+        public static bool azurirajUlogu(UlogaPregled up)
+        {
+            try
+            {
+                using ISession s = DataLayer.GetSession()!;
+                using var tx = s.BeginTransaction();
+
+                Uloga? u = s.Get<Uloga>(up.Id);
+                if (u == null) return false;
+
+                u.Naziv = up.Naziv;
+
+                s.Update(u);
+                tx.Commit();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.FormatExceptionMessage(), "Greška");
+                return false;
+            }
+        }
+
+        public static bool obrisiUlogu(int id)
+        {
+            try
+            {
+                using ISession s = DataLayer.GetSession()!;
+                using var tx = s.BeginTransaction();
+
+                Uloga? u = s.Get<Uloga>(id);
+                if (u != null)
+                {
+                    s.Delete(u);
+                    tx.Commit();
+                    return true;
+                }
+                return false;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.FormatExceptionMessage(), "Greška");
+                return false;
+            }
+        }
+
+        public static List<UlogaPregled> vratiUlogeZaKorisnika(int korisnikId)
+        {
+            List<UlogaPregled> rez = new();
+            try
+            {
+                using ISession s = DataLayer.GetSession()!;
+                var list = s.Query<KorisnikUloga>()
+                            .Where(ku => ku.Korisnik.Id == korisnikId)
+                            .ToList();
+
+                foreach (var ku in list)
+                    rez.Add(new UlogaPregled(ku.Uloga.Id, ku.Uloga.Naziv));
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.FormatExceptionMessage(), "Greška");
+            }
+            return rez;
+        }
+
+        public static bool dodajUloguKorisniku(int korisnikId, int ulogaId)
+        {
+            try
+            {
+                using ISession s = DataLayer.GetSession()!;
+                using var tx = s.BeginTransaction();
+
+                Korisnik? k = s.Get<Korisnik>(korisnikId);
+                Uloga? u = s.Get<Uloga>(ulogaId);
+
+                if (k == null || u == null) return false;
+
+                bool vecPostoji = s.Query<KorisnikUloga>()
+                                    .Any(x => x.Korisnik.Id == korisnikId && x.Uloga.Id == ulogaId);
+                if (vecPostoji) return false;
+
+                KorisnikUloga ku = new()
+                {
+                    Korisnik = k,
+                    Uloga = u
+                };
+
+                s.Save(ku);
+                tx.Commit();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.FormatExceptionMessage(), "Greška pri dodeli uloge korisniku");
+                return false;
+            }
+        }
+
+        public static bool obrisiUloguSaKorisnika(int korisnikId, int ulogaId)
+        {
+            try
+            {
+                using ISession s = DataLayer.GetSession()!;
+                using var tx = s.BeginTransaction();
+
+                var ku = s.Query<KorisnikUloga>()
+                          .FirstOrDefault(x => x.Korisnik.Id == korisnikId && x.Uloga.Id == ulogaId);
+
+                if (ku != null)
+                {
+                    s.Delete(ku);
+                    tx.Commit();
+                    return true;
+                }
+                return false;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.FormatExceptionMessage(), "Greška");
+                return false;
+            }
+        }
+
+        #endregion
+
         #region PunjenjeTocenje
 
         public static List<PunjenjeTocenjePregled> vratiSvaPunjenjaTocenja(int? voziloId = null)
