@@ -22,4 +22,6 @@ public class Vozilo
     public virtual IList<PunjenjeTocenje> PunjenjaTocenja { get; set; } = new List<PunjenjeTocenje>();
     public virtual IList<NezgodaSteta> NezgodeStete { get; set; } = new List<NezgodaSteta>();
     public virtual IList<VoziloOprema> DodeljenaOprema { get; set; } = new List<VoziloOprema>();
+
+    public override string ToString() => $"{Marka} {Model} ({RegistarskaOznaka})";
 }

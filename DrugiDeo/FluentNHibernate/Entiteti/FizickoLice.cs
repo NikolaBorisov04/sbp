@@ -9,4 +9,6 @@ public class FizickoLice : Korisnik
     public virtual string KategorijeDozvole { get; set; } = null!;
     public virtual DateTime DatumIzdavanjaDozvole { get; set; }
     public virtual DateTime DatumIstekaDozvole { get; set; }
+
+    public override string ToString() => $"{Ime} {Prezime} {BrojVozackeDozvole}";
 }

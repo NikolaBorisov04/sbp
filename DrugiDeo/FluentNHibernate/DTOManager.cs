@@ -29,7 +29,7 @@ namespace FluentNHibernateTemplate
                         rezervacije.Add(new SluzbenaVoznjaPregled(
                                 sv.Id, sv.VremePocetka, sv.VremeZavrsetka,
                                 sv.LokacijaPreuzimanja, sv.LokacijaVracanja,
-                                sv.Tip, sv.Status, sv.Korisnik.Id, sv.Vozilo.Id, vozacId,
+                                sv.Tip, sv.Status, sv.Korisnik.Id, sv.Korisnik.ToString(), sv.Vozilo.Id, sv.Vozilo.ToString(), vozacId, (vozacId != -1) ? sv.Vozac.ToString() : "",
                                 sv.Razlog, sv.OvlascenoLice
                             ));
                     }
@@ -38,7 +38,7 @@ namespace FluentNHibernateTemplate
                         rezervacije.Add(new RezervacijaPregled(
                                 v.Id, v.VremePocetka, v.VremeZavrsetka,
                                 v.LokacijaPreuzimanja, v.LokacijaVracanja,
-                                v.Tip, v.Status, v.Korisnik.Id, v.Vozilo.Id, vozacId
+                                v.Tip, v.Status, v.Korisnik.Id, v.Korisnik.ToString(), v.Vozilo.Id, v.Vozilo.ToString(), vozacId, (vozacId != -1) ? v.Vozac.ToString() : ""
                             ));
                     }
                 }
@@ -67,7 +67,7 @@ namespace FluentNHibernateTemplate
                     rp = new SluzbenaVoznjaPregled(
                         sv.Id, sv.VremePocetka, sv.VremeZavrsetka,
                         sv.LokacijaPreuzimanja, sv.LokacijaVracanja,
-                        sv.Tip, sv.Status, sv.Korisnik.Id, sv.Vozilo.Id, vozacId,
+                        sv.Tip, sv.Status, sv.Korisnik.Id, sv.Korisnik.ToString(), sv.Vozilo.Id, sv.Vozilo.ToString(), vozacId,(vozacId != -1) ? sv.Vozac.ToString() : "",
                         sv.Razlog, sv.OvlascenoLice
                     );
                 }
@@ -76,7 +76,7 @@ namespace FluentNHibernateTemplate
                     rp = new RezervacijaPregled(
                         r.Id, r.VremePocetka, r.VremeZavrsetka,
                         r.LokacijaPreuzimanja, r.LokacijaVracanja,
-                        r.Tip, r.Status, r.Korisnik.Id, r.Vozilo.Id, vozacId
+                        r.Tip, r.Status, r.Korisnik.Id, r.Korisnik.ToString(), r.Vozilo.Id, r.Vozilo.ToString(), vozacId, (vozacId != -1) ? r.Vozac.ToString() : ""
                     );
                 }
 
@@ -202,8 +202,11 @@ namespace FluentNHibernateTemplate
                         v.Tip,
                         v.Status,
                         v.Korisnik.Id,
+                        v.Korisnik.ToString(),
                         v.Vozilo.Id,
-                        (v.Vozac != null) ? v.Vozac.Id : 0
+                        v.Vozilo.ToString(),
+                        (v.Vozac != null) ? v.Vozac.Id : 0,
+                        (v.Vozac != null) ? v.Vozac.ToString() : ""
                     ));
                 }
 
@@ -1134,6 +1137,33 @@ namespace FluentNHibernateTemplate
             catch (Exception ex)
             {
                 MessageBox.Show(ex.FormatExceptionMessage(), "Greška pri učitavanju korisnika");
+            }
+            return rez;
+        }
+
+        public static List<KorisnikPregled> vratiSvaFizickaLica()
+        {
+            List<KorisnikPregled> rez = new();
+            try
+            {
+                using ISession s = DataLayer.GetSession()!;
+                var fizickaLica = s.Query<FizickoLice>().ToList();
+
+                foreach (var fl in fizickaLica)
+                {
+                    rez.Add(new KorisnikPregled(
+                        fl.Id,
+                        $"{fl.Ime} {fl.Prezime}",
+                        fl.EmailAdresa,
+                        fl.StatusNaloga,
+                        fl.TipKorisnika?.Naziv ?? string.Empty,
+                        fl.DatumRegistracije
+                    ));
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.FormatExceptionMessage(), "Greška pri učitavanju fizičkih lica");
             }
             return rez;
         }

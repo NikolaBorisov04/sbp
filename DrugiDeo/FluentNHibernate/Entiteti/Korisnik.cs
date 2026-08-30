@@ -14,4 +14,6 @@ public class Korisnik
     public virtual IList<VerifikacijaKorisnika> Verifikacije { get; set; } = new List<VerifikacijaKorisnika>();
     public virtual IList<NacinPlacanja> NaciniPlacanja { get; set; } = new List<NacinPlacanja>();
     public virtual IList<KorisnikUloga> KorisnikUloge { get; set; } = new List<KorisnikUloga>();
+
+    public override string ToString() => EmailAdresa;
 }

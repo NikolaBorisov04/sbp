@@ -17,7 +17,7 @@ namespace FluentNHibernateTemplate.Entiteti
         public virtual string Status { get; set; }
 
         public virtual Korisnik Korisnik { get; set; }
-        public virtual FizickoLice Vozac { get; set; }
+        public virtual FizickoLice? Vozac { get; set; }
         public virtual Vozilo Vozilo { get; set; }
 
     }

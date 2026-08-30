@@ -41,9 +41,9 @@ namespace FluentNHibernateTemplate.Forms
                     v.LokacijaVracanja,
                     v.Tip,
                     v.Status,
-                    "korisnik", //v.Korisnik.ToString(),
-                    v.VoziloId.ToString(),
-                    "vozac", //v.Vozac.ToString(),
+                    v.KorisnikInfo,
+                    v.VoziloInfo,
+                    v.VozacInfo,
                     razlog,
                     ovlascenoLice
                     
@@ -58,6 +58,7 @@ namespace FluentNHibernateTemplate.Forms
         {
             RezervacijaCreateUpdateForm forma = new RezervacijaCreateUpdateForm();
             forma.ShowDialog();
+            this.popuniPodacima();
         }
 
         private void button2_Click(object sender, EventArgs e)
