@@ -90,13 +90,8 @@ namespace FluentNHibernateTemplate.Forms
         private void VoznjaCreateUpdateForm_Load(object sender, EventArgs e)
         {
             comboBox1.DataSource = DTOManager.vratiRezervacijeBezVoznje();
-            comboBox1.DisplayMember = "";
             comboBox1.ValueMember = "Id";
-        }
-
-        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            
+            comboBox1.DisplayMember = "";
         }
     }
 }

@@ -52,15 +52,17 @@ namespace FluentNHibernateTemplate.Forms
                 textBox6.Text = sluzbena.OvlascenoLice;
             }
         }
-
-        //dopuniti ovo kada budu napravljene metode
         private void ucitajPodatkeComboBox()
         {
-            //comboBox1.DataSource = DTOManager.vratiSveKorisnike();
+            comboBox1.DataSource = DTOManager.vratiSveKorisnike();
+            comboBox1.ValueMember = "Id";
+            comboBox1.DisplayMember = "";
             comboBox2.DataSource = DTOManager.vratiSvaVozila();
             comboBox2.ValueMember = "Id";
             comboBox2.DisplayMember = "";
-            //comboBox3.DataSource = DTOManager.vratiSvaFizickaLica();
+            comboBox3.DataSource = DTOManager.vratiSvaFizickaLica();
+            comboBox3.ValueMember = "Id";
+            comboBox3.DisplayMember = "";
         }
 
         private void RezervacijaCreateUpdateForm_Load(object sender, EventArgs e)
@@ -77,6 +79,12 @@ namespace FluentNHibernateTemplate.Forms
 
         private void button1_Click(object sender, EventArgs e)
         {
+            if (comboBox1.SelectedItem is KorisnikPregled izabraniKorisnik && izabraniKorisnik.TipKorisnika == "Pravno lice" && comboBox3.SelectedValue == null)
+            {
+                MessageBox.Show("Za pravno lice morate izabrati vozača pre čuvanja rezervacije.", "Greška", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
             string poruka = this.kreiranje ? "Da li želite da kreirate novu rezervaciju?" : "Da li želite da izvršite izmene rezervacije?";
             string title = "Pitanje";
 
@@ -96,7 +104,9 @@ namespace FluentNHibernateTemplate.Forms
                 sluzbena.LokacijaVracanja = textBox2.Text;
                 sluzbena.Tip = "Službena";
                 sluzbena.Status = textBox4.Text;
+                sluzbena.KorisnikId = (int)comboBox1.SelectedValue;
                 sluzbena.VoziloId = (int)comboBox2.SelectedValue;
+                sluzbena.VozacId = comboBox3.SelectedValue != null ? (int)comboBox3.SelectedValue : 0;
                 sluzbena.Razlog = textBox5.Text;
                 sluzbena.OvlascenoLice = textBox6.Text;
 
@@ -119,7 +129,9 @@ namespace FluentNHibernateTemplate.Forms
                 this.rezervacija.LokacijaVracanja = textBox2.Text;
                 this.rezervacija.Tip = "Privatna";
                 this.rezervacija.Status = textBox4.Text;
+                this.rezervacija.KorisnikId = (int)comboBox1.SelectedValue;
                 this.rezervacija.VoziloId = (int)comboBox2.SelectedValue;
+                this.rezervacija.VozacId = comboBox3.SelectedValue != null ? (int)comboBox3.SelectedValue : 0;
 
                 if (this.kreiranje)
                 {
@@ -143,7 +155,7 @@ namespace FluentNHibernateTemplate.Forms
                 label10.Visible = true;
                 textBox5.Visible = true;
                 label11.Visible = true;
-                textBox6.Visible = true;    
+                textBox6.Visible = true;
             }
             else
             {
@@ -151,6 +163,19 @@ namespace FluentNHibernateTemplate.Forms
                 textBox5.Visible = false;
                 label11.Visible = false;
                 textBox6.Visible = false;
+            }
+        }
+
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (comboBox1.SelectedItem is KorisnikPregled izabraniKorisnik)
+            {
+                if (izabraniKorisnik.TipKorisnika == "Pravno lice") comboBox3.Enabled = true;
+                else
+                {
+                    comboBox3.Enabled = false;
+                    comboBox3.SelectedIndex = -1;
+                }
             }
         }
     }
