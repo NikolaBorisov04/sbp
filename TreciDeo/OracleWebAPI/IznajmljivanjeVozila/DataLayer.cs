@@ -1,10 +1,12 @@
 using FluentNHibernateTemplate.Mapiranja;
 
 namespace FluentNHibernateTemplate;
+
 public static class DataLayer
 {
     private static ISessionFactory? factory;
     private static readonly object lockObj = new();
+
     public static ISession? GetSession()
     {
         if (factory == null)
@@ -25,15 +27,25 @@ public static class DataLayer
     {
         try
         {
-            DotNetEnv.Env.Load();
+            string envPath = Path.Combine(AppContext.BaseDirectory, ".env");
+
+            if (File.Exists(envPath))
+            {
+                DotNetEnv.Env.Load(envPath);
+            }
+            else
+            {
+                DotNetEnv.Env.Load();
+            }
 
             string? connectionString =
                 Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
 
-            /*MessageBox.Show(
-                connectionString ?? "CONNECTION STRING JE NULL",
-                "Connection string"
-            );*/
+            if (string.IsNullOrWhiteSpace(connectionString))
+            {
+                throw new InvalidOperationException(
+                    "DB_CONNECTION_STRING nije podešen. Proveri .env fajl.");
+            }
 
             var cfg = OracleManagedDataClientConfiguration.Oracle10
                 .ShowSql()
@@ -47,11 +59,7 @@ public static class DataLayer
         }
         catch (Exception ex)
         {
-            MessageBox.Show(
-                ex.ToString(),
-                "Greska"
-            );
-
+            MessageBox.Show(ex.ToString(), "Greska");
             return null;
         }
     }

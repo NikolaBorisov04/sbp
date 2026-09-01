@@ -7,7 +7,7 @@
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>FluentNHibernateTemplate</RootNamespace>
-    <AssemblyName>FluentNHibernateTemplate</AssemblyName>
+    <AssemblyName>IznajmljivanjeVozilaLibrary</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>

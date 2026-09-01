@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -119,6 +119,7 @@ namespace FluentNHibernateTemplate
                 s.Save(r);
                 s.Flush();
                 s.Close();
+                return v;
             }
             catch (Exception ex)
             {
@@ -149,6 +150,7 @@ namespace FluentNHibernateTemplate
                 s.Update(r);
                 s.Flush();
                 s.Close();
+                return v;
             }
             catch (Exception ex)
             {
@@ -175,7 +177,6 @@ namespace FluentNHibernateTemplate
                 MessageBox.Show(ex.FormatExceptionMessage(), "Greška pri brisanju rezervacije");
             }
         }
-
         public static List<RezervacijaPregled> vratiRezervacijeBezVoznje()
         {
             List<RezervacijaPregled> rezervacije = new List<RezervacijaPregled>();
@@ -305,6 +306,7 @@ namespace FluentNHibernateTemplate
                 s.Save(voznja);
                 s.Flush();
                 s.Close();
+                return v;
             }
             catch (Exception ex)
             {
@@ -334,6 +336,7 @@ namespace FluentNHibernateTemplate
                 s.Update(voznja);
                 s.Flush();
                 s.Close();
+                return v;
             }
             catch (Exception ex)
             {
@@ -395,6 +398,7 @@ namespace FluentNHibernateTemplate
                 s.Save(sv);
                 s.Flush();
                 s.Close();
+                return v;
             }
             catch (Exception ex)
             {
@@ -427,6 +431,7 @@ namespace FluentNHibernateTemplate
                 s.Update(r);
                 s.Flush();
                 s.Close();
+                return v;
             }
             catch (Exception ex)
             {
@@ -502,6 +507,7 @@ namespace FluentNHibernateTemplate
                 s.Save(dogadjaj);
                 s.Flush();
                 s.Close();
+                return d;
             }
             catch (Exception ex)
             {
@@ -525,6 +531,7 @@ namespace FluentNHibernateTemplate
                 s.Update(dogadjaj);
                 s.Flush();
                 s.Close();
+                return d;
             }
             catch (Exception ex)
             {
@@ -541,13 +548,11 @@ namespace FluentNHibernateTemplate
                 ISession s = DataLayer.GetSession();
 
                 DogadjajUVoznji dogadjaj = s.Get<DogadjajUVoznji>(id);
-
                 if (dogadjaj != null)
                 {
                     s.Delete(dogadjaj);
                     s.Flush();
                 }
-
                 s.Close();
             }
             catch (Exception ex)

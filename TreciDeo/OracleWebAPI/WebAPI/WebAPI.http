@@ -1,0 +1,7 @@
+# Generic WebAPI smoke test file.
+@WebAPI_HostAddress = https://localhost:7234
+
+###
+GET {{WebAPI_HostAddress}}/Vozila/vratiSvaVozila
+###
+GET {{WebAPI_HostAddress}}/Vozila/vratiVozilo6

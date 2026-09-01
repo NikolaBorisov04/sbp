@@ -2,9 +2,6 @@ namespace FluentNHibernateTemplate;
 
 public static class Extensions
 {
-    /// <summary>
-    /// Formats nested exception messages so Oracle/NHibernate errors are easier to read.
-    /// </summary>
     public static string FormatExceptionMessage(this Exception ex)
     {
         StringBuilder sb = new();

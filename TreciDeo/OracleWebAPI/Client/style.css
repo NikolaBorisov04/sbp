@@ -1,0 +1,22 @@
+body {
+    padding: 20px 60px 20px 60px;
+    background-color: #fafafa;
+    color: black;
+    text-align: center;
+    font-family: Arial, sans-serif;
+}
+
+table {
+    margin: 20px auto;
+    border-collapse: collapse;
+}
+
+td, th {
+    padding: 8px 12px;
+    border: 1px solid #cccccc;
+}
+
+.table-hover tbody tr:hover {
+    background-color: #9090b0;
+    color: white;
+}
