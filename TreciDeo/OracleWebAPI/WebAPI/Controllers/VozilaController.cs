@@ -16,7 +16,7 @@ namespace WebAPI.Controllers
             return Ok(rez);
         }
         [HttpGet]
-        [Route("vratiVozilo{id}")]
+        [Route("vratiVozilo/{id}")]
         public IActionResult vratiVozilo(int id)
         {
             var rez = DTOManager.vratiVozilo(id);

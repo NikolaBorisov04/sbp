@@ -4,4 +4,4 @@
 ###
 GET {{WebAPI_HostAddress}}/Vozila/vratiSvaVozila
 ###
-GET {{WebAPI_HostAddress}}/Vozila/vratiVozilo6
+GET {{WebAPI_HostAddress}}/Vozila/vratiVozilo/6

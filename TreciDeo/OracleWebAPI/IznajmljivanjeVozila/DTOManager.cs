@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 using FluentNHibernateTemplate.Entiteti;
 
 namespace FluentNHibernateTemplate
@@ -47,7 +46,7 @@ namespace FluentNHibernateTemplate
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.FormatExceptionMessage(), "Greška pri učitavanju rezervacija");
+                throw new Exception("Greška pri učitavanju rezervacija", ex);
             }
 
             return rezervacije;
@@ -84,7 +83,7 @@ namespace FluentNHibernateTemplate
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.FormatExceptionMessage(), "Greška pri učitavanju rezervacije");
+                throw new Exception("Greška pri učitavanju rezervacije", ex);
             }
 
             return rp;
@@ -123,10 +122,8 @@ namespace FluentNHibernateTemplate
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.FormatExceptionMessage(), "Greška pri kreiranju rezervacije");
+                throw new Exception("Greška pri kreiranju rezervacije", ex);
             }
-
-            return v;
         }
         public static RezervacijaPregled azurirajRezervaciju(RezervacijaPregled v)
         {
@@ -154,10 +151,8 @@ namespace FluentNHibernateTemplate
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.FormatExceptionMessage(), "Greška pri ažuriranju rezervacije");
+                throw new Exception("Greška pri ažuriranju rezervacije", ex);
             }
-
-            return v;
         }
         public static void obrisiRezervaciju(int id)
         {
@@ -174,7 +169,7 @@ namespace FluentNHibernateTemplate
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.FormatExceptionMessage(), "Greška pri brisanju rezervacije");
+                throw new Exception("Greška pri brisanju rezervacije", ex);
             }
         }
         public static List<RezervacijaPregled> vratiRezervacijeBezVoznje()
@@ -215,7 +210,7 @@ namespace FluentNHibernateTemplate
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.FormatExceptionMessage(), "Greška pri učitavanju rezervacija");
+                throw new Exception("Greška pri učitavanju rezervacija", ex);
             }
 
             return rezervacije;
@@ -255,7 +250,7 @@ namespace FluentNHibernateTemplate
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.FormatExceptionMessage(), "Greška pri učitavanju vožnja");
+                throw new Exception("Greška pri učitavanju vožnja", ex);
             }
 
             return voznje;
@@ -275,7 +270,7 @@ namespace FluentNHibernateTemplate
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.FormatExceptionMessage(), "Greška pri učitavanju vožnje");
+                throw new Exception("Greška pri učitavanju vožnje", ex);
             }
 
             return vb;
@@ -310,10 +305,8 @@ namespace FluentNHibernateTemplate
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.FormatExceptionMessage(), "Greška pri kreiranju vožnje");
+                throw new Exception("Greška pri kreiranju vožnje", ex);
             }
-
-            return v;
         }
         public static VoznjaPregled azurirajVoznju(VoznjaPregled v)
         {
@@ -340,10 +333,8 @@ namespace FluentNHibernateTemplate
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.FormatExceptionMessage(), "Greška pri ažuriranju vožnje");
+                throw new Exception("Greška pri ažuriranju vožnje", ex);
             }
-
-            return v;
         }
 
         public static void obrisiVoznju(int id)
@@ -361,7 +352,7 @@ namespace FluentNHibernateTemplate
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.FormatExceptionMessage(), "Greška pri brisanju vožnje");
+                throw new Exception("Greška pri brisanju vožnje", ex);
             }
         }
         #endregion
@@ -402,10 +393,8 @@ namespace FluentNHibernateTemplate
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.FormatExceptionMessage(), "Greška pri kreiranju službene vožnje");
+                throw new Exception("Greška pri kreiranju službene vožnje", ex);
             }
-
-            return v;
         }
         public static SluzbenaVoznjaPregled azurirajSluzbenuVoznju(SluzbenaVoznjaPregled v)
         {
@@ -435,10 +424,8 @@ namespace FluentNHibernateTemplate
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.FormatExceptionMessage(), "Greška pri ažuriranju službene vožnje");
+                throw new Exception("Greška pri ažuriranju službene vožnje", ex);
             }
-
-            return v;
         }
         #endregion
 
@@ -462,7 +449,7 @@ namespace FluentNHibernateTemplate
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.FormatExceptionMessage(), "Greška pri učitavanju događaja");
+                throw new Exception("Greška pri učitavanju događaja", ex);
             }
 
             return dogadjaji;
@@ -482,7 +469,7 @@ namespace FluentNHibernateTemplate
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.FormatExceptionMessage(), "Greška pri učitavanju događaja");
+                throw new Exception("Greška pri učitavanju događaja", ex);
             }
 
             return d;
@@ -511,10 +498,8 @@ namespace FluentNHibernateTemplate
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.FormatExceptionMessage(), "Greška pri kreiranju događaja");
+                throw new Exception("Greška pri kreiranju događaja", ex);
             }
-
-            return d;
         }
         public static DogadjajUVoznjiPregled azurirajDogadjaj(DogadjajUVoznjiPregled d)
         {
@@ -535,10 +520,8 @@ namespace FluentNHibernateTemplate
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.FormatExceptionMessage(), "Greška pri ažuriranju događaja");
+                throw new Exception("Greška pri ažuriranju događaja", ex);
             }
-
-            return d;
         }
 
         public static void obrisiDogadjaj(int id)
@@ -557,7 +540,7 @@ namespace FluentNHibernateTemplate
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.FormatExceptionMessage(), "Greška pri brisanju događaja");
+                throw new Exception("Greška pri brisanju događaja", ex);
             }
         }
         #endregion
@@ -576,7 +559,7 @@ namespace FluentNHibernateTemplate
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.FormatExceptionMessage(), "Greška");
+                throw new Exception("Greška", ex);
             }
             return rez;
         }
@@ -593,7 +576,7 @@ namespace FluentNHibernateTemplate
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.FormatExceptionMessage(), "Greška");
+                throw new Exception("Greška", ex);
             }
             return rez;
         }
@@ -610,7 +593,7 @@ namespace FluentNHibernateTemplate
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.FormatExceptionMessage(), "Greška");
+                throw new Exception("Greška", ex);
             }
             return rez;
         }
@@ -627,7 +610,7 @@ namespace FluentNHibernateTemplate
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.FormatExceptionMessage(), "Greška");
+                throw new Exception("Greška", ex);
             }
             return rez;
         }
@@ -644,7 +627,7 @@ namespace FluentNHibernateTemplate
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.FormatExceptionMessage(), "Greška");
+                throw new Exception("Greška", ex);
             }
             return rez;
         }
@@ -680,7 +663,7 @@ namespace FluentNHibernateTemplate
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.FormatExceptionMessage(), "Greška pri učitavanju vozila");
+                throw new Exception("Greška pri učitavanju vozila", ex);
             }
             return rez;
         }
@@ -737,8 +720,7 @@ namespace FluentNHibernateTemplate
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.FormatExceptionMessage(), "Greška");
-                return null;
+                throw new Exception("Greška", ex);
             }
         }
 
@@ -811,8 +793,7 @@ namespace FluentNHibernateTemplate
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.FormatExceptionMessage(), "Greška pri dodavanju vozila");
-                return false;
+                throw new Exception("Greška pri dodavanju vozila", ex);
             }
         }
 
@@ -870,8 +851,7 @@ namespace FluentNHibernateTemplate
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.FormatExceptionMessage(), "Greška pri ažuriranju vozila");
-                return false;
+                throw new Exception("Greška pri ažuriranju vozila", ex);
             }
         }
 
@@ -893,8 +873,7 @@ namespace FluentNHibernateTemplate
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.FormatExceptionMessage(), "Greška pri brisanju vozila");
-                return false;
+                throw new Exception("Greška pri brisanju vozila", ex);
             }
         }
 
@@ -914,7 +893,7 @@ namespace FluentNHibernateTemplate
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.FormatExceptionMessage(), "Greška");
+                throw new Exception("Greška", ex);
             }
             return rez;
         }
@@ -937,8 +916,7 @@ namespace FluentNHibernateTemplate
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.FormatExceptionMessage(), "Greška");
-                return false;
+                throw new Exception("Greška", ex);
             }
         }
 
@@ -961,8 +939,7 @@ namespace FluentNHibernateTemplate
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.FormatExceptionMessage(), "Greška");
-                return false;
+                throw new Exception("Greška", ex);
             }
         }
 
@@ -984,8 +961,7 @@ namespace FluentNHibernateTemplate
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.FormatExceptionMessage(), "Greška");
-                return false;
+                throw new Exception("Greška", ex);
             }
         }
 
@@ -1013,7 +989,7 @@ namespace FluentNHibernateTemplate
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.FormatExceptionMessage(), "Greška");
+                throw new Exception("Greška", ex);
             }
             return rez;
         }
@@ -1043,8 +1019,7 @@ namespace FluentNHibernateTemplate
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.FormatExceptionMessage(), "Greška pri dodeli opreme vozilu");
-                return false;
+                throw new Exception("Greška pri dodeli opreme vozilu", ex);
             }
         }
 
@@ -1068,8 +1043,7 @@ namespace FluentNHibernateTemplate
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.FormatExceptionMessage(), "Greška");
-                return false;
+                throw new Exception("Greška", ex);
             }
         }
 
@@ -1089,7 +1063,7 @@ namespace FluentNHibernateTemplate
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.FormatExceptionMessage(), "Greška");
+                throw new Exception("Greška", ex);
             }
             return rez;
         }
@@ -1106,7 +1080,7 @@ namespace FluentNHibernateTemplate
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.FormatExceptionMessage(), "Greška");
+                throw new Exception("Greška", ex);
             }
             return rez;
         }
@@ -1141,7 +1115,7 @@ namespace FluentNHibernateTemplate
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.FormatExceptionMessage(), "Greška pri učitavanju korisnika");
+                throw new Exception("Greška pri učitavanju korisnika", ex);
             }
             return rez;
         }
@@ -1168,7 +1142,7 @@ namespace FluentNHibernateTemplate
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.FormatExceptionMessage(), "Greška pri učitavanju fizičkih lica");
+                throw new Exception("Greška pri učitavanju fizičkih lica", ex);
             }
             return rez;
         }
@@ -1217,8 +1191,7 @@ namespace FluentNHibernateTemplate
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.FormatExceptionMessage(), "Greška");
-                return null;
+                throw new Exception("Greška", ex);
             }
         }
 
@@ -1278,8 +1251,7 @@ namespace FluentNHibernateTemplate
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.FormatExceptionMessage(), "Greška pri dodavanju korisnika");
-                return false;
+                throw new Exception("Greška pri dodavanju korisnika", ex);
             }
         }
 
@@ -1328,8 +1300,7 @@ namespace FluentNHibernateTemplate
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.FormatExceptionMessage(), "Greška pri ažuriranju korisnika");
-                return false;
+                throw new Exception("Greška pri ažuriranju korisnika", ex);
             }
         }
 
@@ -1351,8 +1322,7 @@ namespace FluentNHibernateTemplate
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.FormatExceptionMessage(), "Greška pri brisanju korisnika");
-                return false;
+                throw new Exception("Greška pri brisanju korisnika", ex);
             }
         }
 
@@ -1374,7 +1344,7 @@ namespace FluentNHibernateTemplate
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.FormatExceptionMessage(), "Greška");
+                throw new Exception("Greška", ex);
             }
             return rez;
         }
@@ -1401,8 +1371,7 @@ namespace FluentNHibernateTemplate
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.FormatExceptionMessage(), "Greška pri dodavanju telefona");
-                return false;
+                throw new Exception("Greška pri dodavanju telefona", ex);
             }
         }
 
@@ -1424,8 +1393,7 @@ namespace FluentNHibernateTemplate
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.FormatExceptionMessage(), "Greška");
-                return false;
+                throw new Exception("Greška", ex);
             }
         }
 
@@ -1443,7 +1411,7 @@ namespace FluentNHibernateTemplate
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.FormatExceptionMessage(), "Greška");
+                throw new Exception("Greška", ex);
             }
             return rez;
         }
@@ -1473,8 +1441,7 @@ namespace FluentNHibernateTemplate
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.FormatExceptionMessage(), "Greška pri dodavanju verifikacije");
-                return false;
+                throw new Exception("Greška pri dodavanju verifikacije", ex);
             }
         }
 
@@ -1496,8 +1463,7 @@ namespace FluentNHibernateTemplate
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.FormatExceptionMessage(), "Greška");
-                return false;
+                throw new Exception("Greška", ex);
             }
         }
 
@@ -1515,7 +1481,7 @@ namespace FluentNHibernateTemplate
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.FormatExceptionMessage(), "Greška");
+                throw new Exception("Greška", ex);
             }
             return rez;
         }
@@ -1545,8 +1511,7 @@ namespace FluentNHibernateTemplate
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.FormatExceptionMessage(), "Greška pri dodavanju načina plaćanja");
-                return false;
+                throw new Exception("Greška pri dodavanju načina plaćanja", ex);
             }
         }
 
@@ -1568,8 +1533,7 @@ namespace FluentNHibernateTemplate
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.FormatExceptionMessage(), "Greška");
-                return false;
+                throw new Exception("Greška", ex);
             }
         }
 
@@ -1594,8 +1558,7 @@ namespace FluentNHibernateTemplate
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.FormatExceptionMessage(), "Greška");
-                return false;
+                throw new Exception("Greška", ex);
             }
         }
 
@@ -1617,8 +1580,7 @@ namespace FluentNHibernateTemplate
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.FormatExceptionMessage(), "Greška");
-                return false;
+                throw new Exception("Greška", ex);
             }
         }
 
@@ -1640,8 +1602,7 @@ namespace FluentNHibernateTemplate
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.FormatExceptionMessage(), "Greška");
-                return false;
+                throw new Exception("Greška", ex);
             }
         }
 
@@ -1660,7 +1621,7 @@ namespace FluentNHibernateTemplate
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.FormatExceptionMessage(), "Greška");
+                throw new Exception("Greška", ex);
             }
             return rez;
         }
@@ -1693,8 +1654,7 @@ namespace FluentNHibernateTemplate
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.FormatExceptionMessage(), "Greška pri dodeli uloge korisniku");
-                return false;
+                throw new Exception("Greška pri dodeli uloge korisniku", ex);
             }
         }
 
@@ -1718,8 +1678,7 @@ namespace FluentNHibernateTemplate
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.FormatExceptionMessage(), "Greška");
-                return false;
+                throw new Exception("Greška", ex);
             }
         }
 
@@ -1755,7 +1714,7 @@ namespace FluentNHibernateTemplate
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.FormatExceptionMessage(), "Greška");
+                throw new Exception("Greška", ex);
             }
             return rez;
         }
@@ -1782,8 +1741,7 @@ namespace FluentNHibernateTemplate
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.FormatExceptionMessage(), "Greška");
-                return null;
+                throw new Exception("Greška", ex);
             }
         }
 
@@ -1814,8 +1772,7 @@ namespace FluentNHibernateTemplate
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.FormatExceptionMessage(), "Greška pri dodavanju punjenja/točenja");
-                return false;
+                throw new Exception("Greška pri dodavanju punjenja/točenja", ex);
             }
         }
 
@@ -1845,8 +1802,7 @@ namespace FluentNHibernateTemplate
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.FormatExceptionMessage(), "Greška pri ažuriranju punjenja/točenja");
-                return false;
+                throw new Exception("Greška pri ažuriranju punjenja/točenja", ex);
             }
         }
 
@@ -1868,8 +1824,7 @@ namespace FluentNHibernateTemplate
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.FormatExceptionMessage(), "Greška");
-                return false;
+                throw new Exception("Greška", ex);
             }
         }
 
@@ -1905,7 +1860,7 @@ namespace FluentNHibernateTemplate
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.FormatExceptionMessage(), "Greška");
+                throw new Exception("Greška", ex);
             }
             return rez;
         }
@@ -1934,8 +1889,7 @@ namespace FluentNHibernateTemplate
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.FormatExceptionMessage(), "Greška");
-                return null;
+                throw new Exception("Greška", ex);
             }
         }
 
@@ -1970,8 +1924,7 @@ namespace FluentNHibernateTemplate
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.FormatExceptionMessage(), "Greška pri evidentiranju servisa");
-                return false;
+                throw new Exception("Greška pri evidentiranju servisa", ex);
             }
         }
 
@@ -2005,8 +1958,7 @@ namespace FluentNHibernateTemplate
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.FormatExceptionMessage(), "Greška pri ažuriranju servisa");
-                return false;
+                throw new Exception("Greška pri ažuriranju servisa", ex);
             }
         }
 
@@ -2028,8 +1980,7 @@ namespace FluentNHibernateTemplate
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.FormatExceptionMessage(), "Greška");
-                return false;
+                throw new Exception("Greška", ex);
             }
         }
 
@@ -2065,7 +2016,7 @@ namespace FluentNHibernateTemplate
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.FormatExceptionMessage(), "Greška");
+                throw new Exception("Greška", ex);
             }
             return rez;
         }
@@ -2092,8 +2043,7 @@ namespace FluentNHibernateTemplate
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.FormatExceptionMessage(), "Greška");
-                return null;
+                throw new Exception("Greška", ex);
             }
         }
 
@@ -2126,8 +2076,7 @@ namespace FluentNHibernateTemplate
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.FormatExceptionMessage(), "Greška pri prijavi kvara");
-                return false;
+                throw new Exception("Greška pri prijavi kvara", ex);
             }
         }
 
@@ -2159,8 +2108,7 @@ namespace FluentNHibernateTemplate
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.FormatExceptionMessage(), "Greška pri ažuriranju kvara");
-                return false;
+                throw new Exception("Greška pri ažuriranju kvara", ex);
             }
         }
 
@@ -2182,8 +2130,7 @@ namespace FluentNHibernateTemplate
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.FormatExceptionMessage(), "Greška");
-                return false;
+                throw new Exception("Greška", ex);
             }
         }
 
@@ -2218,7 +2165,7 @@ namespace FluentNHibernateTemplate
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.FormatExceptionMessage(), "Greška");
+                throw new Exception("Greška", ex);
             }
             return rez;
         }
@@ -2252,8 +2199,7 @@ namespace FluentNHibernateTemplate
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.FormatExceptionMessage(), "Greška");
-                return null;
+                throw new Exception("Greška", ex);
             }
         }
 
@@ -2310,8 +2256,7 @@ namespace FluentNHibernateTemplate
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.FormatExceptionMessage(), "Greška pri unosu nezgode/štete");
-                return false;
+                throw new Exception("Greška pri unosu nezgode/štete", ex);
             }
         }
 
@@ -2339,8 +2284,7 @@ namespace FluentNHibernateTemplate
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.FormatExceptionMessage(), "Greška pri ažuriranju nezgode/štete");
-                return false;
+                throw new Exception("Greška pri ažuriranju nezgode/štete", ex);
             }
         }
 
@@ -2362,8 +2306,7 @@ namespace FluentNHibernateTemplate
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.FormatExceptionMessage(), "Greška");
-                return false;
+                throw new Exception("Greška", ex);
             }
         }
 
@@ -2382,8 +2325,7 @@ namespace FluentNHibernateTemplate
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.FormatExceptionMessage(), "Greška");
-                return false;
+                throw new Exception("Greška", ex);
             }
         }
 
@@ -2404,8 +2346,7 @@ namespace FluentNHibernateTemplate
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.FormatExceptionMessage(), "Greška");
-                return false;
+                throw new Exception("Greška", ex);
             }
         }
 
@@ -2424,8 +2365,7 @@ namespace FluentNHibernateTemplate
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.FormatExceptionMessage(), "Greška");
-                return false;
+                throw new Exception("Greška", ex);
             }
         }
 
@@ -2446,8 +2386,7 @@ namespace FluentNHibernateTemplate
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.FormatExceptionMessage(), "Greška");
-                return false;
+                throw new Exception("Greška", ex);
             }
         }
 
@@ -2466,8 +2405,7 @@ namespace FluentNHibernateTemplate
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.FormatExceptionMessage(), "Greška");
-                return false;
+                throw new Exception("Greška", ex);
             }
         }
 
@@ -2488,8 +2426,7 @@ namespace FluentNHibernateTemplate
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.FormatExceptionMessage(), "Greška");
-                return false;
+                throw new Exception("Greška", ex);
             }
         }
 
