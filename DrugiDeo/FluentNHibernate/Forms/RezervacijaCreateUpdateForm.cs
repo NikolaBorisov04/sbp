@@ -47,7 +47,6 @@ namespace FluentNHibernateTemplate.Forms
 
             if (this.rezervacija is SluzbenaVoznjaPregled sluzbena)
             {
-                checkBox1.Checked = true;
                 textBox5.Text = sluzbena.Razlog;
                 textBox6.Text = sluzbena.OvlascenoLice;
             }

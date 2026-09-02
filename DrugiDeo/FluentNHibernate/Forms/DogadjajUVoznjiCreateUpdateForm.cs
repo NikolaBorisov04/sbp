@@ -22,6 +22,7 @@ namespace FluentNHibernateTemplate.Forms
             this.dogadjaj = new DogadjajUVoznjiPregled();
             this.voznja = v;
             this.kreiranje = true;
+            this.Text = "Kreiraj događaj";
         }
 
         public DogadjajUVoznjiCreateUpdateForm(DogadjajUVoznjiPregled dogadjaj, VoznjaPregled voznja)
@@ -50,7 +51,7 @@ namespace FluentNHibernateTemplate.Forms
                 
                 if (this.kreiranje)
                 {
-                    DTOManager.dodajDogadjaj(this.dogadjaj, this.voznja);
+                    DTOManager.dodajDogadjaj(this.dogadjaj, this.voznja.Id);
                     MessageBox.Show("Kreiranje novog događaja je uspešno izvršeno!");
                 }
                 else

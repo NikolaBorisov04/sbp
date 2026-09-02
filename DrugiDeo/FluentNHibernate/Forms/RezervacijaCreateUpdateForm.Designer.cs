@@ -241,8 +241,9 @@
             // textBox6
             // 
             textBox6.Location = new Point(498, 238);
+            textBox6.Multiline = true;
             textBox6.Name = "textBox6";
-            textBox6.Size = new Size(215, 27);
+            textBox6.Size = new Size(215, 46);
             textBox6.TabIndex = 23;
             // 
             // RezervacijaCreateUpdateForm

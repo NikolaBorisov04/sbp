@@ -22,14 +22,14 @@ namespace FluentNHibernateTemplate
 
                 foreach (Rezervacija v in sveRezervacije)
                 {
-                    int vozacId = v.Vozac != null ? v.Vozac.Id : -1;
+                    int vozacId = v.Vozac != null ? v.Vozac.Id : 0;
 
                     if (v is SluzbenaVoznja sv)
                     {
                         rezervacije.Add(new SluzbenaVoznjaPregled(
                                 sv.Id, sv.VremePocetka, sv.VremeZavrsetka,
                                 sv.LokacijaPreuzimanja, sv.LokacijaVracanja,
-                                sv.Tip, sv.Status, sv.Korisnik.Id, sv.Korisnik.ToString(), sv.Vozilo.Id, sv.Vozilo.ToString(), vozacId, (vozacId != -1) ? sv.Vozac.ToString() : "",
+                                sv.Tip, sv.Status, sv.Korisnik.Id, sv.Korisnik.ToString(), sv.Vozilo.Id, sv.Vozilo.ToString(), vozacId, (vozacId != 0) ? sv.Vozac.ToString() : "",
                                 sv.Razlog, sv.OvlascenoLice
                             ));
                     }
@@ -38,7 +38,7 @@ namespace FluentNHibernateTemplate
                         rezervacije.Add(new RezervacijaPregled(
                                 v.Id, v.VremePocetka, v.VremeZavrsetka,
                                 v.LokacijaPreuzimanja, v.LokacijaVracanja,
-                                v.Tip, v.Status, v.Korisnik.Id, v.Korisnik.ToString(), v.Vozilo.Id, v.Vozilo.ToString(), vozacId, (vozacId != -1) ? v.Vozac.ToString() : ""
+                                v.Tip, v.Status, v.Korisnik.Id, v.Korisnik.ToString(), v.Vozilo.Id, v.Vozilo.ToString(), vozacId, (vozacId != 0) ? v.Vozac.ToString() : ""
                             ));
                     }
                 }
@@ -60,14 +60,14 @@ namespace FluentNHibernateTemplate
             {
                 ISession s = DataLayer.GetSession();
 
-                Rezervacija r = s.Load<Rezervacija>(id);
-                int vozacId = r.Vozac != null ? r.Vozac.Id : -1;
+                Rezervacija r = s.Get<Rezervacija>(id);
+                int vozacId = r.Vozac != null ? r.Vozac.Id : 0;
                 if (r is SluzbenaVoznja sv)
                 {
                     rp = new SluzbenaVoznjaPregled(
                         sv.Id, sv.VremePocetka, sv.VremeZavrsetka,
                         sv.LokacijaPreuzimanja, sv.LokacijaVracanja,
-                        sv.Tip, sv.Status, sv.Korisnik.Id, sv.Korisnik.ToString(), sv.Vozilo.Id, sv.Vozilo.ToString(), vozacId,(vozacId != -1) ? sv.Vozac.ToString() : "",
+                        sv.Tip, sv.Status, sv.Korisnik.Id, sv.Korisnik.ToString(), sv.Vozilo.Id, sv.Vozilo.ToString(), vozacId,(vozacId != 0) ? sv.Vozac.ToString() : "",
                         sv.Razlog, sv.OvlascenoLice
                     );
                 }
@@ -76,7 +76,7 @@ namespace FluentNHibernateTemplate
                     rp = new RezervacijaPregled(
                         r.Id, r.VremePocetka, r.VremeZavrsetka,
                         r.LokacijaPreuzimanja, r.LokacijaVracanja,
-                        r.Tip, r.Status, r.Korisnik.Id, r.Korisnik.ToString(), r.Vozilo.Id, r.Vozilo.ToString(), vozacId, (vozacId != -1) ? r.Vozac.ToString() : ""
+                        r.Tip, r.Status, r.Korisnik.Id, r.Korisnik.ToString(), r.Vozilo.Id, r.Vozilo.ToString(), vozacId, (vozacId != 0) ? r.Vozac.ToString() : ""
                     );
                 }
 
@@ -483,12 +483,12 @@ namespace FluentNHibernateTemplate
             return d;
         }
 
-        public static DogadjajUVoznjiPregled dodajDogadjaj(DogadjajUVoznjiPregled d, VoznjaPregled voznja)
+        public static DogadjajUVoznjiPregled dodajDogadjaj(DogadjajUVoznjiPregled d, int voznjaId)
         {
             try
             {
                 ISession s = DataLayer.GetSession();
-                Voznja v = s.Load<Voznja>(voznja.Id);
+                Voznja v = s.Load<Voznja>(voznjaId);
 
                 DogadjajUVoznji dogadjaj = new DogadjajUVoznji
                 {

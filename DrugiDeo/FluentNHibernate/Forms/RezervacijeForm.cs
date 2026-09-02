@@ -46,7 +46,7 @@ namespace FluentNHibernateTemplate.Forms
                     v.VozacInfo,
                     razlog,
                     ovlascenoLice
-                    
+
                 });
                 listaRezervacija.Items.Add(item);
             }

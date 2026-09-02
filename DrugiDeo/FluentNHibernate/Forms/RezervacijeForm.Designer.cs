@@ -39,12 +39,12 @@
             columnHeader8 = new ColumnHeader();
             columnHeader9 = new ColumnHeader();
             columnHeader10 = new ColumnHeader();
+            columnHeader11 = new ColumnHeader();
+            columnHeader12 = new ColumnHeader();
             groupBox1 = new GroupBox();
             button3 = new Button();
             button2 = new Button();
             button1 = new Button();
-            columnHeader11 = new ColumnHeader();
-            columnHeader12 = new ColumnHeader();
             groupBox1.SuspendLayout();
             SuspendLayout();
             // 
@@ -119,6 +119,18 @@
             columnHeader10.TextAlign = HorizontalAlignment.Center;
             columnHeader10.Width = 120;
             // 
+            // columnHeader11
+            // 
+            columnHeader11.Text = "Razlog";
+            columnHeader11.TextAlign = HorizontalAlignment.Center;
+            columnHeader11.Width = 160;
+            // 
+            // columnHeader12
+            // 
+            columnHeader12.Text = "Ovlašćeno lice";
+            columnHeader12.TextAlign = HorizontalAlignment.Center;
+            columnHeader12.Width = 140;
+            // 
             // groupBox1
             // 
             groupBox1.Controls.Add(button3);
@@ -161,18 +173,6 @@
             button1.UseVisualStyleBackColor = true;
             button1.Click += button1_Click;
             // 
-            // columnHeader11
-            // 
-            columnHeader11.Text = "Razlog";
-            columnHeader11.TextAlign = HorizontalAlignment.Center;
-            columnHeader11.Width = 160;
-            // 
-            // columnHeader12
-            // 
-            columnHeader12.Text = "Ovlašćeno lice";
-            columnHeader12.TextAlign = HorizontalAlignment.Center;
-            columnHeader12.Width = 140;
-            // 
             // RezervacijeForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -182,7 +182,7 @@
             Controls.Add(listaRezervacija);
             Name = "RezervacijeForm";
             StartPosition = FormStartPosition.CenterScreen;
-            Text = "RezervacijeForm";
+            Text = "Rezervacije";
             Load += RezervacijeForm_Load;
             groupBox1.ResumeLayout(false);
             ResumeLayout(false);
