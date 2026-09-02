@@ -4,284 +4,321 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using FluentNHibernateTemplate.Entiteti;
+using NHibernate.Linq;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace FluentNHibernateTemplate
 {
     public class DTOManager
     {
         #region Rezervacije
-        public static List<RezervacijaPregled> vratiSveRezervacije()
+        public async static Task<List<RezervacijaPregled>> vratiSveRezervacijeAsync()
         {
-            List<RezervacijaPregled> rezervacije = new List<RezervacijaPregled>();
+            List<RezervacijaPregled> rezervacije = new();
+
+            ISession? s = null;
+
             try
             {
-                ISession s = DataLayer.GetSession();
-                IEnumerable<Rezervacija> sveRezervacije = from o in s.Query<Rezervacija>()
-                                                         select o;
+                s = DataLayer.GetSession();
 
-                foreach (Rezervacija v in sveRezervacije)
+                if (!(s?.IsConnected ?? false))
                 {
-                    int vozacId = v.Vozac != null ? v.Vozac.Id : -1;
-
-                    if (v is SluzbenaVoznja sv)
-                    {
-                        rezervacije.Add(new SluzbenaVoznjaPregled(
-                                sv.Id, sv.VremePocetka, sv.VremeZavrsetka,
-                                sv.LokacijaPreuzimanja, sv.LokacijaVracanja,
-                                sv.Tip, sv.Status, sv.Korisnik.Id, sv.Korisnik.ToString(), sv.Vozilo.Id, sv.Vozilo.ToString(), vozacId, (vozacId != -1) ? sv.Vozac.ToString() : "",
-                                sv.Razlog, sv.OvlascenoLice
-                            ));
-                    }
-                    else
-                    {
-                        rezervacije.Add(new RezervacijaPregled(
-                                v.Id, v.VremePocetka, v.VremeZavrsetka,
-                                v.LokacijaPreuzimanja, v.LokacijaVracanja,
-                                v.Tip, v.Status, v.Korisnik.Id, v.Korisnik.ToString(), v.Vozilo.Id, v.Vozilo.ToString(), vozacId, (vozacId != -1) ? v.Vozac.ToString() : ""
-                            ));
-                    }
+                    throw new Exception("Nemoguće otvoriti sesiju");
                 }
 
-                s.Close();
+                rezervacije = await s.Query<Rezervacija>()
+                    .Select(r => new RezervacijaPregled(
+                        r.Id,
+                        r.VremePocetka,
+                        r.VremeZavrsetka,
+                        r.LokacijaPreuzimanja,
+                        r.LokacijaVracanja,
+                        r.Tip,
+                        r.Status,
+                        r.Korisnik.Id,
+                        r.Korisnik.ToString(),
+                        r.Vozilo.Id,
+                        r.Vozilo.ToString(),
+                        (r.Vozac != null) ? r.Vozac.Id : 0,
+                        (r.Vozac != null) ? r.Vozac.ToString() : ""
+                       ))
+                    .ToListAsync();
             }
             catch (Exception ex)
             {
                 throw new Exception("Greška pri učitavanju rezervacija", ex);
             }
+            finally
+            {
+                s?.Close();
+                s?.Dispose();
+            }
 
             return rezervacije;
         }
 
-        public static RezervacijaPregled vratiRezervaciju(int id)
+        public async static Task<RezervacijaPregled> vratiRezervacijuAsync(int id)
         {
-            RezervacijaPregled rp = new RezervacijaPregled();
+            RezervacijaPregled rezervacija = new RezervacijaPregled();
+            ISession? s = null;
+
             try
             {
-                ISession s = DataLayer.GetSession();
+                s = DataLayer.GetSession();
 
-                Rezervacija r = s.Load<Rezervacija>(id);
-                int vozacId = r.Vozac != null ? r.Vozac.Id : -1;
+                if (!(s?.IsConnected ?? false))
+                {
+                    throw new Exception("Nemoguće otvoriti sesiju");
+                }
+
+                Rezervacija r = await s.LoadAsync<Rezervacija>(id);
+                int vozacId = r.Vozac != null ? r.Vozac.Id : 0;
+
                 if (r is SluzbenaVoznja sv)
                 {
-                    rp = new SluzbenaVoznjaPregled(
+                    rezervacija = new SluzbenaVoznjaPregled(
                         sv.Id, sv.VremePocetka, sv.VremeZavrsetka,
                         sv.LokacijaPreuzimanja, sv.LokacijaVracanja,
-                        sv.Tip, sv.Status, sv.Korisnik.Id, sv.Korisnik.ToString(), sv.Vozilo.Id, sv.Vozilo.ToString(), vozacId,(vozacId != -1) ? sv.Vozac.ToString() : "",
+                        sv.Tip, sv.Status, sv.Korisnik.Id, sv.Korisnik.ToString(), sv.Vozilo.Id, sv.Vozilo.ToString(), vozacId, (vozacId != 0) ? sv.Vozac.ToString() : "",
                         sv.Razlog, sv.OvlascenoLice
                     );
                 }
                 else
                 {
-                    rp = new RezervacijaPregled(
+                    rezervacija = new RezervacijaPregled(
                         r.Id, r.VremePocetka, r.VremeZavrsetka,
                         r.LokacijaPreuzimanja, r.LokacijaVracanja,
-                        r.Tip, r.Status, r.Korisnik.Id, r.Korisnik.ToString(), r.Vozilo.Id, r.Vozilo.ToString(), vozacId, (vozacId != -1) ? r.Vozac.ToString() : ""
+                        r.Tip, r.Status, r.Korisnik.Id, r.Korisnik.ToString(), r.Vozilo.Id, r.Vozilo.ToString(), vozacId, (vozacId != 0) ? r.Vozac.ToString() : ""
                     );
                 }
-
-                s.Close();
             }
             catch (Exception ex)
             {
                 throw new Exception("Greška pri učitavanju rezervacije", ex);
             }
-
-            return rp;
+            finally
+            {
+                s?.Close();
+                s?.Dispose();
+            }
+            return rezervacija;
         }
 
-        public static RezervacijaPregled dodajRezervaciju(RezervacijaPregled v)
+        public async static Task<bool> dodajRezervacijuAsync(RezervacijaPregled rez)
         {
+            ISession? s = null;
             try
             {
-                ISession s = DataLayer.GetSession();
-                Korisnik korisnik = s.Load<Korisnik>(v.KorisnikId);
-                Vozilo vozilo = s.Load<Vozilo>(v.VoziloId);
+                s = DataLayer.GetSession();
 
-                FizickoLice vozac = null;
-                if (v.VozacId != 0)
+                if (!(s?.IsConnected ?? false))
                 {
-                    vozac = s.Load<FizickoLice>(v.VozacId);
+                    throw new Exception("Nemoguće otvoriti sesiju");
+                }
+
+                Korisnik korisnik = await s.LoadAsync<Korisnik>(rez.KorisnikId);
+                Vozilo vozilo = await s.LoadAsync<Vozilo>(rez.VoziloId);
+                FizickoLice vozac = null;
+                if (rez.VozacId != 0)
+                {
+                    vozac = await s.LoadAsync<FizickoLice>(rez.VozacId);
                 }
                 Rezervacija r = new Rezervacija
                 {
-                    VremePocetka = v.VremePocetka,
-                    VremeZavrsetka = v.VremeZavrsetka,
-                    LokacijaPreuzimanja = v.LokacijaPreuzimanja,
-                    LokacijaVracanja = v.LokacijaVracanja,
-                    Tip = v.Tip,
-                    Status = v.Status,
+                    VremePocetka = rez.VremePocetka,
+                    VremeZavrsetka = rez.VremeZavrsetka,
+                    LokacijaPreuzimanja = rez.LokacijaPreuzimanja,
+                    LokacijaVracanja = rez.LokacijaVracanja,
+                    Tip = rez.Tip,
+                    Status = rez.Status,
                     Korisnik = korisnik,
                     Vozilo = vozilo,
                     Vozac = vozac
                 };
 
-                s.Save(r);
-                s.Flush();
-                s.Close();
-                return v;
+                await s.SaveOrUpdateAsync(r);
+                await s.FlushAsync();
+
             }
             catch (Exception ex)
             {
                 throw new Exception("Greška pri kreiranju rezervacije", ex);
             }
+            finally
+            {
+                s?.Close();
+                s?.Dispose();
+            }
+
+            return true;
         }
-        public static RezervacijaPregled azurirajRezervaciju(RezervacijaPregled v)
+
+        public async static Task<RezervacijaPregled> azurirajRezervacijuAsync(RezervacijaPregled rez)
         {
+            ISession? s = null;
+
             try
             {
-                ISession s = DataLayer.GetSession();
+                s = DataLayer.GetSession();
 
-                Rezervacija r = s.Load<Rezervacija>(v.Id);
+                if (!(s?.IsConnected ?? false))
+                {
+                    throw new Exception("Nemoguće otvoriti sesiju");
+                }
 
-                r.VremePocetka = v.VremePocetka;
-                r.VremeZavrsetka = v.VremeZavrsetka;
-                r.LokacijaPreuzimanja = v.LokacijaPreuzimanja;
-                r.LokacijaVracanja = v.LokacijaVracanja;
-                r.Tip = v.Tip;
-                r.Status = v.Status;
+                Rezervacija r = await s.LoadAsync<Rezervacija>(rez.Id);
 
-                r.Korisnik = s.Load<Korisnik>(v.KorisnikId);
-                r.Vozilo = s.Load<Vozilo>(v.VoziloId);
-                r.Vozac = (v.VozacId != 0) ? s.Load<FizickoLice>(v.VozacId) : null;
+                r.VremePocetka = rez.VremePocetka;
+                r.VremeZavrsetka = rez.VremeZavrsetka;
+                r.LokacijaPreuzimanja = rez.LokacijaPreuzimanja;
+                r.LokacijaVracanja = rez.LokacijaVracanja;
+                r.Tip = rez.Tip;
+                r.Status = rez.Status;
 
-                s.Update(r);
-                s.Flush();
-                s.Close();
-                return v;
+                r.Korisnik = await s.LoadAsync<Korisnik>(rez.KorisnikId);
+                r.Vozilo = await s.LoadAsync<Vozilo>(rez.VoziloId);
+                r.Vozac = (rez.VozacId != 0) ? await s.LoadAsync<FizickoLice>(rez.VozacId) : null;
+
+                await s.UpdateAsync(r);
+                await s.FlushAsync();
             }
             catch (Exception ex)
             {
                 throw new Exception("Greška pri ažuriranju rezervacije", ex);
             }
+            finally
+            {
+                s?.Close();
+                s?.Dispose();
+            }
+
+            return rez;
         }
-        public static void obrisiRezervaciju(int id)
+        public static async Task<bool> obrisiRezervacijuAsync(int id)
         {
+            ISession? s = null;
+
             try
             {
-                ISession s = DataLayer.GetSession();
-                Rezervacija r = s.Get<Rezervacija>(id);
+                s = DataLayer.GetSession();
+
+                if (!(s?.IsConnected ?? false))
+                {
+                    throw new Exception("Nemoguće otvoriti sesiju");
+                }
+
+                Rezervacija r = await s.LoadAsync<Rezervacija>(id);
                 if (r != null)
                 {
-                    s.Delete(r);
-                    s.Flush();
+                    await s.DeleteAsync(r);
+                    await s.FlushAsync();
                 }
-                s.Close();
             }
             catch (Exception ex)
             {
                 throw new Exception("Greška pri brisanju rezervacije", ex);
             }
-        }
-        public static List<RezervacijaPregled> vratiRezervacijeBezVoznje()
-        {
-            List<RezervacijaPregled> rezervacije = new List<RezervacijaPregled>();
-            try
+            finally
             {
-                ISession s = DataLayer.GetSession();
-                List<int> rezSaVoznjom = s.Query<Voznja>()
-                          .Where(v => v.Rezervacija != null)
-                          .Select(v => v.Rezervacija.Id)
-                          .ToList();
-
-                IEnumerable<Rezervacija> sveRezervacije = from o in s.Query<Rezervacija>()
-                                                          where !rezSaVoznjom.Contains(o.Id)
-                                                          select o;
-
-                foreach (Rezervacija v in sveRezervacije)
-                {
-                    rezervacije.Add(new RezervacijaPregled(
-                        v.Id,
-                        v.VremePocetka,
-                        v.VremeZavrsetka,
-                        v.LokacijaPreuzimanja,
-                        v.LokacijaVracanja,
-                        v.Tip,
-                        v.Status,
-                        v.Korisnik.Id,
-                        v.Korisnik.ToString(),
-                        v.Vozilo.Id,
-                        v.Vozilo.ToString(),
-                        (v.Vozac != null) ? v.Vozac.Id : 0,
-                        (v.Vozac != null) ? v.Vozac.ToString() : ""
-                    ));
-                }
-
-                s.Close();
+                s?.Close();
+                s?.Dispose();
             }
-            catch (Exception ex)
-            {
-                throw new Exception("Greška pri učitavanju rezervacija", ex);
-            }
-
-            return rezervacije;
+            return true;
         }
         #endregion
 
         #region Voznje
 
-        public static List<VoznjaPregled> vratiSveVoznje()
+        public async static Task<List<VoznjaPregled>> vratiSveVoznjeAsync()
         {
-            List<VoznjaPregled> voznje = new List<VoznjaPregled>();
+            ISession? s = null;
+
+            List<VoznjaPregled> voznje = new();
+
             try
             {
-                ISession s = DataLayer.GetSession();
-                IEnumerable<Entiteti.Voznja> sveVoznje = from o in s.Query<Entiteti.Voznja>()
-                                                         select o;
+                s = DataLayer.GetSession();
 
-                foreach (Entiteti.Voznja v in sveVoznje)
+                if (!(s?.IsConnected ?? false))
                 {
-                    voznje.Add(new VoznjaPregled(
-                        v.Id, 
-                        v.VremePocetka, 
-                        v.VremeZavrsetka, 
-                        v.PredjenaKilometraza, 
-                        v.TrajanjeMinuti, 
-                        v.PocetniNivo, 
-                        v.KrajnjiNivo, 
-                        v.PocetnaLokacija, 
-                        v.KrajnjaLokacija, 
-                        v.Cena, 
-                        v.Naknade,
-                        v.Rezervacija.Id
-                     ));
+                    throw new Exception("Nemoguće otvoriti sesiju");
                 }
 
-                s.Close();
+                voznje = await s.Query<Voznja>()
+                    .Select(v => new VoznjaPregled(
+                        v.Id,
+                        v.VremePocetka,
+                        v.VremeZavrsetka,
+                        v.PredjenaKilometraza,
+                        v.TrajanjeMinuti,
+                        v.PocetniNivo,
+                        v.KrajnjiNivo,
+                        v.PocetnaLokacija,
+                        v.KrajnjaLokacija,
+                        v.Cena,
+                        v.Naknade,
+                        v.Rezervacija.Id
+                        ))
+                    .ToListAsync();
             }
             catch (Exception ex)
             {
                 throw new Exception("Greška pri učitavanju vožnja", ex);
             }
+            finally
+            {
+                s?.Close();
+                s?.Dispose();
+            }
 
             return voznje;
         }
 
-        public static VoznjaPregled vratiVoznju(int id)
+        public async static Task<VoznjaPregled> vratiVoznjuAsync(int id)
         {
-            VoznjaPregled vb = new VoznjaPregled();
+            VoznjaPregled voznja = new VoznjaPregled()!;
+            ISession? s = null;
+
             try
             {
-                ISession s = DataLayer.GetSession();
+                s = DataLayer.GetSession();
 
-                Voznja v = s.Load<Voznja>(id);
-                vb = new VoznjaPregled(v.Id, v.VremePocetka, v.VremeZavrsetka, v.PredjenaKilometraza, v.TrajanjeMinuti, v.PocetniNivo, v.KrajnjiNivo, v.PocetnaLokacija, v.KrajnjaLokacija, v.Cena, v.Naknade, v.Rezervacija.Id);
+                if (!(s?.IsConnected ?? false))
+                {
+                    throw new Exception("Nemoguće otvoriti sesiju");
+                }
 
-                s.Close();
+                Voznja v = await s.LoadAsync<Voznja>(id);
+                voznja = new VoznjaPregled(v.Id, v.VremePocetka, v.VremeZavrsetka, v.PredjenaKilometraza, v.TrajanjeMinuti, v.PocetniNivo, v.KrajnjiNivo, v.PocetnaLokacija, v.KrajnjaLokacija, v.Cena, v.Naknade, v.Rezervacija.Id);
             }
             catch (Exception ex)
             {
                 throw new Exception("Greška pri učitavanju vožnje", ex);
             }
+            finally
+            {
+                s?.Close();
+                s?.Dispose();
+            }
 
-            return vb;
+            return voznja;
         }
 
-        public static VoznjaPregled dodajVoznju(VoznjaPregled v)
+        public static async Task<bool> dodajVoznjuAsync(VoznjaPregled v)
         {
+            ISession? s = null;
+
             try
             {
-                ISession s = DataLayer.GetSession();
-                Rezervacija rezervacija = s.Get<Rezervacija>(v.RezervacijaId);
+                s = DataLayer.GetSession();
+
+                if (!(s?.IsConnected ?? false))
+                {
+                    throw new Exception("Nemoguće otvoriti sesiju");
+                }
+
+                Rezervacija rezervacija = await s.GetAsync<Rezervacija>(v.RezervacijaId);
 
                 Voznja voznja = new Voznja
                 {
@@ -298,23 +335,36 @@ namespace FluentNHibernateTemplate
                     Rezervacija = rezervacija
                 };
 
-                s.Save(voznja);
-                s.Flush();
-                s.Close();
-                return v;
+                await s.SaveOrUpdateAsync(voznja);
+                await s.FlushAsync();
             }
             catch (Exception ex)
             {
                 throw new Exception("Greška pri kreiranju vožnje", ex);
             }
+            finally
+            {
+                s?.Close();
+                s?.Dispose();
+            }
+
+            return true;
         }
-        public static VoznjaPregled azurirajVoznju(VoznjaPregled v)
+
+        public static async Task<VoznjaPregled> azurirajVoznjuAsync(VoznjaPregled v)
         {
+            ISession? s = null;
+
             try
             {
-                ISession s = DataLayer.GetSession();
+                s = DataLayer.GetSession();
 
-                Voznja voznja = s.Load<Voznja>(v.Id);
+                if (!(s?.IsConnected ?? false))
+                {
+                    throw new Exception("Nemoguće otvoriti sesiju");
+                }
+
+                Voznja voznja = await s.LoadAsync<Voznja>(v.Id);
                 voznja.VremePocetka = v.VremePocetka;
                 voznja.VremeZavrsetka = v.VremeZavrsetka;
                 voznja.PredjenaKilometraza = v.PredjenaKilometraza;
@@ -326,51 +376,127 @@ namespace FluentNHibernateTemplate
                 voznja.Cena = v.Cena;
                 voznja.Naknade = v.Naknade;
 
-                s.Update(voznja);
-                s.Flush();
-                s.Close();
-                return v;
+                await s.UpdateAsync(voznja);
+                await s.FlushAsync();
             }
             catch (Exception ex)
             {
                 throw new Exception("Greška pri ažuriranju vožnje", ex);
             }
+            finally
+            {
+                s?.Close();
+                s?.Dispose();
+            }
+
+            return v;
         }
 
-        public static void obrisiVoznju(int id)
+        public static async Task<bool> obrisiVoznjuAsync(int id)
         {
+            ISession? s = null;
+
             try
             {
-                ISession s = DataLayer.GetSession();
-                Voznja v = s.Get<Voznja>(id);
+                s = DataLayer.GetSession();
+
+                if (!(s?.IsConnected ?? false))
+                {
+                    throw new Exception("Nemoguće otvoriti sesiju");
+                }
+
+                Voznja v = await s.LoadAsync<Voznja>(id);
                 if (v != null)
                 {
-                    s.Delete(v);
-                    s.Flush();
+                    await s.DeleteAsync(v);
+                    await s.FlushAsync();
                 }
-                s.Close();
             }
             catch (Exception ex)
             {
                 throw new Exception("Greška pri brisanju vožnje", ex);
             }
+            finally
+            {
+                s?.Close();
+                s?.Dispose();
+            }
+            return true;
         }
         #endregion
 
         #region SluzbeneVoznje
-        public static SluzbenaVoznjaPregled dodajSluzbenuVoznju(SluzbenaVoznjaPregled v)
+        public static async Task<List<SluzbenaVoznjaPregled>> vratiSveSluzbeneVoznjeAsync()
         {
+            List<SluzbenaVoznjaPregled> voznje = new List<SluzbenaVoznjaPregled>();
+            ISession? s = null;
+
             try
             {
-                ISession s = DataLayer.GetSession();
-                Korisnik korisnik = s.Load<Korisnik>(v.KorisnikId);
-                Vozilo vozilo = s.Load<Vozilo>(v.VoziloId);
+                s = DataLayer.GetSession();
+
+                if (!(s?.IsConnected ?? false))
+                {
+                    throw new Exception("Nemoguće otvoriti sesiju");
+                }
+
+                List<SluzbenaVoznja> sve = await s.Query<SluzbenaVoznja>().ToListAsync();
+
+                foreach (SluzbenaVoznja sv in sve)
+                {
+                    int vozacId = sv.Vozac != null ? sv.Vozac.Id : 0;
+                    voznje.Add(new SluzbenaVoznjaPregled(
+                        sv.Id, 
+                        sv.VremePocetka, 
+                        sv.VremeZavrsetka,
+                        sv.LokacijaPreuzimanja, 
+                        sv.LokacijaVracanja,
+                        sv.Tip, 
+                        sv.Status, 
+                        sv.Korisnik.Id, 
+                        sv.Korisnik.ToString(), 
+                        sv.Vozilo.Id, 
+                        sv.Vozilo.ToString(), 
+                        vozacId, (vozacId != 0) ? sv.Vozac.ToString() : "",
+                        sv.Razlog, 
+                        sv.OvlascenoLice
+                    ));
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Greška pri učitavanju službenih vožnji", ex);
+            }
+            finally
+            {
+                s?.Close();
+                s?.Dispose();
+            }
+
+            return voznje;
+        }
+        public async static Task<bool> dodajSluzbenuVoznjuAsync(SluzbenaVoznjaPregled v)
+        {
+            ISession? s = null;
+
+            try
+            {
+                s = DataLayer.GetSession();
+
+                if (!(s?.IsConnected ?? false))
+                {
+                    throw new Exception("Nemoguće otvoriti sesiju");
+                }
+
+                Korisnik korisnik = await s.LoadAsync<Korisnik>(v.KorisnikId);
+                Vozilo vozilo = await s.LoadAsync<Vozilo>(v.VoziloId);
 
                 FizickoLice vozac = null;
                 if (v.VozacId != 0)
                 {
-                    vozac = s.Load<FizickoLice>(v.VozacId);
+                    vozac = await s.LoadAsync<FizickoLice>(v.VozacId);
                 }
+
                 SluzbenaVoznja sv = new SluzbenaVoznja
                 {
                     VremePocetka = v.VremePocetka,
@@ -386,23 +512,34 @@ namespace FluentNHibernateTemplate
                     OvlascenoLice = v.OvlascenoLice
                 };
 
-                s.Save(sv);
-                s.Flush();
-                s.Close();
-                return v;
+                await s.SaveOrUpdateAsync(sv);
+                await s.FlushAsync();
             }
             catch (Exception ex)
             {
                 throw new Exception("Greška pri kreiranju službene vožnje", ex);
             }
+            finally
+            {
+                s?.Close();
+                s?.Dispose();
+            }
+            return true;
         }
-        public static SluzbenaVoznjaPregled azurirajSluzbenuVoznju(SluzbenaVoznjaPregled v)
+        public static async Task<SluzbenaVoznjaPregled> azurirajSluzbenuVoznjuAsync(SluzbenaVoznjaPregled v)
         {
+            ISession? s = null;
+
             try
             {
-                ISession s = DataLayer.GetSession();
+                s = DataLayer.GetSession();
 
-                SluzbenaVoznja r = s.Load<SluzbenaVoznja>(v.Id);
+                if (!(s?.IsConnected ?? false))
+                {
+                    throw new Exception("Nemoguće otvoriti sesiju");
+                }
+
+                SluzbenaVoznja r = await s.LoadAsync<SluzbenaVoznja>(v.Id);
 
                 r.VremePocetka = v.VremePocetka;
                 r.VremeZavrsetka = v.VremeZavrsetka;
@@ -411,76 +548,106 @@ namespace FluentNHibernateTemplate
                 r.Tip = v.Tip;
                 r.Status = v.Status;
 
-                r.Korisnik = s.Load<Korisnik>(v.KorisnikId);
-                r.Vozilo = s.Load<Vozilo>(v.VoziloId);
-                r.Vozac = (v.VozacId != 0) ? s.Load<FizickoLice>(v.VozacId) : null;
+                r.Korisnik = await s.LoadAsync<Korisnik>(v.KorisnikId);
+                r.Vozilo = await s.LoadAsync<Vozilo>(v.VoziloId);
+                r.Vozac = (v.VozacId != 0) ? await s.LoadAsync<FizickoLice>(v.VozacId) : null;
                 r.Razlog = v.Razlog;
                 r.OvlascenoLice = v.OvlascenoLice;
 
-                s.Update(r);
-                s.Flush();
-                s.Close();
-                return v;
+                await s.UpdateAsync(r);
+                await s.FlushAsync();
             }
             catch (Exception ex)
             {
                 throw new Exception("Greška pri ažuriranju službene vožnje", ex);
             }
+            finally
+            {
+                s?.Close();
+                s?.Dispose();
+            }
+
+            return v;
         }
         #endregion
 
         #region Dogadjaji
-        public static List<DogadjajUVoznjiPregled> vratiDogadjajeZaVoznju(int id)
+        public async static Task<List<DogadjajUVoznjiPregled>> vratiDogadjajeZaVoznjuAsync(int id)
         {
             List<DogadjajUVoznjiPregled> dogadjaji = new List<DogadjajUVoznjiPregled>();
+            ISession? s = null;
+
             try
             {
-                ISession s = DataLayer.GetSession();
-                IEnumerable<DogadjajUVoznji> rezultati = from d in s.Query<DogadjajUVoznji>()
-                                                         where d.Voznja.Id == id
-                                                         select d;
+                s = DataLayer.GetSession();
 
-                foreach (DogadjajUVoznji d in rezultati)
+                if (!(s?.IsConnected ?? false))
                 {
-                    dogadjaji.Add(new DogadjajUVoznjiPregled(d.Id, d.Tip, d.Vreme, d.Lokacija, d.Opis));
+                    throw new Exception("Nemoguće otvoriti sesiju");
                 }
 
-                s.Close();
+                dogadjaji = await s.Query<DogadjajUVoznji>()
+                          .Where(d => d.Voznja.Id == id)
+                          .Select(d => new DogadjajUVoznjiPregled(d.Id, d.Tip, d.Vreme, d.Lokacija, d.Opis))
+                          .ToListAsync();
             }
             catch (Exception ex)
             {
                 throw new Exception("Greška pri učitavanju događaja", ex);
+            }
+            finally
+            {
+                s?.Close();
+                s?.Dispose();
             }
 
             return dogadjaji;
         }
 
-        public static DogadjajUVoznjiPregled vratiDogadjaj(int id)
+        public async static Task<DogadjajUVoznjiPregled> vratiDogadjajAsync(int id)
         {
             DogadjajUVoznjiPregled d = new DogadjajUVoznjiPregled();
+            ISession? s = null;
+
             try
             {
-                ISession s = DataLayer.GetSession();
+                s = DataLayer.GetSession();
 
-                DogadjajUVoznji v = s.Load<DogadjajUVoznji>(id);
+                if (!(s?.IsConnected ?? false))
+                {
+                    throw new Exception("Nemoguće otvoriti sesiju");
+                }
+
+                DogadjajUVoznji v = await s.LoadAsync<DogadjajUVoznji>(id);
                 d = new DogadjajUVoznjiPregled(v.Id, v.Tip, v.Vreme, v.Lokacija, v.Opis);
-
-                s.Close();
             }
             catch (Exception ex)
             {
                 throw new Exception("Greška pri učitavanju događaja", ex);
             }
+            finally
+            {
+                s?.Close();
+                s?.Dispose();
+            }
 
             return d;
         }
 
-        public static DogadjajUVoznjiPregled dodajDogadjaj(DogadjajUVoznjiPregled d, VoznjaPregled voznja)
+        public async static Task<bool> dodajDogadjajAsync(DogadjajUVoznjiPregled d, int voznjaId)
         {
+            ISession? s = null;
+
             try
             {
-                ISession s = DataLayer.GetSession();
-                Voznja v = s.Load<Voznja>(voznja.Id);
+                s = DataLayer.GetSession();
+
+                if (!(s?.IsConnected ?? false))
+                {
+                    throw new Exception("Nemoguće otvoriti sesiju");
+                }
+
+                Voznja v = await s.LoadAsync<Voznja>(voznjaId);
 
                 DogadjajUVoznji dogadjaj = new DogadjajUVoznji
                 {
@@ -491,57 +658,88 @@ namespace FluentNHibernateTemplate
                     Voznja = v
                 };
 
-                s.Save(dogadjaj);
-                s.Flush();
-                s.Close();
-                return d;
+                await s.SaveOrUpdateAsync(dogadjaj);
+                await s.FlushAsync();
             }
             catch (Exception ex)
             {
                 throw new Exception("Greška pri kreiranju događaja", ex);
             }
+            finally
+            {
+                s?.Close();
+                s?.Dispose();
+            }
+
+            return true;
         }
-        public static DogadjajUVoznjiPregled azurirajDogadjaj(DogadjajUVoznjiPregled d)
+
+        public static async Task<DogadjajUVoznjiPregled> azurirajDogadjajAsync(DogadjajUVoznjiPregled d)
         {
+            ISession? s = null;
+
             try
             {
-                ISession s = DataLayer.GetSession();
+                s = DataLayer.GetSession();
 
-                DogadjajUVoznji dogadjaj = s.Load<DogadjajUVoznji>(d.Id);
+                if (!(s?.IsConnected ?? false))
+                {
+                    throw new Exception("Nemoguće otvoriti sesiju");
+                }
+
+                DogadjajUVoznji dogadjaj = await s.LoadAsync<DogadjajUVoznji>(d.Id);
                 dogadjaj.Tip = d.Tip;
                 dogadjaj.Vreme = d.Vreme;
                 dogadjaj.Lokacija = d.Lokacija;
                 dogadjaj.Opis = d.Opis;
 
-                s.Update(dogadjaj);
-                s.Flush();
-                s.Close();
-                return d;
+                await s.UpdateAsync(dogadjaj);
+                await s.FlushAsync();
             }
             catch (Exception ex)
             {
                 throw new Exception("Greška pri ažuriranju događaja", ex);
             }
+            finally
+            {
+                s?.Close();
+                s?.Dispose();
+            }
+
+            return d;
         }
 
-        public static void obrisiDogadjaj(int id)
+        public static async Task<bool> obrisiDogadjajAsync(int id)
         {
+            ISession? s = null;
+
             try
             {
-                ISession s = DataLayer.GetSession();
+                s = DataLayer.GetSession();
 
-                DogadjajUVoznji dogadjaj = s.Get<DogadjajUVoznji>(id);
+                if (!(s?.IsConnected ?? false))
+                {
+                    throw new Exception("Nemoguće otvoriti sesiju");
+                }
+
+                DogadjajUVoznji dogadjaj = await s.LoadAsync<DogadjajUVoznji>(id);
                 if (dogadjaj != null)
                 {
-                    s.Delete(dogadjaj);
-                    s.Flush();
+                    await s.DeleteAsync(dogadjaj);
+                    await s.FlushAsync();
                 }
-                s.Close();
             }
             catch (Exception ex)
             {
                 throw new Exception("Greška pri brisanju događaja", ex);
             }
+            finally
+            {
+                s?.Close();
+                s?.Dispose();
+            }
+
+            return true;
         }
         #endregion
 

@@ -596,7 +596,6 @@ namespace FluentNHibernateTemplate
             this.VozacId = vozac;
             this.VozacInfo = vozacinfo;
         }
-
         public override string ToString() => $"{VremePocetka} {KorisnikInfo} {VoziloInfo} {LokacijaPreuzimanja}";
     }
     #endregion
