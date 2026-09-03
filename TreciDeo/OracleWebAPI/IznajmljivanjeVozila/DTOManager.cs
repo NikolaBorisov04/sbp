@@ -446,19 +446,19 @@ namespace FluentNHibernateTemplate
                 {
                     int vozacId = sv.Vozac != null ? sv.Vozac.Id : 0;
                     voznje.Add(new SluzbenaVoznjaPregled(
-                        sv.Id, 
-                        sv.VremePocetka, 
+                        sv.Id,
+                        sv.VremePocetka,
                         sv.VremeZavrsetka,
-                        sv.LokacijaPreuzimanja, 
+                        sv.LokacijaPreuzimanja,
                         sv.LokacijaVracanja,
-                        sv.Tip, 
-                        sv.Status, 
-                        sv.Korisnik.Id, 
-                        sv.Korisnik.ToString(), 
-                        sv.Vozilo.Id, 
-                        sv.Vozilo.ToString(), 
+                        sv.Tip,
+                        sv.Status,
+                        sv.Korisnik.Id,
+                        sv.Korisnik.ToString(),
+                        sv.Vozilo.Id,
+                        sv.Vozilo.ToString(),
                         vozacId, (vozacId != 0) ? sv.Vozac.ToString() : "",
-                        sv.Razlog, 
+                        sv.Razlog,
                         sv.OvlascenoLice
                     ));
                 }
