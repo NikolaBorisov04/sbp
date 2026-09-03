@@ -13,5 +13,8 @@ message.textContent = "Baza podataka aplikacije je prikazana u tabelama ispod.";
 const vozilaList = new EntityList(api, "/Vozila/vratiSvaVozila", content);
 await vozilaList.loadData();
 
+const korisniciList = new EntityList(api, "/Korisnici/vratiSveKorisnike", content);
+await korisniciList.loadData();
+
 window.api = api;
 window.EntityList = EntityList;
