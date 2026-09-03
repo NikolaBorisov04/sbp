@@ -300,13 +300,13 @@ namespace FluentNHibernateTemplate
         public string Prijavio { get; set; } = string.Empty;
         public DateTime DatumPrijave { get; set; }
         public string OpisProblema { get; set; } = string.Empty;
-        public string ProcenaOzbiljnosti { get; set; } = string.Empty;
+        public string ProcenaOzbiljosti { get; set; } = string.Empty;
         public string Status { get; set; } = string.Empty;
         public DateTime? DatumOtklanjanja { get; set; }
 
         public KvarPregled() { }
 
-        public KvarPregled(int id, int voziloId, string voziloInfo, string prijavio, DateTime datumPrijave, string opisProblema, string procenaOzbiljnosti, string status, DateTime? datumOtklanjanja)
+        public KvarPregled(int id, int voziloId, string voziloInfo, string prijavio, DateTime datumPrijave, string opisProblema, string procenaOzbiljosti, string status, DateTime? datumOtklanjanja)
         {
             Id = id;
             VoziloId = voziloId;
@@ -314,7 +314,7 @@ namespace FluentNHibernateTemplate
             Prijavio = prijavio;
             DatumPrijave = datumPrijave;
             OpisProblema = opisProblema;
-            ProcenaOzbiljnosti = procenaOzbiljnosti;
+            ProcenaOzbiljosti = procenaOzbiljosti;
             Status = status;
             DatumOtklanjanja = datumOtklanjanja;
         }
@@ -624,17 +624,17 @@ namespace FluentNHibernateTemplate
             Id = id;
             VremePocetka = vremePocetka;
             VremeZavrsetka = vremeZavrsetka;
-            PredjenaKilometraza = predjenaKilometraza;
-            TrajanjeMinuti = trajanjeMinuti;
+        PredjenaKilometraza = predjenaKilometraza;
+      TrajanjeMinuti = trajanjeMinuti;
             PocetniNivo = pocetniNivo;
-            KrajnjiNivo = krajnjiNivo;
-            PocetnaLokacija = pocetnaLokacija;
+     KrajnjiNivo = krajnjiNivo;
+          PocetnaLokacija = pocetnaLokacija;
             KrajnjaLokacija = krajnjaLokacija;
-            Cena = cena;
-            Naknade = naknade;
-            RezervacijaId = rezervacija;
+      Cena = cena;
+      Naknade = naknade;
+       RezervacijaId = rezervacija;
         }
-    }
+  }
 
     public class VoznjaBasic
     {
@@ -713,6 +713,214 @@ namespace FluentNHibernateTemplate
             Lokacija = lokacija;
             Opis = opis;
         }
+    }
+    #endregion
+
+    #region VoziloCreate (za POST zahtjeve bez ID)
+    public class VoziloCreate
+    {
+        public string RegistarskaOznaka { get; set; } = string.Empty;
+        public string Vin { get; set; } = string.Empty;
+        public string Marka { get; set; } = string.Empty;
+        public string Model { get; set; } = string.Empty;
+        public int GodinaProizvodnje { get; set; }
+        public DateTime DatumNabavke { get; set; }
+        public string Status { get; set; } = string.Empty;
+        public int BrojSedista { get; set; }
+        public string? StanjeEnterijera { get; set; }
+        public string? StanjeEksterijera { get; set; }
+        public string? OgranicenjaKoriscenja { get; set; }
+
+        public int TipKoriscenjaId { get; set; }
+        public int TipPogonaId { get; set; }
+
+        // Elektricno
+        public decimal KapacitetBaterije { get; set; }
+        public decimal TrenutniNivoNapunjenosti { get; set; }
+        public int Autonomija { get; set; }
+        public string TipPunjenja { get; set; } = string.Empty;
+        public int BrojCiklusaPunjenja { get; set; }
+
+        // Hibridno
+        public string TipHibridnogPogona { get; set; } = string.Empty;
+
+        // Klasicno
+        public string TipGoriva { get; set; } = string.Empty;
+        public decimal ZapreminaRezervoara { get; set; }
+        public decimal ProsecnaPotrosnja { get; set; }
+
+        public VoziloCreate() { }
+    }
+
+    public class VoziloUpdate
+    {
+        public int Id { get; set; }
+        public string RegistarskaOznaka { get; set; } = string.Empty;
+        public string Vin { get; set; } = string.Empty;
+        public string Marka { get; set; } = string.Empty;
+        public string Model { get; set; } = string.Empty;
+        public int GodinaProizvodnje { get; set; }
+        public DateTime DatumNabavke { get; set; }
+        public string Status { get; set; } = string.Empty;
+        public int BrojSedista { get; set; }
+        public string? StanjeEnterijera { get; set; }
+        public string? StanjeEksterijera { get; set; }
+        public string? OgranicenjaKoriscenja { get; set; }
+
+        public int TipKoriscenjaId { get; set; }
+        public int TipPogonaId { get; set; }
+
+        // Elektricno
+        public decimal KapacitetBaterije { get; set; }
+        public decimal TrenutniNivoNapunjenosti { get; set; }
+        public int Autonomija { get; set; }
+        public string TipPunjenja { get; set; } = string.Empty;
+        public int BrojCiklusaPunjenja { get; set; }
+
+        // Hibridno
+        public string TipHibridnogPogona { get; set; } = string.Empty;
+
+        // Klasicno
+        public string TipGoriva { get; set; } = string.Empty;
+        public decimal ZapreminaRezervoara { get; set; }
+        public decimal ProsecnaPotrosnja { get; set; }
+
+        public VoziloUpdate() { }
+    }
+    #endregion
+
+    #region OpremaCreate (za POST zahtjeve bez ID)
+    public class OpremaCreate
+    {
+        public string Naziv { get; set; } = string.Empty;
+        public string? Opis { get; set; }
+
+        public OpremaCreate() { }
+    }
+
+    public class OpremaUpdate
+    {
+        public int Id { get; set; }
+        public string Naziv { get; set; } = string.Empty;
+        public string? Opis { get; set; }
+
+        public OpremaUpdate() { }
+    }
+    #endregion
+
+    #region PunjenjeTocenjeCreate (za POST zahtjeve bez ID)
+    public class PunjenjeTocenjeCreate
+    {
+        public int VoziloId { get; set; }
+        public DateTime DatumVreme { get; set; }
+        public string Lokacija { get; set; } = string.Empty;
+        public decimal Kolicina { get; set; }
+        public decimal Cena { get; set; }
+        public string NacinEvidentiranja { get; set; } = string.Empty;
+        public string Evidentirao { get; set; } = string.Empty;
+
+        public PunjenjeTocenjeCreate() { }
+    }
+
+    public class PunjenjeTocenjeUpdate
+    {
+        public int Id { get; set; }
+        public int VoziloId { get; set; }
+        public DateTime DatumVreme { get; set; }
+        public string Lokacija { get; set; } = string.Empty;
+        public decimal Kolicina { get; set; }
+        public decimal Cena { get; set; }
+        public string NacinEvidentiranja { get; set; } = string.Empty;
+        public string Evidentirao { get; set; } = string.Empty;
+
+        public PunjenjeTocenjeUpdate() { }
+    }
+    #endregion
+
+    #region ServisCreate (za POST zahtjeve bez ID)
+    public class ServisCreate
+    {
+        public int VoziloId { get; set; }
+        public int TipServisaId { get; set; }
+        public string ServisniCentar { get; set; } = string.Empty;
+        public DateTime DatumPrijema { get; set; }
+        public DateTime? DatumZavrsetka { get; set; }
+        public string? OpisRadova { get; set; }
+        public string? ZamenjeniDelovi { get; set; }
+        public decimal Troskovi { get; set; }
+        public string Status { get; set; } = string.Empty;
+
+        public ServisCreate() { }
+    }
+
+    public class ServisUpdate
+    {
+        public int Id { get; set; }
+        public int VoziloId { get; set; }
+        public int TipServisaId { get; set; }
+        public string ServisniCentar { get; set; } = string.Empty;
+        public DateTime DatumPrijema { get; set; }
+        public DateTime? DatumZavrsetka { get; set; }
+        public string? OpisRadova { get; set; }
+        public string? ZamenjeniDelovi { get; set; }
+        public decimal Troskovi { get; set; }
+        public string Status { get; set; } = string.Empty;
+
+        public ServisUpdate() { }
+    }
+    #endregion
+
+    #region KvarCreate (za POST zahtjeve bez ID)
+    public class KvarCreate
+    {
+        public int VoziloId { get; set; }
+        public int PrijavioId { get; set; }
+        public DateTime DatumPrijave { get; set; }
+        public string OpisProblema { get; set; } = string.Empty;
+        public string ProcenaOzbiljosti { get; set; } = string.Empty;
+        public string Status { get; set; } = string.Empty;
+        public DateTime? DatumOtklanjanja { get; set; }
+
+        public KvarCreate() { }
+    }
+
+    public class KvarUpdate
+    {
+        public int Id { get; set; }
+        public int VoziloId { get; set; }
+        public int PrijavioId { get; set; }
+        public DateTime DatumPrijave { get; set; }
+        public string OpisProblema { get; set; } = string.Empty;
+        public string ProcenaOzbiljosti { get; set; } = string.Empty;
+        public string Status { get; set; } = string.Empty;
+        public DateTime? DatumOtklanjanja { get; set; }
+
+        public KvarUpdate() { }
+    }
+    #endregion
+
+    #region NezgodaStetaCreate (za POST zahtjeve bez ID)
+    public class NezgodaStetaCreate
+    {
+        public int VoziloId { get; set; }
+        public int OdgovornostId { get; set; }
+        public decimal ProcenaStete { get; set; }
+
+        public List<NezgodaFotografijaPregled> Fotografije { get; set; } = new List<NezgodaFotografijaPregled>();
+        public List<NezgodaOsiguravajucaKucaPregled> OsiguravajuceKuce { get; set; } = new List<NezgodaOsiguravajucaKucaPregled>();
+        public List<NezgodaZapisnikPregled> Zapisnici { get; set; } = new List<NezgodaZapisnikPregled>();
+
+        public NezgodaStetaCreate() { }
+    }
+
+    public class NezgodaStetaUpdate
+    {
+        public int Id { get; set; }
+        public int VoziloId { get; set; }
+        public int OdgovornostId { get; set; }
+        public decimal ProcenaStete { get; set; }
+
+        public NezgodaStetaUpdate() { }
     }
     #endregion
 }

@@ -1,7 +1,379 @@
-# Generic WebAPI smoke test file.
-@WebAPI_HostAddress = https://localhost:7234
+﻿@WebAPI_HostAddress = https://localhost:7234
+@JsonContentType = application/json
 
-###
-GET {{WebAPI_HostAddress}}/Vozila/vratiSvaVozila
-###
-GET {{WebAPI_HostAddress}}/Vozila/vratiVozilo/6
+### VOZILA
+
+### Vratice sva vozila
+GET {{WebAPI_HostAddress}}/api/vozila/sve
+
+### Vratice jedno vozilo po ID-ju
+GET {{WebAPI_HostAddress}}/api/vozila/44
+
+### Kreiraj novo vozilo - ELEKTRICNO VOZILO
+POST {{WebAPI_HostAddress}}/api/vozila
+Content-Type: {{JsonContentType}}
+
+{
+  "registarskaOznaka": "NS-001-KX",
+  "vin": "VIN123456789ABC01",
+  "marka": "Tesla",
+  "model": "Model 3",
+  "godinaProizvodnje": 2023,
+  "datumNabavke": "2023-06-15",
+  "status": "Dostupno",
+  "brojSedista": 5,
+  "stanjeEnterijera": "Odlicno",
+  "stanjeEksterijera": "Odlicno",
+  "ogranicenjaKoriscenja": null,
+  "tipKoriscenjaId": 1,
+  "tipPogonaId": 1,
+  "kapacitetBaterije": 75.0,
+  "trenutniNivoNapunjenosti": 100.0,
+  "autonomija": 500,
+  "tipPunjenja": "DC",
+  "brojCiklusaPunjenja": 0,
+  "tipHibridnogPogona": "",
+  "tipGoriva": "",
+  "zapreminaRezervoara": 0.0,
+  "prosecnaPotrosnja": 0.0
+}
+
+### Kreiraj novo vozilo - HIBRIDNO VOZILO
+POST {{WebAPI_HostAddress}}/api/vozila
+Content-Type: {{JsonContentType}}
+
+{
+  "registarskaOznaka": "NS-002-KX",
+  "vin": "VIN987654321DEF02",
+  "marka": "Toyota",
+  "model": "Prius",
+  "godinaProizvodnje": 2022,
+  "datumNabavke": "2022-03-20",
+  "status": "Dostupno",
+  "brojSedista": 5,
+  "stanjeEnterijera": "Dobro",
+  "stanjeEksterijera": "Dobro",
+  "ogranicenjaKoriscenja": null,
+  "tipKoriscenjaId": 1,
+  "tipPogonaId": 2,
+  "kapacitetBaterije": 13.6,
+  "trenutniNivoNapunjenosti": 100.0,
+  "autonomija": 0,
+  "tipPunjenja": "",
+  "brojCiklusaPunjenja": 0,
+  "tipHibridnogPogona": "Serijski-paralelni",
+  "tipGoriva": "",
+  "zapreminaRezervoara": 0.0,
+  "prosecnaPotrosnja": 0.0
+}
+
+### Kreiraj novo vozilo - KLASICNO VOZILO
+POST {{WebAPI_HostAddress}}/api/vozila
+Content-Type: {{JsonContentType}}
+
+{
+  "registarskaOznaka": "NS-003-KX",
+  "vin": "VIN111222333GHI03",
+"marka": "BMW",
+"model": "320i",
+  "godinaProizvodnje": 2021,
+  "datumNabavke": "2021-01-10",
+  "status": "Dostupno",
+  "brojSedista": 5,
+  "stanjeEnterijera": "Odlicno",
+  "stanjeEksterijera": "Odlicno",
+  "ogranicenjaKoriscenja": null,
+  "tipKoriscenjaId": 1,
+  "tipPogonaId": 3,
+  "kapacitetBaterije": 0.0,
+  "trenutniNivoNapunjenosti": 0.0,
+  "autonomija": 0,
+  "tipPunjenja": "",
+  "brojCiklusaPunjenja": 0,
+  "tipHibridnogPogona": "",
+  "tipGoriva": "Dizel",
+  "zapreminaRezervoara": 70.0,
+  "prosecnaPotrosnja": 6.5
+}
+
+### Azuriraj vozilo
+PUT {{WebAPI_HostAddress}}/api/vozila/44
+Content-Type: {{JsonContentType}}
+
+{
+  "id": 44,
+  "registarskaOznaka": "NS-001-KX",
+  "vin": "VIN123456789ABC01",
+  "marka": "Tesla",
+  "model": "Model 3",
+  "godinaProizvodnje": 2023,
+  "datumNabavke": "2023-06-15",
+  "status": "Na odrzavanju",
+  "brojSedista": 5,
+  "stanjeEnterijera": "Dobro",
+  "stanjeEksterijera": "Dobro",
+  "ogranicenjaKoriscenja": null,
+  "tipKoriscenjaId": 1,
+  "tipPogonaId": 1,
+  "kapacitetBaterije": 75.0,
+  "trenutniNivoNapunjenosti": 85.0,
+  "autonomija": 500,
+  "tipPunjenja": "DC",
+  "brojCiklusaPunjenja": 50,
+  "tipHibridnogPogona": "",
+  "tipGoriva": "",
+  "zapreminaRezervoara": 0.0,
+  "prosecnaPotrosnja": 0.0
+}
+
+### Obrisi vozilo
+DELETE {{WebAPI_HostAddress}}/api/vozila/44
+
+### Vratice sve tipove pogona
+GET {{WebAPI_HostAddress}}/api/vozila/katalog/tipovi-pogona
+
+### Vratice sve tipove koriscenja
+GET {{WebAPI_HostAddress}}/api/vozila/katalog/tipovi-koriscenja
+
+### OPREMA
+
+### Vratice sve opreme
+GET {{WebAPI_HostAddress}}/api/oprema/sve
+
+### Kreiraj novu opremu
+POST {{WebAPI_HostAddress}}/api/oprema
+Content-Type: {{JsonContentType}}
+
+{
+  "naziv": "Klimatizacija",
+  "opis": "Automatska klimatizacija sa regulacijom temperature"
+}
+
+### Azuriraj opremu
+PUT {{WebAPI_HostAddress}}/api/oprema/41
+Content-Type: {{JsonContentType}}
+
+{
+  "id": 41,
+  "naziv": "Klimatizacija",
+  "opis": "Automatska klimatizacija sa temperaturnom regulacijom i jonizacijom"
+}
+
+### Obrisi opremu
+DELETE {{WebAPI_HostAddress}}/api/oprema/41
+
+### Vratice opremu dodjeljenu vozilu
+GET {{WebAPI_HostAddress}}/api/oprema/vozilo/1
+
+### Dodeli opremu vozilu
+POST {{WebAPI_HostAddress}}/api/oprema/vozilo/1/oprema/1?isDodatna=false
+
+### Ukloni opremu sa vozila
+DELETE {{WebAPI_HostAddress}}/api/oprema/vozilo/1/oprema/1
+
+### PUNJENJE/TOCENJE
+
+### Vratice sve punjenja/tocenja
+GET {{WebAPI_HostAddress}}/api/punjenjetocenje/sve
+
+### Vratice punjenja/tocenja za konkretno vozilo
+GET {{WebAPI_HostAddress}}/api/punjenjetocenje/sve?voziloId=1
+
+### Vratice jedno punjenje/tocenje po ID-ju
+GET {{WebAPI_HostAddress}}/api/punjenjetocenje/1
+
+### Kreiraj novo punjenje/tocenje
+POST {{WebAPI_HostAddress}}/api/punjenjetocenje
+Content-Type: {{JsonContentType}}
+
+{
+  "voziloId": 1,
+  "datumVreme": "2024-01-15T10:30:00",
+  "lokacija": "Servisan centar u Novom Sadu",
+  "kolicina": 50.5,
+  "cena": 2525.00,
+  "nacinEvidentiranja": "Rucno",
+  "evidentirao": "Marko Markovic"
+}
+
+### Azuriraj punjenje/tocenje
+PUT {{WebAPI_HostAddress}}/api/punjenjetocenje/1
+Content-Type: {{JsonContentType}}
+
+{
+  "id": 1,
+  "voziloId": 1,
+  "datumVreme": "2024-01-15T10:30:00",
+  "lokacija": "Servisan centar u Novom Sadu",
+  "kolicina": 55.0,
+  "cena": 2750.00,
+  "nacinEvidentiranja": "Rucno",
+  "evidentirao": "Marko Markovic"
+}
+
+### Obrisi punjenje/tocenje
+DELETE {{WebAPI_HostAddress}}/api/punjenjetocenje/1
+
+### SERVIS
+
+### Vratice sve servise
+GET {{WebAPI_HostAddress}}/api/servis/sve
+
+### Vratice servise za konkretno vozilo
+GET {{WebAPI_HostAddress}}/api/servis/sve?voziloId=1
+
+### Vratice jedan servis po ID-ju
+GET {{WebAPI_HostAddress}}/api/servis/1
+
+### Kreiraj novi servis
+POST {{WebAPI_HostAddress}}/api/servis
+Content-Type: {{JsonContentType}}
+
+{
+  "voziloId": 1,
+"tipServisaId": 1,
+  "servisniCentar": "BMW Servis Centar - Novi Sad",
+  "datumPrijema": "2024-01-10",
+  "datumZavrsetka": null,
+  "opisRadova": "Redovni pregled i zamjena ulja",
+  "zamenjeniDelovi": "Uljni filter",
+  "troskovi": 5000.00,
+  "status": "U toku"
+}
+
+### Azuriraj servis
+PUT {{WebAPI_HostAddress}}/api/servis/1
+Content-Type: {{JsonContentType}}
+
+{
+  "id": 1,
+  "voziloId": 1,
+  "tipServisaId": 1,
+  "servisniCentar": "BMW Servis Centar - Novi Sad",
+  "datumPrijema": "2024-01-10",
+  "datumZavrsetka": "2024-01-12",
+  "opisRadova": "Redovni pregled, zamjena ulja i filtera",
+  "zamenjeniDelovi": "Uljni filter, vazdusni filter",
+"troskovi": 5500.00,
+  "status": "Zavrsen"
+}
+
+### Obrisi servis
+DELETE {{WebAPI_HostAddress}}/api/servis/41
+
+### Vratice sve tipove servisa
+GET {{WebAPI_HostAddress}}/api/servis/katalog/tipovi-servisa
+
+### KVAR
+
+### Vratice sve kvarove
+GET {{WebAPI_HostAddress}}/api/kvar/sve
+
+### Vratice kvarove za konkretno vozilo
+GET {{WebAPI_HostAddress}}/api/kvar/sve?voziloId=1
+
+### Vratice jedan kvar po ID-ju
+GET {{WebAPI_HostAddress}}/api/kvar/1
+
+### Prijavi novi kvar NE RADI
+POST {{WebAPI_HostAddress}}/api/kvar
+Content-Type: {{JsonContentType}}
+
+{
+  "voziloId": 1,
+  "prijavioId": 1,
+  "datumPrijave": "2024-01-15T14:00:00",
+  "opisProblema": "Motor ne startuje na hladnoci",
+  "procenaOzbiljnosti": "Srednja",
+  "status": "Prijavljeno",
+  "datumOtklanjanja": null
+}
+
+### Azuriraj kvar NE RADI
+PUT {{WebAPI_HostAddress}}/api/kvar/1
+Content-Type: {{JsonContentType}}
+
+{
+  "id": 1,
+  "voziloId": 1,
+  "prijavioId": 1,
+  "datumPrijave": "2024-01-15T14:00:00",
+  "opisProblema": "Motor ne startuje na hladnoci - problem sa akumulatorom",
+  "procenaOzbiljnosti": "Srednja",
+  "status": "U radu",
+  "datumOtklanjanja": null
+}
+
+### Obrisi kvar
+DELETE {{WebAPI_HostAddress}}/api/kvar/1
+
+### Vratice sve prijavitelje kvarova
+GET {{WebAPI_HostAddress}}/api/kvar/katalog/prijavitelji
+
+### NEZGODE/STETE
+
+### Vratice sve nezgode/stete
+GET {{WebAPI_HostAddress}}/api/nezgode/sve
+
+### Vratice nezgode/stete za konkretno vozilo
+GET {{WebAPI_HostAddress}}/api/nezgode/sve?voziloId=1
+
+### Vratice jednu nezgodu/stetu po ID-ju
+GET {{WebAPI_HostAddress}}/api/nezgode/1
+
+### Prijavi novu nezgodu/stetu
+POST {{WebAPI_HostAddress}}/api/nezgode
+Content-Type: {{JsonContentType}}
+
+{
+  "voziloId": 1,
+  "odgovornostId": 1,
+  "procenaStete": 15000.00,
+  "fotografije": [],
+  "osiguravajuceKuce": [],
+  "zapisnici": []
+}
+
+### Azuriraj nezgodu/stetu
+PUT {{WebAPI_HostAddress}}/api/nezgode/41
+Content-Type: {{JsonContentType}}
+
+{
+  "id": 41,
+  "voziloId": 1,
+  "odgovornostId": 1,
+  "procenaStete": 18000.00
+}
+
+### Obrisi nezgodu/stetu
+DELETE {{WebAPI_HostAddress}}/api/nezgode/41
+
+### Dodaj fotografiju stete
+POST {{WebAPI_HostAddress}}/api/nezgode/1/fotografije
+Content-Type: {{JsonContentType}}
+
+"https://example.com/steta-foto-1.jpg"
+
+### Obrisi fotografiju stete
+DELETE {{WebAPI_HostAddress}}/api/nezgode/fotografije/41
+
+### Dodaj osiguravajucu kucu
+POST {{WebAPI_HostAddress}}/api/nezgode/1/osiguravajuce-kuce
+Content-Type: {{JsonContentType}}
+
+"Triglav osiguranje"
+
+### Obrisi osiguravajucu kucu
+DELETE {{WebAPI_HostAddress}}/api/nezgode/osiguravajuce-kuce/1
+
+### Dodaj zapisnik stete
+POST {{WebAPI_HostAddress}}/api/nezgode/1/zapisnici
+Content-Type: {{JsonContentType}}
+
+"https://example.com/zapisnik-1.pdf"
+
+### Obrisi zapisnik stete
+DELETE {{WebAPI_HostAddress}}/api/nezgode/zapisnici/1
+
+### Vratice sve tipove odgovornosti
+GET {{WebAPI_HostAddress}}/api/nezgode/katalog/tipovi-odgovornosti
