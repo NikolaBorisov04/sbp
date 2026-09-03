@@ -17,16 +17,10 @@ namespace WebAPI.Controllers
                 return BadRequest(new { greska = "Nevalidan ID vozila." });
             }
 
-            try
-            {
-                var rez = DTOManager.vratiSveKvarove(voziloId);
-                return Ok(rez);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { greska = ex.Message });
-            }
+            var rez = DTOManager.vratiSveKvarove(voziloId);
+            return Ok(rez);
         }
+
         [HttpGet]
         [Route("{id}")]
         public IActionResult vratiKvar(int id)
@@ -36,20 +30,13 @@ namespace WebAPI.Controllers
                 return BadRequest(new { greska = "Nevalidan ID kvara." });
             }
 
-            try
+            var rez = DTOManager.vratiKvar(id);
+            if (rez == null)
             {
-                var rez = DTOManager.vratiKvar(id);
-                if (rez == null)
-                {
-                    return NotFound(new { greska = "Kvar sa zadatim ID-jem nije pronađen." });
-                }
+                return NotFound(new { greska = "Kvar sa zadatim ID-jem nije pronađen." });
+            }
 
-                return Ok(rez);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { greska = ex.Message });
-            }
+            return Ok(rez);
         }
 
         [HttpPost]
@@ -71,32 +58,25 @@ namespace WebAPI.Controllers
                 return BadRequest(new { greska = "Nevalidan ID prijavitelja kvara." });
             }
 
-            try
+            KvarBasic kb_internal = new KvarBasic
             {
-                KvarBasic kb_internal = new KvarBasic
-                {
-                    Id = 0,
-                    VoziloId = kb.VoziloId,
-                    PrijavioId = kb.PrijavioId,
-                    DatumPrijave = kb.DatumPrijave,
-                    OpisProblema = kb.OpisProblema,
-                    ProcenaOzbiljnosti = kb.ProcenaOzbiljnosti,
-                    Status = kb.Status,
-                    DatumOtklanjanja = kb.DatumOtklanjanja
-                };
+                Id = 0,
+                VoziloId = kb.VoziloId,
+                PrijavioId = kb.PrijavioId,
+                DatumPrijave = kb.DatumPrijave,
+                OpisProblema = kb.OpisProblema,
+                ProcenaOzbiljnosti = kb.ProcenaOzbiljnosti,
+                Status = kb.Status,
+                DatumOtklanjanja = kb.DatumOtklanjanja
+            };
 
-                bool uspesno = DTOManager.dodajKvar(kb_internal);
-                if (!uspesno)
-                {
-                    return BadRequest(new { greska = "Došlo je do greške prilikom prijave kvara." });
-                }
-
-                return Ok(new { poruka = "Kvar je uspešno evidentiran." });
-            }
-            catch (Exception ex)
+            bool uspesno = DTOManager.dodajKvar(kb_internal);
+            if (!uspesno)
             {
-                return BadRequest(new { greska = ex.Message });
+                return BadRequest(new { greska = "Došlo je do greške prilikom prijave kvara." });
             }
+
+            return Ok(new { poruka = "Kvar je uspešno evidentiran." });
         }
 
         [HttpPut]
@@ -118,32 +98,25 @@ namespace WebAPI.Controllers
                 return BadRequest(new { greska = "ID u URL-u i u body-ju se ne poklapaju." });
             }
 
-            try
+            KvarBasic kb_internal = new KvarBasic
             {
-                KvarBasic kb_internal = new KvarBasic
-                {
-                    Id = kb.Id,
-                    VoziloId = kb.VoziloId,
-                    PrijavioId = kb.PrijavioId,
-                    DatumPrijave = kb.DatumPrijave,
-                    OpisProblema = kb.OpisProblema,
-                    ProcenaOzbiljnosti = kb.ProcenaOzbiljnosti,
-                    Status = kb.Status,
-                    DatumOtklanjanja = kb.DatumOtklanjanja
-                };
+                Id = kb.Id,
+                VoziloId = kb.VoziloId,
+                PrijavioId = kb.PrijavioId,
+                DatumPrijave = kb.DatumPrijave,
+                OpisProblema = kb.OpisProblema,
+                ProcenaOzbiljnosti = kb.ProcenaOzbiljnosti,
+                Status = kb.Status,
+                DatumOtklanjanja = kb.DatumOtklanjanja
+            };
 
-                bool uspesno = DTOManager.azurirajKvar(kb_internal);
-                if (!uspesno)
-                {
-                    return BadRequest(new { greska = "Došlo je do greške prilikom ažuriranja kvara." });
-                }
-
-                return Ok(new { poruka = "Kvar je uspešno ažuriran." });
-            }
-            catch (Exception ex)
+            bool uspesno = DTOManager.azurirajKvar(kb_internal);
+            if (!uspesno)
             {
-                return BadRequest(new { greska = ex.Message });
+                return BadRequest(new { greska = "Došlo je do greške prilikom ažuriranja kvara." });
             }
+
+            return Ok(new { poruka = "Kvar je uspešno ažuriran." });
         }
 
         [HttpDelete]
@@ -155,35 +128,21 @@ namespace WebAPI.Controllers
                 return BadRequest(new { greska = "Nevalidan ID kvara." });
             }
 
-            try
+            bool uspesno = DTOManager.obrisiKvar(id);
+            if (!uspesno)
             {
-                bool uspesno = DTOManager.obrisiKvar(id);
-                if (!uspesno)
-                {
-                    return NotFound(new { greska = "Kvar sa zadatim ID-jem nije pronađen." });
-                }
+                return NotFound(new { greska = "Kvar sa zadatim ID-jem nije pronađen." });
+            }
 
-                return Ok(new { poruka = "Kvar je uspešno obrisan." });
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { greska = ex.Message });
-            }
+            return Ok(new { poruka = "Kvar je uspešno obrisan." });
         }
 
         [HttpGet]
         [Route("katalog/prijavitelji")]
         public IActionResult vratiSvePrijavioKvar()
         {
-            try
-            {
-                var rez = DTOManager.vratiSvePrijavioKvar();
-                return Ok(rez);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { greska = ex.Message });
-            }
+            var rez = DTOManager.vratiSvePrijavioKvar();
+            return Ok(rez);
         }
     }
 }

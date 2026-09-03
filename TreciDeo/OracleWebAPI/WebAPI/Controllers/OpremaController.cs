@@ -12,15 +12,8 @@ namespace WebAPI.Controllers
         [Route("sve")]
         public IActionResult vratiSvuOpremu()
         {
-            try
-            {
-                var rez = DTOManager.vratiSvuOpremu();
-                return Ok(rez);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { greska = ex.Message });
-            }
+            var rez = DTOManager.vratiSvuOpremu();
+            return Ok(rez);
         }
 
         [HttpPost]
@@ -37,27 +30,20 @@ namespace WebAPI.Controllers
                 return BadRequest(new { greska = "Naziv opreme je obavezan." });
             }
 
-            try
+            OpremaPregled op_pregled = new OpremaPregled
             {
-                OpremaPregled op_pregled = new OpremaPregled
-                {
-                    Id = 0,
-                    Naziv = op.Naziv,
-                    Opis = op.Opis
-                };
+                Id = 0,
+                Naziv = op.Naziv,
+                Opis = op.Opis
+            };
 
-                bool uspesno = DTOManager.dodajOpremu(op_pregled);
-                if (!uspesno)
-                {
-                    return BadRequest(new { greska = "Došlo je do greške prilikom dodavanja opreme." });
-                }
-
-                return Ok(new { poruka = "Oprema je uspešno dodata." });
-            }
-            catch (Exception ex)
+            bool uspesno = DTOManager.dodajOpremu(op_pregled);
+            if (!uspesno)
             {
-                return BadRequest(new { greska = ex.Message });
+                return BadRequest(new { greska = "Došlo je do greške prilikom dodavanja opreme." });
             }
+
+            return Ok(new { poruka = "Oprema je uspešno dodata." });
         }
 
         [HttpPut]
@@ -84,27 +70,20 @@ namespace WebAPI.Controllers
                 return BadRequest(new { greska = "Naziv opreme je obavezan." });
             }
 
-            try
+            OpremaPregled op_pregled = new OpremaPregled
             {
-                OpremaPregled op_pregled = new OpremaPregled
-                {
-                    Id = op.Id,
-                    Naziv = op.Naziv,
-                    Opis = op.Opis
-                };
+                Id = op.Id,
+                Naziv = op.Naziv,
+                Opis = op.Opis
+            };
 
-                bool uspesno = DTOManager.azurirajOpremu(op_pregled);
-                if (!uspesno)
-                {
-                    return BadRequest(new { greska = "Došlo je do greške prilikom ažuriranja opreme ili oprema ne postoji." });
-                }
-
-                return Ok(new { poruka = "Oprema je uspešno ažurirana." });
-            }
-            catch (Exception ex)
+            bool uspesno = DTOManager.azurirajOpremu(op_pregled);
+            if (!uspesno)
             {
-                return BadRequest(new { greska = ex.Message });
+                return BadRequest(new { greska = "Došlo je do greške prilikom ažuriranja opreme ili oprema ne postoji." });
             }
+
+            return Ok(new { poruka = "Oprema je uspešno ažurirana." });
         }
 
         [HttpDelete]
@@ -116,20 +95,13 @@ namespace WebAPI.Controllers
                 return BadRequest(new { greska = "Nevalidan ID opreme." });
             }
 
-            try
+            bool uspesno = DTOManager.obrisiOpremu(id);
+            if (!uspesno)
             {
-                bool uspesno = DTOManager.obrisiOpremu(id);
-                if (!uspesno)
-                {
-                    return NotFound(new { greska = "Oprema sa zadatim ID-jem nije pronađena." });
-                }
+                return NotFound(new { greska = "Oprema sa zadatim ID-jem nije pronađena." });
+            }
 
-                return Ok(new { poruka = "Oprema je uspešno obrisana." });
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { greska = ex.Message });
-            }
+            return Ok(new { poruka = "Oprema je uspešno obrisana." });
         }
 
         [HttpGet]
@@ -141,15 +113,8 @@ namespace WebAPI.Controllers
                 return BadRequest(new { greska = "Nevalidan ID vozila." });
             }
 
-            try
-            {
-                var rez = DTOManager.vratiOpremuZaVozilo(voziloId);
-                return Ok(rez);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { greska = ex.Message });
-            }
+            var rez = DTOManager.vratiOpremuZaVozilo(voziloId);
+            return Ok(rez);
         }
 
         [HttpPost]
@@ -166,20 +131,13 @@ namespace WebAPI.Controllers
                 return BadRequest(new { greska = "Nevalidan ID opreme." });
             }
 
-            try
+            bool uspesno = DTOManager.dodajOpremuVozilu(voziloId, opremaId, isDodatna);
+            if (!uspesno)
             {
-                bool uspesno = DTOManager.dodajOpremuVozilu(voziloId, opremaId, isDodatna);
-                if (!uspesno)
-                {
-                    return BadRequest(new { greska = "Došlo je do greške prilikom dodeljivanja opreme vozilu." });
-                }
+                return BadRequest(new { greska = "Došlo je do greške prilikom dodeljivanja opreme vozilu." });
+            }
 
-                return Ok(new { poruka = "Oprema je uspešno dodeljena vozilu." });
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { greska = ex.Message });
-            }
+            return Ok(new { poruka = "Oprema je uspešno dodeljena vozilu." });
         }
 
         [HttpDelete]
@@ -196,20 +154,13 @@ namespace WebAPI.Controllers
                 return BadRequest(new { greska = "Nevalidan ID opreme." });
             }
 
-            try
+            bool uspesno = DTOManager.obrisiOpremuSaVozila(voziloId, opremaId);
+            if (!uspesno)
             {
-                bool uspesno = DTOManager.obrisiOpremuSaVozila(voziloId, opremaId);
-                if (!uspesno)
-                {
-                    return NotFound(new { greska = "Oprema za navedeno vozilo nije pronađena." });
-                }
+                return NotFound(new { greska = "Oprema za navedeno vozilo nije pronađena." });
+            }
 
-                return Ok(new { poruka = "Oprema je uspešno uklonjena sa vozila." });
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { greska = ex.Message });
-            }
+            return Ok(new { poruka = "Oprema je uspešno uklonjena sa vozila." });
         }
     }
 }

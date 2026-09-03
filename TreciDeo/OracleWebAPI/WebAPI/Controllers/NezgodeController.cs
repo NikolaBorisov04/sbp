@@ -17,15 +17,8 @@ namespace WebAPI.Controllers
                 return BadRequest(new { greska = "Nevalidan ID vozila." });
             }
 
-            try
-            {
-                var rez = DTOManager.vratiSveNezgodeStete(voziloId);
-                return Ok(rez);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { greska = ex.Message });
-            }
+            var rez = DTOManager.vratiSveNezgodeStete(voziloId);
+            return Ok(rez);
         }
 
         [HttpGet]
@@ -37,20 +30,13 @@ namespace WebAPI.Controllers
                 return BadRequest(new { greska = "Nevalidan ID nezgode/štete." });
             }
 
-            try
+            var rez = DTOManager.vratiNezgoduStetu(id);
+            if (rez == null)
             {
-                var rez = DTOManager.vratiNezgoduStetu(id);
-                if (rez == null)
-                {
-                    return NotFound(new { greska = "Nezgoda/šteta sa zadatim ID-jem nije pronađena." });
-                }
+                return NotFound(new { greska = "Nezgoda/šteta sa zadatim ID-jem nije pronađena." });
+            }
 
-                return Ok(rez);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { greska = ex.Message });
-            }
+            return Ok(rez);
         }
 
         [HttpPost]
@@ -72,31 +58,24 @@ namespace WebAPI.Controllers
                 return BadRequest(new { greska = "Nevalidan ID odgovornosti." });
             }
 
-            try
+            NezgodaStetaBasic nb_internal = new NezgodaStetaBasic
             {
-                NezgodaStetaBasic nb_internal = new NezgodaStetaBasic
-                {
-                    Id = 0,
-                    VoziloId = nb.VoziloId,
-                    OdgovornostId = nb.OdgovornostId,
-                    ProcenaStete = nb.ProcenaStete,
-                    Fotografije = nb.Fotografije,
-                    OsiguravajuceKuce = nb.OsiguravajuceKuce,
-                    Zapisnici = nb.Zapisnici
-                };
+                Id = 0,
+                VoziloId = nb.VoziloId,
+                OdgovornostId = nb.OdgovornostId,
+                ProcenaStete = nb.ProcenaStete,
+                Fotografije = nb.Fotografije,
+                OsiguravajuceKuce = nb.OsiguravajuceKuce,
+                Zapisnici = nb.Zapisnici
+            };
 
-                bool uspesno = DTOManager.dodajNezgoduStetu(nb_internal);
-                if (!uspesno)
-                {
-                    return BadRequest(new { greska = "Došlo je do greške prilikom evidentiranja nezgode/štete." });
-                }
-
-                return Ok(new { poruka = "Nezgoda/šteta je uspešno evidentirana." });
-            }
-            catch (Exception ex)
+            bool uspesno = DTOManager.dodajNezgoduStetu(nb_internal);
+            if (!uspesno)
             {
-                return BadRequest(new { greska = ex.Message });
+                return BadRequest(new { greska = "Došlo je do greške prilikom evidentiranja nezgode/štete." });
             }
+
+            return Ok(new { poruka = "Nezgoda/šteta je uspešno evidentirana." });
         }
 
         [HttpPut]
@@ -118,28 +97,21 @@ namespace WebAPI.Controllers
                 return BadRequest(new { greska = "ID u URL-u i u body-ju se ne poklapaju." });
             }
 
-            try
+            NezgodaStetaBasic nb_internal = new NezgodaStetaBasic
             {
-                NezgodaStetaBasic nb_internal = new NezgodaStetaBasic
-                {
-                    Id = nb.Id,
-                    VoziloId = nb.VoziloId,
-                    OdgovornostId = nb.OdgovornostId,
-                    ProcenaStete = nb.ProcenaStete
-                };
+                Id = nb.Id,
+                VoziloId = nb.VoziloId,
+                OdgovornostId = nb.OdgovornostId,
+                ProcenaStete = nb.ProcenaStete
+            };
 
-                bool uspesno = DTOManager.azurirajNezgoduStetu(nb_internal);
-                if (!uspesno)
-                {
-                    return BadRequest(new { greska = "Došlo je do greške prilikom ažuriranja nezgode/štete." });
-                }
-
-                return Ok(new { poruka = "Nezgoda/šteta je uspešno ažurirana." });
-            }
-            catch (Exception ex)
+            bool uspesno = DTOManager.azurirajNezgoduStetu(nb_internal);
+            if (!uspesno)
             {
-                return BadRequest(new { greska = ex.Message });
+                return BadRequest(new { greska = "Došlo je do greške prilikom ažuriranja nezgode/štete." });
             }
+
+            return Ok(new { poruka = "Nezgoda/šteta je uspešno ažurirana." });
         }
 
         [HttpDelete]
@@ -151,20 +123,13 @@ namespace WebAPI.Controllers
                 return BadRequest(new { greska = "Nevalidan ID nezgode/štete." });
             }
 
-            try
+            bool uspesno = DTOManager.obrisiNezgoduStetu(id);
+            if (!uspesno)
             {
-                bool uspesno = DTOManager.obrisiNezgoduStetu(id);
-                if (!uspesno)
-                {
-                    return NotFound(new { greska = "Nezgoda/šteta sa zadatim ID-jem nije pronađena." });
-                }
+                return NotFound(new { greska = "Nezgoda/šteta sa zadatim ID-jem nije pronađena." });
+            }
 
-                return Ok(new { poruka = "Nezgoda/šteta je uspešno obrisana." });
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { greska = ex.Message });
-            }
+            return Ok(new { poruka = "Nezgoda/šteta je uspešno obrisana." });
         }
 
         [HttpPost]
@@ -181,20 +146,13 @@ namespace WebAPI.Controllers
                 return BadRequest(new { greska = "URL fotografije ne sme biti prazan." });
             }
 
-            try
+            bool uspesno = DTOManager.dodajFotografijuStete(nezgodaId, url);
+            if (!uspesno)
             {
-                bool uspesno = DTOManager.dodajFotografijuStete(nezgodaId, url);
-                if (!uspesno)
-                {
-                    return BadRequest(new { greska = "Došlo je do greške prilikom dodavanja fotografije štete." });
-                }
+                return BadRequest(new { greska = "Došlo je do greške prilikom dodavanja fotografije štete." });
+            }
 
-                return Ok(new { poruka = "Fotografija štete je uspešno dodata." });
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { greska = ex.Message });
-            }
+            return Ok(new { poruka = "Fotografija štete je uspešno dodata." });
         }
 
         [HttpDelete]
@@ -206,20 +164,13 @@ namespace WebAPI.Controllers
                 return BadRequest(new { greska = "Nevalidan ID fotografije." });
             }
 
-            try
+            bool uspesno = DTOManager.obrisiFotografijuStete(fotoId);
+            if (!uspesno)
             {
-                bool uspesno = DTOManager.obrisiFotografijuStete(fotoId);
-                if (!uspesno)
-                {
-                    return NotFound(new { greska = "Fotografija sa zadatim ID-jem nije pronađena." });
-                }
+                return NotFound(new { greska = "Fotografija sa zadatim ID-jem nije pronađena." });
+            }
 
-                return Ok(new { poruka = "Fotografija štete je uspešno obrisana." });
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { greska = ex.Message });
-            }
+            return Ok(new { poruka = "Fotografija štete je uspešno obrisana." });
         }
 
         [HttpPost]
@@ -236,20 +187,13 @@ namespace WebAPI.Controllers
                 return BadRequest(new { greska = "Naziv osiguravajuće kuće ne sme biti prazan." });
             }
 
-            try
+            bool uspesno = DTOManager.dodajOsiguravajucuKucuStete(nezgodaId, kuca);
+            if (!uspesno)
             {
-                bool uspesno = DTOManager.dodajOsiguravajucuKucuStete(nezgodaId, kuca);
-                if (!uspesno)
-                {
-                    return BadRequest(new { greska = "Došlo je do greške prilikom dodavanja osiguravajuće kuće." });
-                }
+                return BadRequest(new { greska = "Došlo je do greške prilikom dodavanja osiguravajuće kuće." });
+            }
 
-                return Ok(new { poruka = "Osiguravajuća kuća je uspešno dodata." });
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { greska = ex.Message });
-            }
+            return Ok(new { poruka = "Osiguravajuća kuća je uspešno dodata." });
         }
 
         [HttpDelete]
@@ -261,20 +205,13 @@ namespace WebAPI.Controllers
                 return BadRequest(new { greska = "Nevalidan ID osiguravajuće kuće." });
             }
 
-            try
+            bool uspesno = DTOManager.obrisiOsiguravajucuKucuStete(kucaId);
+            if (!uspesno)
             {
-                bool uspesno = DTOManager.obrisiOsiguravajucuKucuStete(kucaId);
-                if (!uspesno)
-                {
-                    return NotFound(new { greska = "Osiguravajuća kuća sa zadatim ID-jem nije pronađena." });
-                }
+                return NotFound(new { greska = "Osiguravajuća kuća sa zadatim ID-jem nije pronađena." });
+            }
 
-                return Ok(new { poruka = "Osiguravajuća kuća je uspešno obrisana." });
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { greska = ex.Message });
-            }
+            return Ok(new { poruka = "Osiguravajuća kuća je uspešno obrisana." });
         }
 
         [HttpPost]
@@ -291,20 +228,13 @@ namespace WebAPI.Controllers
                 return BadRequest(new { greska = "URL zapisnika ne sme biti prazan." });
             }
 
-            try
+            bool uspesno = DTOManager.dodajZapisnikStete(nezgodaId, url);
+            if (!uspesno)
             {
-                bool uspesno = DTOManager.dodajZapisnikStete(nezgodaId, url);
-                if (!uspesno)
-                {
-                    return BadRequest(new { greska = "Došlo je do greške prilikom dodavanja zapisnika." });
-                }
+                return BadRequest(new { greska = "Došlo je do greške prilikom dodavanja zapisnika." });
+            }
 
-                return Ok(new { poruka = "Zapisnik je uspešno dodat." });
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { greska = ex.Message });
-            }
+            return Ok(new { poruka = "Zapisnik je uspešno dodat." });
         }
 
         [HttpDelete]
@@ -316,35 +246,21 @@ namespace WebAPI.Controllers
                 return BadRequest(new { greska = "Nevalidan ID zapisnika." });
             }
 
-            try
+            bool uspesno = DTOManager.obrisiZapisnikStete(zapisnikId);
+            if (!uspesno)
             {
-                bool uspesno = DTOManager.obrisiZapisnikStete(zapisnikId);
-                if (!uspesno)
-                {
-                    return NotFound(new { greska = "Zapisnik sa zadatim ID-jem nije pronađen." });
-                }
+                return NotFound(new { greska = "Zapisnik sa zadatim ID-jem nije pronađen." });
+            }
 
-                return Ok(new { poruka = "Zapisnik je uspešno obrisan." });
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { greska = ex.Message });
-            }
+            return Ok(new { poruka = "Zapisnik je uspešno obrisan." });
         }
 
         [HttpGet]
         [Route("katalog/tipovi-odgovornosti")]
         public IActionResult vratiSveTipoveOdgovornosti()
         {
-            try
-            {
-                var rez = DTOManager.vratiSveTipoveOdgovornosti();
-                return Ok(rez);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { greska = ex.Message });
-            }
+            var rez = DTOManager.vratiSveTipoveOdgovornosti();
+            return Ok(rez);
         }
     }
 }

@@ -17,15 +17,8 @@ namespace WebAPI.Controllers
                 return BadRequest(new { greska = "Nevalidan ID vozila." });
             }
 
-            try
-            {
-                var rez = DTOManager.vratiSvaPunjenjaTocenja(voziloId);
-                return Ok(rez);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { greska = ex.Message });
-            }
+            var rez = DTOManager.vratiSvaPunjenjaTocenja(voziloId);
+            return Ok(rez);
         }
 
         [HttpGet]
@@ -37,20 +30,13 @@ namespace WebAPI.Controllers
                 return BadRequest(new { greska = "Nevalidan ID punjenja/točenja." });
             }
 
-            try
+            var rez = DTOManager.vratiPunjenjeTocenje(id);
+            if (rez == null)
             {
-                var rez = DTOManager.vratiPunjenjeTocenje(id);
-                if (rez == null)
-                {
-                    return NotFound(new { greska = "Evidencija o punjenju/točenju sa zadatim ID-jem nije pronađena." });
-                }
+                return NotFound(new { greska = "Evidencija o punjenju/točenju sa zadatim ID-jem nije pronađena." });
+            }
 
-                return Ok(rez);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { greska = ex.Message });
-            }
+            return Ok(rez);
         }
 
         [HttpPost]
@@ -67,32 +53,25 @@ namespace WebAPI.Controllers
                 return BadRequest(new { greska = "Nevalidan ID vozila." });
             }
 
-            try
+            PunjenjeTocenjeBasic pb_internal = new PunjenjeTocenjeBasic
             {
-                PunjenjeTocenjeBasic pb_internal = new PunjenjeTocenjeBasic
-                {
-                    Id = 0,
-                    VoziloId = pb.VoziloId,
-                    DatumVreme = pb.DatumVreme,
-                    Lokacija = pb.Lokacija,
-                    Kolicina = pb.Kolicina,
-                    Cena = pb.Cena,
-                    NacinEvidentiranja = pb.NacinEvidentiranja,
-                    Evidentirao = pb.Evidentirao
-                };
+                Id = 0,
+                VoziloId = pb.VoziloId,
+                DatumVreme = pb.DatumVreme,
+                Lokacija = pb.Lokacija,
+                Kolicina = pb.Kolicina,
+                Cena = pb.Cena,
+                NacinEvidentiranja = pb.NacinEvidentiranja,
+                Evidentirao = pb.Evidentirao
+            };
 
-                bool uspesno = DTOManager.dodajPunjenjeTocenje(pb_internal);
-                if (!uspesno)
-                {
-                    return BadRequest(new { greska = "Došlo je do greške prilikom evidentiranja punjenja/točenja." });
-                }
-
-                return Ok(new { poruka = "Punjenje/točenje je uspešno evidentirano." });
-            }
-            catch (Exception ex)
+            bool uspesno = DTOManager.dodajPunjenjeTocenje(pb_internal);
+            if (!uspesno)
             {
-                return BadRequest(new { greska = ex.Message });
+                return BadRequest(new { greska = "Došlo je do greške prilikom evidentiranja punjenja/točenja." });
             }
+
+            return Ok(new { poruka = "Punjenje/točenje je uspešno evidentirano." });
         }
 
         [HttpPut]
@@ -119,32 +98,25 @@ namespace WebAPI.Controllers
                 return BadRequest(new { greska = "Nevalidan ID vozila." });
             }
 
-            try
+            PunjenjeTocenjeBasic pb_internal = new PunjenjeTocenjeBasic
             {
-                PunjenjeTocenjeBasic pb_internal = new PunjenjeTocenjeBasic
-                {
-                    Id = pb.Id,
-                    VoziloId = pb.VoziloId,
-                    DatumVreme = pb.DatumVreme,
-                    Lokacija = pb.Lokacija,
-                    Kolicina = pb.Kolicina,
-                    Cena = pb.Cena,
-                    NacinEvidentiranja = pb.NacinEvidentiranja,
-                    Evidentirao = pb.Evidentirao
-                };
+                Id = pb.Id,
+                VoziloId = pb.VoziloId,
+                DatumVreme = pb.DatumVreme,
+                Lokacija = pb.Lokacija,
+                Kolicina = pb.Kolicina,
+                Cena = pb.Cena,
+                NacinEvidentiranja = pb.NacinEvidentiranja,
+                Evidentirao = pb.Evidentirao
+            };
 
-                bool uspesno = DTOManager.azurirajPunjenjeTocenje(pb_internal);
-                if (!uspesno)
-                {
-                    return BadRequest(new { greska = "Došlo je do greške prilikom ažuriranja punjenja/točenja." });
-                }
-
-                return Ok(new { poruka = "Punjenje/točenje je uspešno ažurirano." });
-            }
-            catch (Exception ex)
+            bool uspesno = DTOManager.azurirajPunjenjeTocenje(pb_internal);
+            if (!uspesno)
             {
-                return BadRequest(new { greska = ex.Message });
+                return BadRequest(new { greska = "Došlo je do greške prilikom ažuriranja punjenja/točenja." });
             }
+
+            return Ok(new { poruka = "Punjenje/točenje je uspešno ažurirano." });
         }
 
         [HttpDelete]
@@ -156,20 +128,13 @@ namespace WebAPI.Controllers
                 return BadRequest(new { greska = "Nevalidan ID punjenja/točenja." });
             }
 
-            try
+            bool uspesno = DTOManager.obrisiPunjenjeTocenje(id);
+            if (!uspesno)
             {
-                bool uspesno = DTOManager.obrisiPunjenjeTocenje(id);
-                if (!uspesno)
-                {
-                    return NotFound(new { greska = "Evidencija o punjenju/točenju nije pronađena." });
-                }
+                return NotFound(new { greska = "Evidencija o punjenju/točenju nije pronađena." });
+            }
 
-                return Ok(new { poruka = "Punjenje/točenje je uspešno obrisano." });
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { greska = ex.Message });
-            }
+            return Ok(new { poruka = "Punjenje/točenje je uspešno obrisano." });
         }
     }
 }
