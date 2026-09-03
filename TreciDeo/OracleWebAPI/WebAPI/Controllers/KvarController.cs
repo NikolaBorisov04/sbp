@@ -80,7 +80,7 @@ namespace WebAPI.Controllers
                     PrijavioId = kb.PrijavioId,
                     DatumPrijave = kb.DatumPrijave,
                     OpisProblema = kb.OpisProblema,
-                    ProcenaOzbiljnosti = kb.ProcenaOzbiljosti,
+                    ProcenaOzbiljnosti = kb.ProcenaOzbiljnosti,
                     Status = kb.Status,
                     DatumOtklanjanja = kb.DatumOtklanjanja
                 };
@@ -127,7 +127,7 @@ namespace WebAPI.Controllers
                     PrijavioId = kb.PrijavioId,
                     DatumPrijave = kb.DatumPrijave,
                     OpisProblema = kb.OpisProblema,
-                    ProcenaOzbiljnosti = kb.ProcenaOzbiljosti,
+                    ProcenaOzbiljnosti = kb.ProcenaOzbiljnosti,
                     Status = kb.Status,
                     DatumOtklanjanja = kb.DatumOtklanjanja
                 };

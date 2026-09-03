@@ -877,7 +877,7 @@ namespace FluentNHibernateTemplate
         public int PrijavioId { get; set; }
         public DateTime DatumPrijave { get; set; }
         public string OpisProblema { get; set; } = string.Empty;
-        public string ProcenaOzbiljosti { get; set; } = string.Empty;
+        public string ProcenaOzbiljnosti { get; set; } = string.Empty;
         public string Status { get; set; } = string.Empty;
         public DateTime? DatumOtklanjanja { get; set; }
 
@@ -891,7 +891,7 @@ namespace FluentNHibernateTemplate
         public int PrijavioId { get; set; }
         public DateTime DatumPrijave { get; set; }
         public string OpisProblema { get; set; } = string.Empty;
-        public string ProcenaOzbiljosti { get; set; } = string.Empty;
+        public string ProcenaOzbiljnosti { get; set; } = string.Empty;
         public string Status { get; set; } = string.Empty;
         public DateTime? DatumOtklanjanja { get; set; }
 

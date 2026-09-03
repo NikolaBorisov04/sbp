@@ -273,9 +273,9 @@ GET {{WebAPI_HostAddress}}/api/kvar/sve
 GET {{WebAPI_HostAddress}}/api/kvar/sve?voziloId=1
 
 ### Vratice jedan kvar po ID-ju
-GET {{WebAPI_HostAddress}}/api/kvar/1
+GET {{WebAPI_HostAddress}}/api/kvar/44
 
-### Prijavi novi kvar NE RADI
+### Prijavi novi kvar
 POST {{WebAPI_HostAddress}}/api/kvar
 Content-Type: {{JsonContentType}}
 
@@ -289,12 +289,12 @@ Content-Type: {{JsonContentType}}
   "datumOtklanjanja": null
 }
 
-### Azuriraj kvar NE RADI
-PUT {{WebAPI_HostAddress}}/api/kvar/1
+### Azuriraj kvar
+PUT {{WebAPI_HostAddress}}/api/kvar/44
 Content-Type: {{JsonContentType}}
 
 {
-  "id": 1,
+  "id": 44,
   "voziloId": 1,
   "prijavioId": 1,
   "datumPrijave": "2024-01-15T14:00:00",
@@ -305,7 +305,7 @@ Content-Type: {{JsonContentType}}
 }
 
 ### Obrisi kvar
-DELETE {{WebAPI_HostAddress}}/api/kvar/1
+DELETE {{WebAPI_HostAddress}}/api/kvar/44
 
 ### Vratice sve prijavitelje kvarova
 GET {{WebAPI_HostAddress}}/api/kvar/katalog/prijavitelji
