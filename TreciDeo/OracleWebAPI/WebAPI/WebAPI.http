@@ -231,7 +231,7 @@ Content-Type: {{JsonContentType}}
 
 {
   "voziloId": 1,
-"tipServisaId": 1,
+  "tipServisaId": 1,
   "servisniCentar": "BMW Servis Centar - Novi Sad",
   "datumPrijema": "2024-01-10",
   "datumZavrsetka": null,
